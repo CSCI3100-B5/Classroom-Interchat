@@ -1,5 +1,7 @@
 # Classroom Interchat
 
+[![Node.js CI](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml)
+
 Boilerplate code obtained from [crsandeep/simple-react-full-stack](https://github.com/crsandeep/simple-react-full-stack).
 
 ## Quick Start
