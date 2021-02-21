@@ -45,7 +45,7 @@ The preferred editor is VSCode with ESLint and Prettier. See [Preferred Editor](
 
 ## Project Structure
 
-This is a full stack web application using React, Node.js, Express and Webpack. It is also configured with webpack-dev-server, eslint and babel. [Airbnb's ESLint rules](https://github.com/airbnb/javascript) are applied.
+This is a full stack web application using React, Node.js, Express and Webpack. It is also configured with webpack-dev-server, eslint, babel and react-scoped-css. [Airbnb's ESLint rules](https://github.com/airbnb/javascript) are applied.
 
 ### Development mode
 
