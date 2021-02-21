@@ -1,14 +1,14 @@
 {
-  "name": "Classroom-Interchat",
+  "name": "classroom-interchat",
   "version": "1.0.0",
   "description": "Advanced real-time chatroom specifically designed for classroom interactions.",
   "main": "src/server/index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "npm run build && node src/server/index.js",
+    "start": "yarn run build && node src/server/index.js",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server": "nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
