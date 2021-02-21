@@ -73,7 +73,7 @@ For detailed boilerplate documentation, refers to its [README](https://github.co
 
 1. Install [VSCode](https://code.visualstudio.com/)
 2. Install [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-4. Modify the VSCode user settings to add below configuration
+3. Modify the VSCode user settings to add below configuration
 
    ```javascript
    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
