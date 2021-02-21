@@ -41,7 +41,7 @@ yarn build
 yarn start
 ```
 
-The preferred editor is VSCode with ESLint and Prettier. See [Preferred Editor](#preferred-editor) for installation guide.
+The preferred editor is VSCode with ESLint. See [Preferred Editor](#preferred-editor) for installation guide.
 
 ## Project Structure
 
