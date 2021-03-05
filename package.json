@@ -13,8 +13,10 @@
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "bootstrap": "^4.6.0",
     "express": "^4.16.3",
     "react": "^16.5.2",
+    "react-bootstrap": "^1.5.1",
     "react-dom": "^16.5.2"
   },
   "devDependencies": {
