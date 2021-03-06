@@ -4,7 +4,6 @@
   "description": "Advanced real-time chatroom specifically designed for classroom interactions.",
   "main": "src/server/index.js",
   "scripts": {
-    "heroku-prebuild": "yarn install --production=false",
     "build": "webpack --mode production",
     "start": "node src/server/index.js",
     "client": "webpack serve --mode development --devtool inline-source-map --hot",
