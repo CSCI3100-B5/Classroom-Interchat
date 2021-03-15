@@ -25,7 +25,7 @@ npm install -g yarn
 
 ```bash
 # Clone the repository
-git clone https://github.com/CSCI3100-B5/Classroom-Interchat
+git clone https://github.com/CSCI3100-B5/Classroom-Interchat.git
 
 # Go inside the directory
 cd Classroom-Interchat
