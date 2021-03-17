@@ -1,0 +1,35 @@
+http://localhost:8080/api/health-check
+
+###
+
+GET http://localhost:8080/api/users
+
+###
+
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "Admin",
+  "mobileNumber": "12345678",
+  "password": "password"
+}
+
+###
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "react",
+  "password": "express"
+}
+
+###
+
+GET http://localhost:8080/api/auth/random-number
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlYWN0IiwiaWF0IjoxNjE1OTc1NjY1fQ.__9iBr-fLZRYGWWninL-lCpHnIeyyre9_xwk2HSTWLE
+
+###
+
+GET http://localhost:8080/api/getUsername
