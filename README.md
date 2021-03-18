@@ -2,7 +2,10 @@
 
 [![Node.js CI](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml)
 
-Boilerplate code obtained from [crsandeep/simple-react-full-stack](https://github.com/crsandeep/simple-react-full-stack).
+Boilerplate code credits:
+
+- [crsandeep/simple-react-full-stack](https://github.com/crsandeep/simple-react-full-stack)
+- [kunalkapadia/express-mongoose-es6-rest-api](https://github.com/kunalkapadia/express-mongoose-es6-rest-api)
 
 ## Quick Start
 
@@ -63,7 +66,9 @@ All the source code will be inside **src** directory. Inside src, there is clien
 
 ## Documentation
 
-For detailed boilerplate documentation, refers to its [README](https://github.com/crsandeep/simple-react-full-stack/blob/master/README.md)
+For detailed boilerplate documentation, refers to their READMEs: [crsandeep/simple-react-full-stack](https://github.com/crsandeep/simple-react-full-stack/blob/master/README.md) [kunalkapadia/express-mongoose-es6-rest-api](https://github.com/kunalkapadia/express-mongoose-es6-rest-api/blob/develop/README.md)
+
+For documentation related to this project, check out the `docs` folder.
 
 ## Preferred Editor
 
@@ -76,7 +81,9 @@ For detailed boilerplate documentation, refers to its [README](https://github.co
 3. Modify the VSCode user settings to add below configuration
 
    ```javascript
-   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+   "[javascript]" : {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+   },
    "editor.formatOnSave": true,
    "eslint.format.enable": true,
    "eslint.alwaysShowStatus": true,
