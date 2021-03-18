@@ -84,6 +84,9 @@ For documentation related to this project, check out the `docs` folder.
    "[javascript]" : {
       "editor.defaultFormatter": "dbaeumer.vscode-eslint"
    },
+   "[javascriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+   },
    "editor.formatOnSave": true,
    "eslint.format.enable": true,
    "eslint.alwaysShowStatus": true,

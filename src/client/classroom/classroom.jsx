@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './classroom.scoped.css';
+import './Classroom.scoped.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
@@ -16,13 +16,18 @@ export default class App extends Component {
     const { username, classroomID } = this.state;
     return (
       <div>
-        {username ? <h1 className="title">{`Welcome to classroom ${classroomID}! ${username}`}</h1> : <h1 className="title">Loading.. please wait!</h1>}
-        <Button onClick={() => alert('some information shown here.')}>view classroom info</Button>
+        {username ? (
+          <h1 className="title">{`Welcome to classroom ${classroomID}! ${username}`}</h1>
+        ) : (
+          <h1 className="title">Loading.. please wait!</h1>
+        )}
+        <Button onClick={() => alert('some information shown here.')}>
+          view classroom info
+        </Button>
         <Form>
           <Form.Group controlId="answer">
             <Form.Label>Your question</Form.Label>
             <Form.Control type="answer" placeholder="Type Your Answer" />
-
 
             <Button variant="primary" type="submit">
               Submit answer
@@ -35,8 +40,10 @@ export default class App extends Component {
 
           <Form.Group controlId="message">
             <Form.Label>message</Form.Label>
-            <Form.Control type="message" placeholder="chat with your classmates" />
-
+            <Form.Control
+              type="message"
+              placeholder="chat with your classmates"
+            />
           </Form.Group>
           <Form.Group controlId="formBasicCheckbox">
             <Form.Check type="checkbox" label="is a question" />
@@ -44,13 +51,13 @@ export default class App extends Component {
 
           <Form.Text className="text-muted">
             Your classmate(s) will help you lol.
-            </Form.Text>
+          </Form.Text>
 
           <Button variant="primary" type="submit">
             send message
-  </Button>
+          </Button>
         </Form>
-      </div >
+      </div>
     );
   }
 }

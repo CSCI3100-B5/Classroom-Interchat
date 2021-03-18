@@ -1,25 +1,33 @@
-import React, { Component } from 'react';
-import './App.scoped.css';
-import Button from 'react-bootstrap/Button';
-import ReactImage from './react.png';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
+import Landing from './landing/Landing.jsx';
+import Classroom from './classroom/Classroom.jsx';
+import Login from './login/Login.jsx';
 
-export default class App extends Component {
-  state = { username: null };
-
-  componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
-  }
-
-  render() {
-    const { username } = this.state;
-    return (
-      <div>
-        {username ? <h1 className="title">{`Hello ${username}`}</h1> : <h1 className="title">Loading.. please wait!</h1>}
-        <Button onClick={() => alert('clicked')}>Test</Button>
-        <img src={ReactImage} alt="react" />
-      </div>
-    );
-  }
+export default function App() {
+  return (
+    <React.StrictMode>
+      <Router>
+        <div>
+          {/* A <Switch> looks through its children <Route>s and
+          renders the first one that matches the current URL. */}
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/classroom">
+              <Classroom />
+            </Route>
+            <Route exact path="/">
+              <Landing />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    </React.StrictMode>
+  );
 }
