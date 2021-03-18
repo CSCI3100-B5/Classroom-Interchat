@@ -1,6 +1,9 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 
+// The text box allowing users to send messages/questions.
+// This is a separate component because of its complexity.
+
 export default function MessageCompose() {
   return (
     <Form>

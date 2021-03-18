@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+// A page for instructors to create new classrooms.
+
 export default function CreateClassroom() {
   return (
     <div>

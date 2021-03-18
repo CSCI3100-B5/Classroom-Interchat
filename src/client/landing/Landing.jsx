@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import ReactImage from './react.png';
 
 // This is the homepage of our website, shown to the user when
-// they are not logged in
+// they are not logged in.
 
 export default class App extends Component {
   state = { username: null };

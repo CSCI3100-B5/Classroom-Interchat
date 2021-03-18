@@ -10,6 +10,9 @@ import CreateClassroom from './CreateClassroom.jsx';
 import JoinClassroom from './JoinClassroom.jsx';
 import ClassroomSession from './session/ClassroomSession.jsx';
 
+// The root of all classroom-related components
+// Routes pages such as join, create and classroom session page.
+
 export default function ClassroomRoot() {
   const { path, url } = useRouteMatch();
   return (

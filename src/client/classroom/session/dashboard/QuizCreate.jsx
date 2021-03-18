@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 
+// A form to create a quiz. This is a component belonging to the dashboard.
+
 export default function QuizCreate() {
   return (
     <div>

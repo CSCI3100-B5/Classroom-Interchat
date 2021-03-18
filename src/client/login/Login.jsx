@@ -5,7 +5,7 @@ import {
 import LoginBox from './LoginBox.jsx';
 import SignupBox from './SignupBox.jsx';
 
-// This is a page containing a Log in and Sign up box
+// The login page, containing a sign up box and a log in box.
 
 export default function Login() {
   return (

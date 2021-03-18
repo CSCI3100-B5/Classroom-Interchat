@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+// A page for users to type in classroom ID and join the classroom.
+
 export default function JoinClassroom() {
   return (
     <div>

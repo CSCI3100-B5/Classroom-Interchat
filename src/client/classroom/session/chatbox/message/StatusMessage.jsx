@@ -1,5 +1,8 @@
 import React from 'react';
 
+// A type of message sent by the system.
+// Examples include "xxx left the classroom", "xxx disabled the classroom"...
+
 export default function StatusMessage() {
   return (
     <div>

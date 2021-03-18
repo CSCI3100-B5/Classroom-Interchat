@@ -3,7 +3,9 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Button, Form } from 'react-bootstrap';
 
-// The Log in box, not an independent page
+// The Log in box, not an independent page.
+// This component is shown when the user select the log in
+// tab in the /login page.
 
 const schema = yup.object().shape({
   username: yup.string().required(),

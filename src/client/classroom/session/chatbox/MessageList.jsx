@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Message from './message/Message.jsx';
 
+// The message history, belonging to the chatbox.
+
 export default function MessageList() {
   const [messageList] = useState([
     {

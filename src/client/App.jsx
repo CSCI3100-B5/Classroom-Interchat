@@ -11,7 +11,7 @@ import Login from './login/Login.jsx';
 
 // This is the root of all pages. Page navigation is handled by
 // React router so that no browser refresh is needed to load a
-// new page
+// new page.
 
 export default function App() {
   return (

@@ -5,6 +5,10 @@ import TextMessage from './TextMessage.jsx';
 import QuizMessage from './QuizMessage.jsx';
 import StatusMessage from './StatusMessage.jsx';
 
+// The base of all types of messages, besides deciding which message
+// component type to be used, it also displays common message
+// attributes, such as sender name and timestamp.
+
 function Message(props) {
   const { message } = props;
   return (
