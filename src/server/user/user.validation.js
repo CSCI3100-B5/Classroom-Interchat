@@ -5,7 +5,7 @@ module.exports = {
   createUser: {
     body: Joi.object({
       username: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[1-9][0-9]{7}$/).required()
+      password: Joi.string().required()
     })
   },
 
@@ -13,7 +13,7 @@ module.exports = {
   updateUser: {
     body: Joi.object({
       username: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[1-9][0-9]{7}$/).required()
+      password: Joi.string().required()
     }),
     params: {
       userId: Joi.string().hex().required()

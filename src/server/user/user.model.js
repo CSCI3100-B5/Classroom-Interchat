@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
+const bcrypt = require('bcrypt');
 const APIError = require('../helpers/APIError');
 
 /**
@@ -9,16 +10,21 @@ const APIError = require('../helpers/APIError');
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true
-  },
-  mobileNumber: {
-    type: String,
+    unique: true,
     required: true,
-    match: [/^[1-9][0-9]{7}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
+    dropDups: true
+  },
+  password: {
+    type: String,
+    required: true
   },
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  tokenIds: {
+    type: Array,
+    default: []
   }
 });
 
@@ -33,6 +39,24 @@ const UserSchema = new mongoose.Schema({
  * Methods
  */
 UserSchema.method({
+  isTokenIdValid(tokenId) {
+    return this.tokenIds.includes(tokenId);
+  },
+  async invalidateTokenId(tokenId) {
+    this.tokenIds.pull(tokenId);
+    await this.save();
+  },
+  async addTokenId(tokenId) {
+    this.tokenIds.push(tokenId);
+    await this.save();
+  },
+  comparePassword(password) {
+    return bcrypt.compare(password, this.password);
+  },
+  async setPassword(password) {
+    this.password = await bcrypt.hash(password, 10);
+    await this.save();
+  }
 });
 
 /**
@@ -46,6 +70,18 @@ UserSchema.statics = {
    */
   get(id) {
     return this.findById(id)
+      .exec()
+      .then((user) => {
+        if (user) {
+          return user;
+        }
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+
+  getByUsername(username) {
+    return this.findOne({ username })
       .exec()
       .then((user) => {
         if (user) {

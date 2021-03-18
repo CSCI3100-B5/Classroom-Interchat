@@ -1,4 +1,6 @@
+const httpStatus = require('http-status');
 const User = require('./user.model');
+const APIError = require('./../helpers/APIError');
 
 /**
  * Load user and append to req.
@@ -23,30 +25,34 @@ function get(req, res) {
 /**
  * Create new user
  * @property {string} req.body.username - The username of user.
- * @property {string} req.body.mobileNumber - The mobileNumber of user.
+ * @property {string} req.body.password - The password of user.
  * @returns {User}
  */
-function create(req, res, next) {
-  const user = new User({
-    username: req.body.username,
-    mobileNumber: req.body.mobileNumber
-  });
-
-  user.save()
-    .then(savedUser => res.json(savedUser))
-    .catch(e => next(e));
+async function create(req, res, next) {
+  try {
+    if (await User.exists({ username: req.body.username })) {
+      return next(new APIError('Username is occupied', httpStatus.BAD_REQUEST, true));
+    }
+    const user = new User({
+      username: req.body.username
+    });
+    await user.setPassword(req.body.password);
+    return res.json(user);
+  } catch (e) {
+    return next(e);
+  }
 }
 
 /**
  * Update existing user
  * @property {string} req.body.username - The username of user.
- * @property {string} req.body.mobileNumber - The mobileNumber of user.
+ * @property {string} req.body.password - The password of user.
  * @returns {User}
  */
-function update(req, res, next) {
+async function update(req, res, next) {
   const { user } = req;
   user.username = req.body.username;
-  user.mobileNumber = req.body.mobileNumber;
+  await user.setPassword(req.body.password);
 
   user.save()
     .then(savedUser => res.json(savedUser))

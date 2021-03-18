@@ -11,7 +11,6 @@ Content-Type: application/json
 
 {
   "username": "Admin",
-  "mobileNumber": "12345678",
   "password": "password"
 }
 
@@ -21,24 +20,24 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "react",
-  "password": "express"
+  "username": "Admin",
+  "password": "password"
 }
 
 ###
 
 GET http://localhost:8080/api/auth/token
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlYWN0IiwidG9rZW5JZCI6IjA0MTE0OTU3NGZiYWY1ZDJiY2Q2Nzk1MjRkZDNkODUzIiwiaWF0IjoxNjE2MDM2MTI2fQ.mXi567H7Ja3Yt5TpGhHMYLWY5REDFwEFRBhBPwX81aI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDUyZDJmYzBiNWZjMTQxMDQzMDFkZjAiLCJ0b2tlbklkIjoiNjhmNjI2MTgwZTNkYjgwNGQwZmVjZGFiNmVlM2Y3ZDMiLCJpYXQiOjE2MTYwNDI1NzB9.hGEiuGwLwnt9UZCSxnobkQdJKbiolg_Ba_tpIw2mtGA
 
 ###
 
 DELETE http://localhost:8080/api/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlYWN0IiwidG9rZW5JZCI6IjA0MTE0OTU3NGZiYWY1ZDJiY2Q2Nzk1MjRkZDNkODUzIiwiaWF0IjoxNjE2MDM2MTI2fQ.mXi567H7Ja3Yt5TpGhHMYLWY5REDFwEFRBhBPwX81aI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDUyZDJmYzBiNWZjMTQxMDQzMDFkZjAiLCJ0b2tlbklkIjoiNjhmNjI2MTgwZTNkYjgwNGQwZmVjZGFiNmVlM2Y3ZDMiLCJpYXQiOjE2MTYwNDI1NzB9.hGEiuGwLwnt9UZCSxnobkQdJKbiolg_Ba_tpIw2mtGA
 
 ###
 
 GET http://localhost:8080/api/auth/random-number
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlYWN0IiwidG9rZW5JZCI6ImQzN2VmMmUyNGFmMGZhZTkxZDMwZmIzY2U3OTAxYWEwIiwiaWF0IjoxNjE2MDM2MTA5LCJleHAiOjE2MTYwMzYxMTl9.a_LMaC3sJnVcQw0p2dxh6aeXfezBl_SsZmqVCDvDDZw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDUyZDJmYzBiNWZjMTQxMDQzMDFkZjAiLCJ0b2tlbklkIjoiNjhmNjI2MTgwZTNkYjgwNGQwZmVjZGFiNmVlM2Y3ZDMiLCJpYXQiOjE2MTYwNDI1NzAsImV4cCI6MTYxNjA0MzE3MH0.O9QulExNZesijYui6eWa-daKIGx4gr0v_qJlFIxXneQ
 
 ###
 

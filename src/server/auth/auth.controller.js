@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const crypto = require('crypto');
 const APIError = require('../helpers/APIError');
 const config = require('../config/config');
+const User = require('../user/user.model');
 
 // sample user, used for authentication
 const sampleUser = {
@@ -10,12 +11,8 @@ const sampleUser = {
   password: 'express'
 };
 
-// sample array of refresh tokens ids
-// TODO: store this in user's document in database
-let sampleRefreshTokenIds = [];
-
-function generateAccessToken(user) {
-  return jwt.sign(user, config.accessTokenSecret, { expiresIn: '10m' });
+function generateAccessToken(payload) {
+  return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '10m' });
 }
 
 /**
@@ -25,23 +22,34 @@ function generateAccessToken(user) {
  * @param next
  * @returns {*}
  */
-function login(req, res, next) {
+async function login(req, res, next) {
   // TODO: fetch the user auth details from database
-  if (req.body.username === sampleUser.username && req.body.password === sampleUser.password) {
-    const refreshId = crypto.randomBytes(16).toString('hex');
-    const user = { username: sampleUser.username, tokenId: refreshId };
-    const accessToken = generateAccessToken(user);
-    const refreshToken = jwt.sign(user, config.refreshTokenSecret);
-    sampleRefreshTokenIds.push(refreshId);
-    return res.json({
-      accessToken,
-      refreshToken,
-      username: sampleUser.username
-    });
+  let user;
+  try {
+    user = await User.getByUsername(req.body.username);
+  } catch (e) {
+    return next(e);
   }
-
-  const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-  return next(err);
+  if (!await user.comparePassword(req.body.password)) {
+    const err = new APIError('Incorrect password', httpStatus.UNAUTHORIZED, true);
+    return next(err);
+  }
+  const refreshId = crypto.randomBytes(16).toString('hex');
+  const payload = { userId: user.id, tokenId: refreshId };
+  const accessToken = generateAccessToken(payload);
+  const refreshToken = jwt.sign(payload, config.refreshTokenSecret);
+  user.tokenIds.push(refreshId);
+  try {
+    await user.save();
+  } catch (e) {
+    return next(e);
+  }
+  return res.json({
+    accessToken,
+    refreshToken,
+    userId: user.id,
+    username: user.username
+  });
 }
 
 /**
@@ -50,15 +58,22 @@ function login(req, res, next) {
  * @param res
  * @returns {*}
  */
-function token(req, res, next) {
-  // req.user is assigned by jwt middleware if valid token is provided
-  if (!sampleRefreshTokenIds.includes(req.user.tokenId)) {
-    next(new APIError('This refresh token has expired', httpStatus.UNAUTHORIZED, true));
+async function token(req, res, next) {
+  // req.payload is assigned by jwt middleware if valid token is provided
+  let user;
+  try {
+    user = await User.get(req.payload.userId);
+  } catch (e) {
+    return next(e);
   }
-  const user = { username: req.user.username, tokenId: req.user.tokenId };
-  const accessToken = generateAccessToken(user);
+  if (!user.isTokenIdValid(req.payload.tokenId)) {
+    return next(new APIError('This refresh token has expired', httpStatus.UNAUTHORIZED, true));
+  }
+  const payload = { userId: user.id, tokenId: req.payload.tokenId };
+  const accessToken = generateAccessToken(payload);
   return res.json({
     accessToken,
+    userId: user.id,
     username: sampleUser.username
   });
 }
@@ -69,9 +84,15 @@ function token(req, res, next) {
  * @param res
  * @returns {*}
  */
-function logout(req, res) {
-  // req.user is assigned by jwt middleware if valid token is provided
-  sampleRefreshTokenIds = sampleRefreshTokenIds.filter(x => x !== req.user.tokenId);
+async function logout(req, res, next) {
+  // req.payload is assigned by jwt middleware if valid token is provided
+  let user;
+  try {
+    user = await User.get(req.payload.userId);
+    await user.invalidateTokenId(req.payload.tokenId);
+  } catch (e) {
+    return next(e);
+  }
   return res.sendStatus(httpStatus.NO_CONTENT);
 }
 
@@ -83,9 +104,9 @@ function logout(req, res) {
  * @returns {*}
  */
 function getRandomNumber(req, res) {
-  // req.user is assigned by jwt middleware if valid token is provided
+  // req.payload is assigned by jwt middleware if valid token is provided
   return res.json({
-    user: req.user,
+    user: req.payload,
     num: Math.random() * 100
   });
 }
