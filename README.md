@@ -1,4 +1,4 @@
-# Classroom Interchat
+# [Classroom Interchat](https://classroom-interchat.herokuapp.com/)
 
 [![Node.js CI](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml)
 
