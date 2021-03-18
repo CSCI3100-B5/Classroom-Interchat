@@ -16,8 +16,10 @@ const envVarsSchema = Joi.object({
       then: Joi.boolean().default(true),
       otherwise: Joi.boolean().default(false)
     }),
-  JWT_SECRET: Joi.string().required()
-    .description('JWT Secret required to sign'),
+  ACCESS_TOKEN_SECRET: Joi.string().required()
+    .description('Access token secret required for auth'),
+  REFRESH_TOKEN_SECRET: Joi.string().required()
+    .description('Refresh token secret required for auth'),
   MONGO_HOST: Joi.string().required()
     .description('Mongo DB host url')
 }).unknown()
@@ -32,7 +34,8 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
-  jwtSecret: envVars.JWT_SECRET,
+  accessTokenSecret: envVars.ACCESS_TOKEN_SECRET,
+  refreshTokenSecret: envVars.REFRESH_TOKEN_SECRET,
   mongo: {
     host: envVars.MONGO_HOST,
   }
