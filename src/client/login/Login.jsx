@@ -1,12 +1,11 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import {
+  Container, Row, Col, Tab, Tabs
+} from 'react-bootstrap';
 import LoginBox from './LoginBox.jsx';
 import SignupBox from './SignupBox.jsx';
 
+// This is a page containing a Log in and Sign up box
 
 export default function Login() {
   return (

@@ -2,11 +2,16 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
 import Landing from './landing/Landing.jsx';
-import Classroom from './classroom/Classroom.jsx';
+import ClassroomRoot from './classroom/index.jsx';
 import Login from './login/Login.jsx';
+
+// This is the root of all pages. Page navigation is handled by
+// React router so that no browser refresh is needed to load a
+// new page
 
 export default function App() {
   return (
@@ -20,10 +25,13 @@ export default function App() {
               <Login />
             </Route>
             <Route path="/classroom">
-              <Classroom />
+              <ClassroomRoot />
             </Route>
             <Route exact path="/">
               <Landing />
+            </Route>
+            <Route>
+              <Redirect to="/" />
             </Route>
           </Switch>
         </div>

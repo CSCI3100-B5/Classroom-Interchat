@@ -1,8 +1,9 @@
 import React from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import { Button, Form } from 'react-bootstrap';
+
+// The Log in box, not an independent page
 
 const schema = yup.object().shape({
   username: yup.string().required(),

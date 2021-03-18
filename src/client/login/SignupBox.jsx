@@ -1,8 +1,9 @@
 import React from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import { Button, Form } from 'react-bootstrap';
+
+// The Sign up box, not an independent page
 
 const schema = yup.object().shape({
   username: yup.string().required(),
@@ -33,11 +34,11 @@ export default function SignupBox() {
         errors,
       }) => (
         <Form className="m-4" noValidate onSubmit={handleSubmit}>
-          <Form.Group controlId="username">
+          <Form.Group controlId="signupUsername">
             <Form.Label>Username</Form.Label>
             <Form.Control
               type="text"
-              name="username"
+              name="signupUsername"
               value={values.username}
               onChange={handleChange}
               isValid={touched.username && !errors.username}
@@ -59,11 +60,11 @@ export default function SignupBox() {
               {errors.email}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="password">
+          <Form.Group controlId="signupPassword">
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
-              name="password"
+              name="signupPassword"
               value={values.password}
               onChange={handleChange}
               isValid={touched.password && !errors.password}
