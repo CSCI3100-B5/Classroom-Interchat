@@ -8,9 +8,12 @@ import { Button, Form } from 'react-bootstrap';
 // tab in the /login page.
 
 const schema = yup.object().shape({
-  username: yup.string().required(),
+  username: yup.string()
+    .min(6).max(64)
+    .matches(/[a-zA-Z][a-zA-Z0-9_-]+|[-_][a-zA-Z0-9_-]*[a-zA-Z][a-zA-Z0-9_-]*/)
+    .required(),
   email: yup.string().email().required(),
-  password: yup.string().min(8).max(20).required(),
+  password: yup.string().min(8).max(64).required(),
   confirmPassword: yup.string()
     .oneOf([yup.ref('password'), null], 'The two passwords do not match')
     .required()

@@ -11,8 +11,11 @@ import dataStore from '../dataStore.js';
 // tab in the /login page.
 
 const schema = yup.object().shape({
-  username: yup.string().required(),
-  password: yup.string().min(8).max(20).required(),
+  username: yup.string()
+    .min(6).max(64)
+    .matches(/[a-zA-Z][a-zA-Z0-9_-]+|[-_][a-zA-Z0-9_-]*[a-zA-Z][a-zA-Z0-9_-]*/)
+    .required(),
+  password: yup.string().min(8).max(64).required(),
   rememberMe: yup.bool().required(),
 });
 

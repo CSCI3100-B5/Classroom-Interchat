@@ -25,6 +25,22 @@ const UserSchema = new mongoose.Schema({
   tokenIds: {
     type: Array,
     default: []
+  },
+  userType: {
+    type: String,
+    enum: ['STUDENT', 'INSTRUCTOR', 'ADMIN'],
+    default: 'STUDENT',
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    dropDups: true
+  },
+  emailVerification: {
+    type: String,
+    default: 'non-empty'
   }
 });
 
