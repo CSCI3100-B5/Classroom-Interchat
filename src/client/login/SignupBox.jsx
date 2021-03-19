@@ -79,7 +79,7 @@ export default function SignupBox() {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="confirmPassword">
-            <Form.Label>Confirmed Password</Form.Label>
+            <Form.Label>Confirm Password</Form.Label>
             <Form.Control
               type="password"
               name="confirmPassword"
