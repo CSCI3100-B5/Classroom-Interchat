@@ -1,4 +1,4 @@
-# Classroom Interchat
+# [Classroom Interchat](https://classroom-interchat.herokuapp.com/)
 
 [![Node.js CI](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml)
 
@@ -6,6 +6,14 @@ Boilerplate code credits:
 
 - [crsandeep/simple-react-full-stack](https://github.com/crsandeep/simple-react-full-stack)
 - [kunalkapadia/express-mongoose-es6-rest-api](https://github.com/kunalkapadia/express-mongoose-es6-rest-api)
+
+## Branches
+
+`main`: the deployment branch, represents the code currently being deployed to https://classroom-interchat.herokuapp.com/ . CI/CD is enabled for this branch.
+
+`develop`: the development branch, showing the most up-to-date progress of the code. CI is enabled for this branch.
+
+Others: these branches contain features that are still being worked on and is unfinished.
 
 ## Quick Start
 

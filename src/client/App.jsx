@@ -8,6 +8,7 @@ import {
 import Landing from './landing/Landing.jsx';
 import ClassroomRoot from './classroom/index.jsx';
 import Login from './login/Login.jsx';
+import Account from './account/Account.jsx';
 
 // This is the root of all pages. Page navigation is handled by
 // React router so that no browser refresh is needed to load a
@@ -23,6 +24,9 @@ export default function App() {
           <Switch>
             <Route path="/login">
               <Login />
+            </Route>
+            <Route path="/account">
+              <Account />
             </Route>
             <Route path="/classroom">
               <ClassroomRoot />

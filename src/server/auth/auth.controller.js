@@ -5,22 +5,12 @@ const APIError = require('../helpers/APIError');
 const config = require('../config/config');
 const User = require('../user/user.model');
 
-// sample user, used for authentication
-const sampleUser = {
-  username: 'react',
-  password: 'express'
-};
-
 function generateAccessToken(payload) {
   return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '10m' });
 }
 
 /**
  * Returns jwt access and refresh token if valid username and password is provided
- * @param req
- * @param res
- * @param next
- * @returns {*}
  */
 async function login(req, res, next) {
   // TODO: fetch the user auth details from database
@@ -30,6 +20,7 @@ async function login(req, res, next) {
   } catch (e) {
     return next(e);
   }
+  if (user.emailVerification) return next(new APIError('You need to verify your email address first', httpStatus.UNAUTHORIZED, true));
   if (!await user.comparePassword(req.body.password)) {
     const err = new APIError('Incorrect password', httpStatus.UNAUTHORIZED, true);
     return next(err);
@@ -53,10 +44,41 @@ async function login(req, res, next) {
 }
 
 /**
+ * Sign up for user
+ */
+async function signup(req, res, next) {
+  try {
+    if (await User.exists({ username: req.body.username })) {
+      return next(new APIError('Username is occupied', httpStatus.BAD_REQUEST, true));
+    }
+    if (await User.exists({ email: req.body.email })) {
+      return next(new APIError('This email is already used', httpStatus.BAD_REQUEST, true));
+    }
+    const user = new User({
+      username: req.body.username,
+      email: req.body.email,
+      userType: req.body.userType,
+      emailVerification: crypto.randomBytes(32).toString('hex')
+    });
+    await user.setPassword(req.body.password);
+    return res.json({
+      username: user.username,
+      email: user.email,
+      userType: user.userType,
+      id: user.id,
+      createdAt: user.createdAt
+    });
+  } catch (e) {
+    return next(e);
+  }
+}
+
+// function verifyEmail(req, res, next) {
+// send an email to the user
+// }
+
+/**
  * Returns a new access token if authorized with refresh token
- * @param req
- * @param res
- * @returns {*}
  */
 async function token(req, res, next) {
   // req.payload is assigned by jwt middleware if valid token is provided
@@ -74,15 +96,12 @@ async function token(req, res, next) {
   return res.json({
     accessToken,
     userId: user.id,
-    username: sampleUser.username
+    username: user.username
   });
 }
 
 /**
  * Will remove refresh token only if it is provided in header.
- * @param req
- * @param res
- * @returns {*}
  */
 async function logout(req, res, next) {
   // req.payload is assigned by jwt middleware if valid token is provided
@@ -99,9 +118,6 @@ async function logout(req, res, next) {
 /**
  * This is a sample protected route.
  * Will return random number only if jwt token is provided in header.
- * @param req
- * @param res
- * @returns {*}
  */
 function getRandomNumber(req, res) {
   // req.payload is assigned by jwt middleware if valid token is provided
@@ -112,5 +128,5 @@ function getRandomNumber(req, res) {
 }
 
 module.exports = {
-  login, token, logout, getRandomNumber
+  login, signup, token, logout, getRandomNumber
 };

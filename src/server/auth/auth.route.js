@@ -10,6 +10,10 @@ const router = express.Router(); // eslint-disable-line new-cap
 router.route('/login')
   .post(validate(paramValidation.login), authCtrl.login);
 
+/** POST /api/auth/signup - Create an account and return the user */
+router.route('/signup')
+  .post(validate(paramValidation.signup), authCtrl.signup);
+
 /** GET /api/auth/token - Returns a new access token if the refresh token is valid */
 router.route('/token')
   .get(requireRefreshToken, authCtrl.token);
