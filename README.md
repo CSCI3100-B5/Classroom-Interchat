@@ -15,10 +15,10 @@ Install [nvm for Windows](https://github.com/coreybutler/nvm-windows) or [nvm](h
 
 ```bash
 # Install Node.js 14.15.5 LTS
-nvm install 14.15.5
+npm install 14.15.5
 
 # Use the newly installed version
-nvm use 14.15.5
+npm use 14.15.5
 
 # Install the yarn package manager
 npm install -g yarn
