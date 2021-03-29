@@ -11,10 +11,7 @@ import dataStore from '../dataStore.js';
 // tab in the /login page.
 
 const schema = yup.object().shape({
-  username: yup.string()
-    .min(6).max(64)
-    .matches(/[a-zA-Z][a-zA-Z0-9_-]+|[-_][a-zA-Z0-9_-]*[a-zA-Z][a-zA-Z0-9_-]*/)
-    .required(),
+  email: yup.string().email().required(),
   password: yup.string().min(8).max(64).required(),
   rememberMe: yup.bool().required(),
 });
@@ -37,7 +34,7 @@ export default function LoginBox() {
   }
 
   const onSubmit = async (values) => {
-    const result = await API.login(values.username, values.password);
+    const result = await API.login(values.email, values.password);
     if (result.success) {
       dataStore.accessToken = result.response.data.accessToken;
       dataStore.refreshToken = result.response.data.refreshToken;
@@ -64,7 +61,7 @@ export default function LoginBox() {
         validationSchema={schema}
         onSubmit={onSubmit}
         initialValues={{
-          username: '',
+          email: '',
           password: '',
           rememberMe: true
         }}
@@ -77,17 +74,17 @@ export default function LoginBox() {
           errors,
         }) => (
           <Form className="m-4" noValidate onSubmit={handleSubmit}>
-            <Form.Group controlId="username">
-              <Form.Label>Username</Form.Label>
+            <Form.Group controlId="email">
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="text"
-                name="username"
-                value={values.username}
+                name="email"
+                value={values.email}
                 onChange={handleChange}
-                isValid={touched.username && !errors.username}
+                isValid={touched.email && !errors.email}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.username}
+                {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="password">

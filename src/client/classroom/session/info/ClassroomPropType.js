@@ -4,10 +4,10 @@ export default {
   classroom: PropTypes.shape({
     name: PropTypes.string.isRequired,
     createdBy: PropTypes.shape({
-      username: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired
     }),
     participants: PropTypes.arrayOf(PropTypes.shape({
-      username: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired
     }))
   }).isRequired
 };

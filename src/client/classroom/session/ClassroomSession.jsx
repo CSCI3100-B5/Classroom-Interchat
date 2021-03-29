@@ -17,14 +17,14 @@ export default function ClassroomSession() {
     id: classroomId,
     name: 'Classroom name',
     createdBy: {
-      username: 'Username'
+      name: 'name'
     },
     participants: [
       {
-        username: 'Username 1'
+        name: 'name 1'
       },
       {
-        username: 'Username 2'
+        name: 'name 2'
       }
     ]
   });

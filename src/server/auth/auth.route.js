@@ -6,7 +6,7 @@ const { requireAccessToken, requireRefreshToken } = require('./../helpers/requir
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-/** POST /api/auth/login - Returns tokens if correct username and password is provided */
+/** POST /api/auth/login - Returns tokens if correct email and password is provided */
 router.route('/login')
   .post(validate(paramValidation.login), authCtrl.login);
 

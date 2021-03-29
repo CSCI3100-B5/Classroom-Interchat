@@ -9,12 +9,12 @@ export default function EditAccountInfo() {
   return (
     <div>
       <Form>
-        <Form.Group as={Row} controlId="Username">
-          <Form.Label column sm={2}>Username</Form.Label>
+        <Form.Group as={Row} controlId="name">
+          <Form.Label column sm={2}>Name</Form.Label>
           <Col sm={10}>
             <Form.Control
               type="text"
-              placeholder="Username"
+              placeholder="name"
             />
           </Col>
         </Form.Group>
