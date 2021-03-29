@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import Landing from './landing/Landing.jsx';
 import ClassroomRoot from './classroom/index.jsx';
-import Login from './login/Login.jsx';
+import Auth from './auth/Auth.jsx';
 import Account from './account/Account.jsx';
 
 // This is the root of all pages. Page navigation is handled by
@@ -22,8 +22,8 @@ export default function App() {
           {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
           <Switch>
-            <Route path="/login">
-              <Login />
+            <Route path="/auth">
+              <Auth />
             </Route>
             <Route path="/account">
               <Account />

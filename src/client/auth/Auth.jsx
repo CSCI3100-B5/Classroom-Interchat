@@ -7,7 +7,7 @@ import SignupBox from './SignupBox.jsx';
 
 // The login page, containing a sign up box and a log in box.
 
-export default function Login() {
+export default function Auth() {
   return (
     <Container>
       <Row>
