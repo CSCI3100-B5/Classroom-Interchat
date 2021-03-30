@@ -1,3 +1,9 @@
+// =========================================================
+// Database structures
+// =========================================================
+
+// Each type of objects lives in its own collection
+
 Token object
 {
   "id": "<token id>",
@@ -5,7 +11,7 @@ Token object
   "receivedBy": "<user id>",
   "createdAt": "<timestmap>",
   "isValid": boolean,
-//  "value": "<string>"
+  "value": "<string>"
 }
 
 User object
@@ -15,7 +21,9 @@ User object
   "password": "<hash>",
   "id": "<user id>",
   "isAdmin": boolean,
-  "createdAt": "<timestamp>"
+  "createdAt": "<timestamp>",
+  "emailVerification": "<string>" | null,  // the email verification code sent to user, null when email is already verified
+  "lastVerifiedEmail": "<email>"
 }
 
 Classroom object
@@ -29,6 +37,7 @@ Classroom object
     "permission": "instructor/student/requesting",
     "isMuted": boolean
   },
+  "isMuted": boolean,
   "messages": [
     Message object
   ]
@@ -39,10 +48,10 @@ Message object
   "id": "<message id>",
   "createdAt": "<timestamp>",
   "sender": "<user id>",
-  "type": "text/poll/status/question/reply",
+  "type": "text|poll|status|question|reply",
   "content": "<string>"  // text content or status content
   | {  // poll content
-    "type": "SAQ/MCQ",
+    "type": "SAQ|MCQ",
     "prompt": "<string>",
     "choices": [ "<string>" ],   // only MCQ
     "correct": number     // only MCQ // index of correct answer inside "choices"
@@ -65,8 +74,11 @@ PollAnswer object
   "content": "<string>" | number
 }
 
-// ====================================================
+############################################################
+
+// =========================================================
 // REST APIs
+// =========================================================
 // /auth
 
 // Login = generate access and refresh token for this login session
@@ -78,7 +90,14 @@ POST /api/auth/login
   "password": "<string>"
 }
 
-###
+RESPONSE:
+{
+  "accessToken": "<string>",
+  "refreshToken": "<string>",
+  "userId": "<user id>"
+}
+
+############################################################
 
 // Sign up
 
@@ -90,28 +109,46 @@ POST /api/auth/signup
   "password": "<string>"
 }
 
-###
+RESPONSE:
+{
+  "name": "<string>",
+  "email": "<email>",
+  "id": "<user id>",
+  "createdAt": "<timestamp>",
+  "isAdmin": boolean
+}
+
+############################################################
 
 // Request a new access token using the refresh token when the old one expires
 
 GET /api/auth/token
 Authorization: Bearer <refresh token>
 
-###
+RESPONSE:
+{
+  "accessToken": "<string>",
+  "userId": "<user id>"
+}
+
+############################################################
 
 // Makes a refresh token invalid
 
 DELETE /api/auth/logout
 Authorization: Bearer <refresh token>
 
-###
+RESPONSE: NO_CONTENT
 
-// ==============================================
+############################################################
+
+// =========================================================
 // /user
 
 // Request user profile data
+// Only allowed if :userid matches access token
 
-GET /api/user/profile
+GET /api/user/:userid
 Authorization: Bearer <access token>
 
 
@@ -120,11 +157,52 @@ RESPONSE:
 {
   "name": "<string>",
   "email": "<email>",
+  "id": "<user id>",
+  "isAdmin": boolean,
+  "createdAt": "<timestamp>"
 }
 
-###
+############################################################
 
-// ===============================================
+// Admin route: create a new user with less restriction
+
+POST /api/user
+Authorization: Bearer <access token>
+
+{
+  "name": "<string>",
+  "email": "<email>",
+  "isAdmin": boolean,
+  "emailVerification": "<string>" | null,
+  "password": "<string>"
+}
+
+############################################################
+
+// Update user profile data
+// Only allowed if :userid matches access token or user is admin
+
+PATCH /api/user/:userid
+Authorization: Bearer <access token>
+
+{
+  "name": "<string>",
+  "email": "<email>",
+  "password": "<string>"
+}
+
+RESPONSE:
+{
+  "name": "<string>",
+  "email": "<email>",
+  "id": "<user id>",
+  "createdAt": "<timestamp>",
+  "isAdmin": boolean
+}
+
+############################################################
+
+// =========================================================
 // /token
 
 // Get all tokens of a given user id
@@ -171,11 +249,14 @@ RESPONSE:
   ]
 }
 
-###
+############################################################
 
 PATCH /api/token/:tokenId/invalidate
 Authorization: Bearer <access token>
 
+
+
+RESPONSE: NO_CONTENT
 
 // create token is handled in socket.io
 
