@@ -174,7 +174,20 @@ Authorization: Bearer <access token>
   "email": "<email>",
   "isAdmin": boolean,
   "emailVerification": "<string>" | null,
-  "password": "<string>"
+  "password": "<string>",
+  "lastVerifiedEmail": "<email>"
+}
+
+RESPONSE:
+{
+  "name": "<string>",
+  "email": "<email>",
+  "password": "<hash>",
+  "id": "<user id>",
+  "isAdmin": boolean,
+  "createdAt": "<timestamp>",
+  "emailVerification": "<string>" | null,
+  "lastVerifiedEmail": "<email>"
 }
 
 ############################################################
