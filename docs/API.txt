@@ -14,7 +14,8 @@ User object
   "email": "<email>",
   "password": "<hash>",
   "id": "<user id>",
-  "isAdmin": boolean
+  "isAdmin": boolean,
+  "createdAt": "<timestamp>"
 }
 
 Classroom object
@@ -22,6 +23,7 @@ Classroom object
   "name": "<string>",
   "id": "<classroom id>",
   "host": "<user id>",
+  "createdAt": "<timestmap>",
   "participants": {
     "userId": "<user id>",
     "permission": "instructor/student/requesting",
@@ -59,6 +61,7 @@ PollAnswer object
 {
   "id": "<pollanswer id>",
   "pollId": "<message id>",
+  "createdAt": "<timestamp>",
   "content": "<string>" | number
 }
 
