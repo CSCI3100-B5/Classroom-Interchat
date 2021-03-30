@@ -9,6 +9,7 @@ class API {
     this.#axios = axiosStatic.create({
       baseURL: env.apiBase // change the base URL for local debug
     });
+    console.log(`Requesting to ${env.apiBase}`);
     this.createAxiosResponseInterceptor();
   }
 

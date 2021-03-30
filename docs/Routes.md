@@ -7,6 +7,5 @@
 
   > The interactive interface consists of 3 parts:
   >
-  > - **Chat box**: the place for sending and receiving messages
-  > - **Dashboard**: the place for instructors to control the classroom, such as creating quizzes and disabling the classroom.
+  > - **Chat box**: the place for sending and receiving messages, and for interacting with special messages (e.g. questions and quizzes)
   > - **Info**: the component that shows basic info, such as name and participant count, of the classroom. A participant list can be brought up through the info component.

@@ -1,25 +1,24 @@
 const Joi = require('joi');
 
 module.exports = {
-  // POST /api/users
+  // POST /api/user
   createUser: {
     body: Joi.object({
       name: Joi.string().min(5).max(100).required(),
       password: Joi.string().min(8).max(64).required(),
       email: Joi.string().email().required(),
-      userType: Joi.string().valid('STUDENT', 'INSTRUCTOR', 'ADMIN').default('STUDENT'),
-      emailVerification: Joi.string().default('non-empty')
+      isAdmin: Joi.boolean().default(false),
+      emailVerification: Joi.string().default('sample-code'),
+      lastVerifiedEmail: Joi.string().email().default(null),
     })
   },
 
-  // UPDATE /api/users/:userId
+  // UPDATE /api/user/:userId
   updateUser: {
     body: Joi.object({
       name: Joi.string().min(5).max(100),
       password: Joi.string().min(8).max(64),
-      email: Joi.string().email(),
-      userType: Joi.string().valid('STUDENT', 'INSTRUCTOR', 'ADMIN').default('STUDENT'),
-      emailVerification: Joi.string()
+      email: Joi.string().email()
     }),
     params: {
       userId: Joi.string().hex().required()

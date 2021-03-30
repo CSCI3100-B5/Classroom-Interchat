@@ -21,7 +21,9 @@ const envVarsSchema = Joi.object({
   REFRESH_TOKEN_SECRET: Joi.string().required()
     .description('Refresh token secret required for auth'),
   MONGO_HOST: Joi.string().required()
-    .description('Mongo DB host url')
+    .description('Mongo DB host url'),
+  BASE_URL: Joi.string().default('https://classroom-interchat.herokuapp.com/')
+    .description('Base url that is used to access this server')
 }).unknown()
   .required();
 
@@ -38,7 +40,8 @@ const config = {
   refreshTokenSecret: envVars.REFRESH_TOKEN_SECRET,
   mongo: {
     host: envVars.MONGO_HOST,
-  }
+  },
+  baseUrl: envVars.BASE_URL
 };
 
 module.exports = config;

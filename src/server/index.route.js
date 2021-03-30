@@ -8,13 +8,10 @@ const router = express.Router();
 /** GET /health-check - Check service health */
 router.get('/health-check', (req, res) => res.send('OK'));
 
-// mount user routes at /users
-router.use('/users', userRoutes);
+// mount user routes at /user
+router.use('/user', userRoutes);
 
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
-
-// TODO: remove this. This is only for the front-end boilerplate
-router.get('/getUsername', (req, res) => res.send({ username: os.userInfo().username }));
 
 module.exports = router;
