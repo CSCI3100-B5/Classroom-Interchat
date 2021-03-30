@@ -1,12 +1,13 @@
 import axiosStatic from 'axios';
 import dataStore from './dataStore.js';
+import env from './environment.js';
 
 class API {
   #axios;
 
   constructor() {
     this.#axios = axiosStatic.create({
-      baseURL: 'https://classroom-interchat.herokuapp.com/api/' // change the base URL for local debug
+      baseURL: env.apiBase // change the base URL for local debug
     });
     this.createAxiosResponseInterceptor();
   }
@@ -55,16 +56,16 @@ class API {
   }
 
   /**
-   * Login with username and password
-   * @param {String} username username
+   * Login with email and password
+   * @param {String} email email
    * @param {String} password password
    * @returns response body
    */
-  login(username, password) {
+  login(email, password) {
     return this.request({
       method: 'POST',
       url: '/auth/login',
-      data: { username, password }
+      data: { email, password }
     });
   }
 

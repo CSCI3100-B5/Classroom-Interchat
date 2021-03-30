@@ -22,7 +22,7 @@ export default class App extends Component {
       <div>
         {username ? <h1 className="title">{`Hello ${username}`}</h1> : <h1 className="title">Loading.. please wait!</h1>}
         <p>Welcome to Classroom Interchat</p>
-        <LinkContainer to="/login">
+        <LinkContainer to="/auth">
           <Button>Login</Button>
         </LinkContainer>
         <img src={ReactImage} alt="react" />

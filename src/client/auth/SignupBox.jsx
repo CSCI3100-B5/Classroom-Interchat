@@ -8,14 +8,11 @@ import { Button, Form } from 'react-bootstrap';
 // tab in the /login page.
 
 const schema = yup.object().shape({
-  username: yup.string()
-    .min(6).max(64)
-    .matches(/[a-zA-Z][a-zA-Z0-9_-]+|[-_][a-zA-Z0-9_-]*[a-zA-Z][a-zA-Z0-9_-]*/)
-    .required(),
-  email: yup.string().email().required(),
-  password: yup.string().min(8).max(64).required(),
+  signupName: yup.string().min(5).max(100).required(),
+  signupEmail: yup.string().email().required(),
+  signupPassword: yup.string().min(8).max(64).required(),
   confirmPassword: yup.string()
-    .oneOf([yup.ref('password'), null], 'The two passwords do not match')
+    .oneOf([yup.ref('signupPassword'), null], 'The two passwords do not match')
     .required()
 });
 
@@ -25,9 +22,9 @@ export default function SignupBox() {
       validationSchema={schema}
       onSubmit={console.log}
       initialValues={{
-        username: '',
-        email: '',
-        password: '',
+        signupName: '',
+        signupEmail: '',
+        signupPassword: '',
         confirmPassword: ''
       }}
     >
@@ -38,31 +35,31 @@ export default function SignupBox() {
         touched,
         errors,
       }) => (
-        <Form className="m-4" noValidate onSubmit={handleSubmit}>
-          <Form.Group controlId="signupUsername">
-            <Form.Label>Username</Form.Label>
+        <Form className="m-4" onSubmit={handleSubmit}>
+          <Form.Group controlId="signupName">
+            <Form.Label>Name</Form.Label>
             <Form.Control
               type="text"
-              name="signupUsername"
-              value={values.username}
+              name="signupName"
+              value={values.signupName}
               onChange={handleChange}
-              isValid={touched.username && !errors.username}
+              isValid={touched.signupName && !errors.signupName}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.username}
+              {errors.signupName}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="email">
+          <Form.Group controlId="signupEmail">
             <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
-              name="email"
-              value={values.email}
+              name="signupEmail"
+              value={values.signupEmail}
               onChange={handleChange}
-              isValid={touched.email && !errors.email}
+              isValid={touched.signupEmail && !errors.signupEmail}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.email}
+              {errors.signupEmail}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="signupPassword">
@@ -70,12 +67,12 @@ export default function SignupBox() {
             <Form.Control
               type="password"
               name="signupPassword"
-              value={values.password}
+              value={values.signupPassword}
               onChange={handleChange}
-              isValid={touched.password && !errors.password}
+              isValid={touched.signupPassword && !errors.signupPassword}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.password}
+              {errors.signupPassword}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="confirmPassword">

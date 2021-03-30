@@ -8,11 +8,9 @@ const APIError = require('../helpers/APIError');
  * User Schema
  */
 const UserSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
-    unique: true,
-    required: true,
-    dropDups: true
+    required: true
   },
   password: {
     type: String,
@@ -96,8 +94,8 @@ UserSchema.statics = {
       });
   },
 
-  getByUsername(username) {
-    return this.findOne({ username })
+  getByEmail(email) {
+    return this.findOne({ email })
       .exec()
       .then((user) => {
         if (user) {

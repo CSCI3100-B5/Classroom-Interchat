@@ -24,7 +24,7 @@ function get(req, res) {
 
 /**
  * Create new user
- * @property {string} req.body.username - The username of user.
+ * @property {string} req.body.name - The name of user.
  * @property {string} req.body.password - The password of user.
  * @property {string} req.body.email - The email of user.
  * @property {string} req.body.userType - The type of user.
@@ -34,14 +34,11 @@ function get(req, res) {
  */
 async function create(req, res, next) {
   try {
-    if (await User.exists({ username: req.body.username })) {
-      return next(new APIError('Username is occupied', httpStatus.BAD_REQUEST, true));
-    }
     if (await User.exists({ email: req.body.email })) {
       return next(new APIError('This email is already used', httpStatus.BAD_REQUEST, true));
     }
     const user = new User({
-      username: req.body.username,
+      name: req.body.name,
       email: req.body.email,
       userType: req.body.userType,
       emailVerification: req.body.emailVerification
@@ -55,7 +52,7 @@ async function create(req, res, next) {
 
 /**
  * Update existing user
- * @property {string} req.body.username - The username of user.
+ * @property {string} req.body.name - The name of user.
  * @property {string} req.body.password - The password of user.
  * @property {string} req.body.email - The email of user.
  * @property {string} req.body.userType - The type of user.
@@ -64,7 +61,7 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   try {
     const { user } = req;
-    if (req.body.username) user.username = req.body.username;
+    if (req.body.name) user.name = req.body.name;
     if (req.body.email) user.email = req.body.email;
     if (req.body.userType) user.userType = req.body.userType;
     if (req.body.emailVerification !== undefined) {

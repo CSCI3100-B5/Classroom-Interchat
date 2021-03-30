@@ -10,13 +10,13 @@ function generateAccessToken(payload) {
 }
 
 /**
- * Returns jwt access and refresh token if valid username and password is provided
+ * Returns jwt access and refresh token if valid email and password is provided
  */
 async function login(req, res, next) {
   // TODO: fetch the user auth details from database
   let user;
   try {
-    user = await User.getByUsername(req.body.username);
+    user = await User.getByEmail(req.body.email);
   } catch (e) {
     return next(e);
   }
@@ -39,7 +39,7 @@ async function login(req, res, next) {
     accessToken,
     refreshToken,
     userId: user.id,
-    username: user.username
+    email: user.email
   });
 }
 
@@ -48,21 +48,18 @@ async function login(req, res, next) {
  */
 async function signup(req, res, next) {
   try {
-    if (await User.exists({ username: req.body.username })) {
-      return next(new APIError('Username is occupied', httpStatus.BAD_REQUEST, true));
-    }
     if (await User.exists({ email: req.body.email })) {
       return next(new APIError('This email is already used', httpStatus.BAD_REQUEST, true));
     }
     const user = new User({
-      username: req.body.username,
+      name: req.body.name,
       email: req.body.email,
       userType: req.body.userType,
       emailVerification: crypto.randomBytes(32).toString('hex')
     });
     await user.setPassword(req.body.password);
     return res.json({
-      username: user.username,
+      name: user.name,
       email: user.email,
       userType: user.userType,
       id: user.id,
@@ -96,7 +93,7 @@ async function token(req, res, next) {
   return res.json({
     accessToken,
     userId: user.id,
-    username: user.username
+    email: user.email
   });
 }
 
