@@ -37,16 +37,14 @@ Classroom object
     "permission": "instructor/student/requesting",
     "isMuted": boolean
   },
-  "isMuted": boolean,
-  "messages": [
-    Message object
-  ]
+  "isMuted": boolean
 }
 
 Message object
 {
   "id": "<message id>",
   "createdAt": "<timestamp>",
+  "classroom": "<classroom id>",
   "sender": "<user id>",
   "type": "text|poll|status|question|reply",
   "content": "<string>"  // text content or status content
