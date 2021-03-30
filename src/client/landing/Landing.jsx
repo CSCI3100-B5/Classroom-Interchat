@@ -1,32 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Landing.scoped.css';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import ReactImage from './react.png';
+import AppImage from './Icon@4x.png';
 
 // This is the homepage of our website, shown to the user when
 // they are not logged in.
 
-export default class App extends Component {
-  state = { username: null };
-
-  componentDidMount() {
-    fetch('/api/getUsername')
-      .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
-  }
-
-  render() {
-    const { username } = this.state;
-    return (
-      <div>
-        {username ? <h1 className="title">{`Hello ${username}`}</h1> : <h1 className="title">Loading.. please wait!</h1>}
-        <p>Welcome to Classroom Interchat</p>
-        <LinkContainer to="/auth">
-          <Button>Login</Button>
-        </LinkContainer>
-        <img src={ReactImage} alt="react" />
-      </div>
-    );
-  }
+export default function App() {
+  return (
+    <div>
+      <h1 className="title">Classroom Interchat</h1>
+      <p>Enjoy an innovative real-time interactive classroom experience!</p>
+      <LinkContainer to="/auth">
+        <Button>Login</Button>
+      </LinkContainer>
+      <img src={AppImage} alt="Classroom Interchat icon" />
+    </div>
+  );
 }
