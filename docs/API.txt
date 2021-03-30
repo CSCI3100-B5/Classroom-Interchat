@@ -22,6 +22,7 @@ User object
   "id": "<user id>",
   "isAdmin": boolean,
   "createdAt": "<timestamp>",
+  "tokenIds": [ "<string>" ],  // IDs of refresh and access tokens. Refresh tokens are only valid if their IDs are in this array
   "emailVerification": "<string>" | null,  // the email verification code sent to user, null when email is already verified
   "lastVerifiedEmail": "<email>"
 }
