@@ -1,0 +1,179 @@
+Token object
+{
+  "id": "<token id>",
+  "createdBy": "<user id>",
+  "receivedBy": "<user id>",
+  "createdAt": "<timestmap>",
+  "isValid": boolean,
+//  "value": "<string>"
+}
+
+User object
+{
+  "name": "<string>",
+  "email": "<email>",
+  "password": "<hash>",
+  "id": "<user id>"
+}
+
+Classroom object
+{
+  "name": "<string>",
+  "id": "<classroom id>",
+  "host": "<user id>",
+  "participants": {
+    "userId": "<user id>",
+    "permission": "instructor/student/requesting",
+    "isMuted": boolean
+  },
+  "messages": [
+    Message object
+  ]
+}
+
+Message object
+{
+  "id": "<message id>",
+  "createdAt": "<timestamp>",
+  "sender": "<user id>",
+  "type": "text/poll/status/question/reply",
+  "content": "<string>"  // text content or status content
+  | {  // poll content
+    "type": "SAQ/MCQ",
+    "prompt": "<string>",
+    "choices": [ "<string>" ],   // only MCQ
+    "correct": number     // only MCQ // index of correct answer inside "choices"
+  }
+  | { // question content
+    "isResolved": boolean,
+    "content": "<string>"
+  }
+  | { // reply content
+    "replyTo": "<message id>",
+    "content": "<string>"
+  }
+}
+
+PollAnswer object
+{
+  "id": "<pollanswer id>",
+  "pollId": "<message id>",
+  "content": "<string>" | number
+}
+
+// ====================================================
+// REST APIs
+// /auth
+
+// Login = generate access and refresh token for this login session
+
+POST /api/auth/login
+
+{
+  "email": "<email>",
+  "password": "<string>"
+}
+
+###
+
+// Sign up
+
+POST /api/auth/signup
+
+{
+  "name": "<string>",
+  "email": "<email>",
+  "password": "<string>"
+}
+
+###
+
+// Request a new access token using the refresh token when the old one expires
+
+GET /api/auth/token
+Authorization: Bearer <refresh token>
+
+###
+
+// Makes a refresh token invalid
+
+DELETE /api/auth/logout
+Authorization: Bearer <refresh token>
+
+###
+
+// ==============================================
+// /user
+
+// Request user profile data
+
+GET /api/user/profile
+Authorization: Bearer <access token>
+
+
+
+RESPONSE:
+{
+  "name": "<string>",
+  "email": "<email>",
+}
+
+###
+
+// ===============================================
+// /token
+
+// Get all tokens of a given user id
+GET /api/token/:userId
+Authorization: Bearer <access token>
+
+
+
+RESPONSE:
+{
+  "created": [
+    {
+      "id": "<token id>",
+      "createdBy": {
+        "id": "<user id>",
+        "name": "<string>",
+        "email": "<email>"
+      },
+      "receivedBy": {
+        "id": "<user id>",
+        "name": "<string>",
+        "email": "<email>"
+      },
+      "createdAt": "<timestamp>",
+      "isValid": boolean
+    }
+  ],
+  "received": [
+    {
+      "id": "<token id>",
+      "createdBy": {
+        "id": "<user id>",
+        "name": "<string>",
+        "email": "<email>"
+      },
+      "receivedBy": {
+        "id": "<user id>",
+        "name": "<string>",
+        "email": "<email>"
+      },
+      "createdAt": "<timestamp>",
+      "isValid": boolean
+    }
+  ]
+}
+
+###
+
+PATCH /api/token/:tokenId/invalidate
+Authorization: Bearer <access token>
+
+
+// create token is handled in socket.io
+
+// =============================================
+// classroom
