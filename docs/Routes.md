@@ -1,7 +1,7 @@
 # Routes and page components
 
 - `/` is the landing page which introduces the system.
-- `/login` shows the log in and sign up boxes.
+- `/auth` shows the log in and sign up boxes.
 - `/account` allows users to edit basic account info (such as password), and check the tokens they have earned.
 - `/classroom` is the main part of the system where users can join and create classrooms. Realtime interactions are accessible in this route once users are inside a classroom.
 
