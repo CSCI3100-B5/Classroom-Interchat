@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const APIError = require('../helpers/APIError');
 
 /**
@@ -12,8 +13,18 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    dropDups: true
+  },
   password: {
     type: String,
+    required: true
+  },
+  isAdmin: {
+    type: Boolean,
     required: true
   },
   createdAt: {
@@ -24,21 +35,13 @@ const UserSchema = new mongoose.Schema({
     type: Array,
     default: []
   },
-  userType: {
-    type: String,
-    enum: ['STUDENT', 'INSTRUCTOR', 'ADMIN'],
-    default: 'STUDENT',
-    required: true
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    dropDups: true
-  },
   emailVerification: {
     type: String,
-    default: 'non-empty'
+    default: 'sample-code'
+  },
+  lastVerifiedEmail: {
+    type: String,
+    default: null
   }
 });
 
@@ -62,6 +65,13 @@ UserSchema.method({
   },
   async addTokenId(tokenId) {
     this.tokenIds.push(tokenId);
+    await this.save();
+  },
+  isEmailVerified() {
+    return this.lastVerifiedEmail === this.email;
+  },
+  async newEmailVerification() {
+    this.emailVerification = crypto.randomBytes(32).toString('hex');
     await this.save();
   },
   comparePassword(password) {
@@ -94,6 +104,11 @@ UserSchema.statics = {
       });
   },
 
+  /**
+   * Find a user by email
+   * @param {String} email - The email of user
+   * @returns {Promise<User, APIError>}
+   */
   getByEmail(email) {
     return this.findOne({ email })
       .exec()

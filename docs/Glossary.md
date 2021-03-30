@@ -20,7 +20,7 @@ A `user` that has joined a `classroom`
 
 **`Mute participant`**
 
-Disallow the `participant` from sending any kind of `messages`. **Whether the `participant` can still answer `quizzes` is not discussed**
+Disallow the `participant` from sending any kind of `messages`. The `participant` can still answer `quizzes`.
 
 **`Unmute participant`**
 
@@ -48,7 +48,7 @@ The place where all the interactions happen. Contains all `messages`. Chatbox is
 
 **`Messages`**
 
-Things that `instructors` or `students` send in the `chatbox`. Can be a `normal message`, a `quiz` (sent by `instructors`) or a `question` (sent by `students`)
+Things that `instructors` or `students` send in the `chatbox`. Can be a `normal message`, a `quiz` (sent by `instructors`) or a `question` (sent by `students` pr `instructors`)
 
 **`Normal message`**
 
@@ -56,7 +56,7 @@ A `message` with text
 
 **`Quiz`**
 
-A `message` sent by `instructors`, intended to test the `students`' understanding or make a poll. Quizzes have a time limit or can be closed manually by the `instructor`. `Students` can obtain `tokens` from answering quizzes if the `instructors` enable tokens for a quiz. Can be a `short answer quiz` or a `multiple choice quiz`
+A `message` sent by `instructors`, intended to test the `students`' understanding or ask for opinions. Quizzes can be closed manually by the `instructor`. `Students` can obtain `tokens` from answering quizzes if the `instructors` choose to award them when the quiz ends. Can be a `short answer quiz` or a `multiple choice quiz`
 
 **`Short answer quiz`**
 

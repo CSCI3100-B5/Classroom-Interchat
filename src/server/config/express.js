@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
 const cors = require('cors');
+const { stringReplace } = require('string-replace-middleware');
 const httpStatus = require('http-status');
 const expressWinston = require('express-winston');
 const expressValidation = require('express-validation');
@@ -28,7 +29,14 @@ app.use(compress());
 app.use(methodOverride());
 
 // secure apps by setting various HTTP headers
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'script-src': ["'self'", "'unsafe-inline'"],
+    },
+  }
+}));
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
@@ -45,6 +53,14 @@ if (config.env === 'development') {
   }));
 }
 
+// replace frontend API url with current server url
+app.use(stringReplace({
+  'http://localhost:8080/': config.baseUrl
+}, {
+  contentTypeFilterRegexp: /^text\/html/
+}));
+
+// serve frontend files
 app.use(express.static('dist'));
 
 // mount all routes on /api path

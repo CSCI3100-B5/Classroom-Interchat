@@ -2,7 +2,7 @@ const { compose } = require('compose-middleware');
 const expressJwt = require('express-jwt');
 const httpStatus = require('http-status');
 const config = require('../config/config');
-const User = require('../user/user.model');
+const User = require('../models/user.model');
 const APIError = require('./APIError');
 
 // compose-middleware is used to group several middlewares
@@ -21,6 +21,14 @@ const requireAccessToken = compose([
         return next();
       })
       .catch(e => next(e));
+  }
+]);
+
+const requireEmailVerified = compose([
+  requireAccessToken,
+  function checkEmail(req, res, next) {
+    if (req.invoker.isEmailVerified()) return next(new APIError('You need to verify your email address first', httpStatus.FORBIDDEN, true));
+    return next();
   }
 ]);
 
@@ -43,11 +51,13 @@ const requireRefreshToken = compose([
 const requireAdminAccess = compose([
   requireAccessToken,
   function checkAdmin(req, res, next) {
-    if (req.invoker.userType !== 'ADMIN') {
+    if (!req.invoker.isAdmin) {
       return next(new APIError('You do not have sufficient permission', httpStatus.FORBIDDEN, true));
     }
     return next();
   }
 ]);
 
-module.exports = { requireAccessToken, requireRefreshToken, requireAdminAccess };
+module.exports = {
+  requireAccessToken, requireEmailVerified, requireRefreshToken, requireAdminAccess
+};

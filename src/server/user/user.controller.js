@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const User = require('./user.model');
+const User = require('../models/user.model');
 const APIError = require('./../helpers/APIError');
 
 /**
@@ -18,18 +18,28 @@ function load(req, res, next, id) {
  * Get user
  * @returns {User}
  */
-function get(req, res) {
-  return res.json(req.user);
+function get(req, res, next) {
+  if (req.invoker.id !== req.user.id && !req.invoker.isAdmin) {
+    return next(new APIError("Cannot access others' profiles", httpStatus.FORBIDDEN, true));
+  }
+  return res.json({
+    name: req.user.name,
+    email: req.user.email,
+    id: req.user.id,
+    isAdmin: req.user.isAdmin,
+    createdAt: req.user.createdAt
+  });
 }
 
 /**
- * Create new user
+ * Admin-only router: create a new user with less restrictions
  * @property {string} req.body.name - The name of user.
  * @property {string} req.body.password - The password of user.
  * @property {string} req.body.email - The email of user.
- * @property {string} req.body.userType - The type of user.
+ * @property {boolean} req.body.isAdmin - Whether the user is an admin
  * @property {string} req.body.emailVerification - The email verification code of user.
- *  If this is null, the user has already completed email verification.
+ * @property {string} req.body.lastVerifiedEmail - The latest email that has been verified
+ *  If this is equal to email, the user has already completed email verification.
  * @returns {User}
  */
 async function create(req, res, next) {
@@ -40,8 +50,9 @@ async function create(req, res, next) {
     const user = new User({
       name: req.body.name,
       email: req.body.email,
-      userType: req.body.userType,
-      emailVerification: req.body.emailVerification
+      isAdmin: req.body.isAdmin,
+      emailVerification: req.body.emailVerification,
+      lastVerifiedEmail: req.body.lastVerifiedEmail
     });
     await user.setPassword(req.body.password);
     return res.json(user);
@@ -55,50 +66,32 @@ async function create(req, res, next) {
  * @property {string} req.body.name - The name of user.
  * @property {string} req.body.password - The password of user.
  * @property {string} req.body.email - The email of user.
- * @property {string} req.body.userType - The type of user.
  * @returns {User}
  */
 async function update(req, res, next) {
   try {
+    if (req.invoker.id !== req.user.id && !req.invoker.isAdmin) {
+      return next(new APIError("Cannot update others' profiles", httpStatus.FORBIDDEN, true));
+    }
     const { user } = req;
     if (req.body.name) user.name = req.body.name;
-    if (req.body.email) user.email = req.body.email;
-    if (req.body.userType) user.userType = req.body.userType;
-    if (req.body.emailVerification !== undefined) {
-      user.emailVerification = req.body.emailVerification;
+    if (req.body.email) {
+      user.email = req.body.email;
     }
     if (req.body.password) await user.setPassword(req.body.password);
     else await user.save();
-    return res.json(user);
+    return res.json({
+      name: req.user.name,
+      email: req.user.email,
+      id: req.user.id,
+      isAdmin: req.user.isAdmin,
+      createdAt: req.user.createdAt
+    });
   } catch (e) {
     return next(e);
   }
 }
 
-/**
- * Get user list.
- * @property {number} req.query.skip - Number of users to be skipped.
- * @property {number} req.query.limit - Limit number of users to be returned.
- * @returns {User[]}
- */
-function list(req, res, next) {
-  const { limit = 50, skip = 0 } = req.query;
-  User.list({ limit, skip })
-    .then(users => res.json(users))
-    .catch(e => next(e));
-}
-
-/**
- * Delete user.
- * @returns {User}
- */
-function remove(req, res, next) {
-  const { user } = req;
-  user.remove()
-    .then(deletedUser => res.json(deletedUser))
-    .catch(e => next(e));
-}
-
 module.exports = {
-  load, get, create, update, list, remove
+  load, get, create, update
 };
