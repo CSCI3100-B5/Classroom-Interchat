@@ -13,7 +13,8 @@ User object
   "name": "<string>",
   "email": "<email>",
   "password": "<hash>",
-  "id": "<user id>"
+  "id": "<user id>",
+  "isAdmin": boolean
 }
 
 Classroom object
