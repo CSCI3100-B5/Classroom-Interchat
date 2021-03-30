@@ -146,9 +146,9 @@ RESPONSE: NO_CONTENT
 // /user
 
 // Request user profile data
-// Only allowed if :userid matches access token
+// Only allowed if :userId matches access token
 
-GET /api/user/:userid
+GET /api/user/:userId
 Authorization: Bearer <access token>
 
 
@@ -180,9 +180,9 @@ Authorization: Bearer <access token>
 ############################################################
 
 // Update user profile data
-// Only allowed if :userid matches access token or user is admin
+// Only allowed if :userId matches access token or user is admin
 
-PATCH /api/user/:userid
+PATCH /api/user/:userId
 Authorization: Bearer <access token>
 
 {
