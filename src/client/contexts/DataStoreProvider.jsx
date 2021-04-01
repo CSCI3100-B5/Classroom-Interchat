@@ -15,6 +15,8 @@ export function DataStoreProvider({ children }) {
   const [refreshToken, pSetRefreshToken] = useState(() => savedRefreshToken);
   const [rememberMe, setRememberMe] = useState(true);
 
+  const [userId, setUserId] = useState(null);
+
   function setAccessToken(token) {
     pSetAccessToken(token);
     if (rememberMe) saveAccessToken(token);
@@ -45,6 +47,8 @@ export function DataStoreProvider({ children }) {
       setRefreshToken,
       rememberMe,
       setRememberMe,
+      userId,
+      setUserId,
 
       // computed
       accessTokenHeader,

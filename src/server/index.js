@@ -4,7 +4,7 @@ const debug = require('debug')('classroom-interchat:index');
 
 // config should be imported before importing any other file
 const config = require('./config/config');
-const app = require('./config/express');
+const { app, server, io } = require('./config/express');
 
 
 // make bluebird default Promise
@@ -28,7 +28,7 @@ if (config.mongooseDebug) {
 }
 
 // listen on port config.port
-app.listen(config.port, () => {
+server.listen(config.port, () => {
   console.info(`server started on port ${config.port} (${config.env})`); // eslint-disable-line no-console
 });
 

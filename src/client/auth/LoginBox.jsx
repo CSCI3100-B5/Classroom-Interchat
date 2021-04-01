@@ -23,30 +23,20 @@ export default function LoginBox() {
 
   const history = useHistory();
 
-  const { refreshAccessToken, login } = useApi();
+  const { login } = useApi();
   const {
     setAccessToken,
-    refreshToken,
     setRefreshToken,
     setRememberMe,
+    setUserId
   } = useDataStore();
 
-  if (refreshToken) {
-    refreshAccessToken()
-      .then((result) => {
-        console.log(result);
-        if (result.success) {
-          history.push('/classroom');
-        }
-      });
-  }
-
   const onSubmit = async (values) => {
-    setRememberMe(values.rememberMe);
     const result = await login(values.email, values.password);
     if (result.success) {
       setAccessToken(result.response.data.accessToken);
       setRefreshToken(result.response.data.refreshToken);
+      setUserId(result.response.data.userId);
       history.push('/classroom');
     } else {
       setAlertMessage(result.response.data.message);
@@ -114,7 +104,7 @@ export default function LoginBox() {
                 name="rememberMe"
                 label="Remember me"
                 checked={values.rememberMe}
-                onChange={handleChange}
+                onChange={(event) => { handleChange(event); setRememberMe(event.target.checked); }}
                 isInvalid={!!errors.rememberMe}
                 feedback={errors.rememberMe}
                 id="rememberMe"
