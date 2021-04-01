@@ -21,6 +21,7 @@ const schema = yup.object().shape({
 
 export default function SignupBox() {
   // mostly copyed from loginBox.jsx
+  // does not take email varification into accound
   const [showAlert, setAlertVisibility] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
