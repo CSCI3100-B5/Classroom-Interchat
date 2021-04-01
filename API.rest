@@ -34,8 +34,7 @@ Content-Type: application/json
 {
   "name": "dedrfrgtbhyjg5",
   "password": "password",
-  "email": "abcd@def.com",
-  "userType": "STUDENT"
+  "email": "abcd@def.com"
 }
 
 ###

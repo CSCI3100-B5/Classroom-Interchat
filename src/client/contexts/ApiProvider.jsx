@@ -11,7 +11,9 @@ export function useApi() {
 export function ApiProvider({ children }) {
   const {
     setAccessToken,
+    setRefreshToken,
     refreshTokenHeader,
+    setUserId
   } = useDataStore();
   const request = useAxios();
 
@@ -40,17 +42,40 @@ export function ApiProvider({ children }) {
    * @returns response body
    */
   function login(email, password) {
-    return request({
+    const result = request({
       method: 'POST',
       url: '/auth/login',
       data: { email, password }
     });
+    if (result.success) {
+      setAccessToken(result.response.data.accessToken);
+      setRefreshToken(result.response.data.refreshToken);
+      setUserId(result.response.data.userId);
+    }
+    return result;
+  }
+
+  /**
+   * Sign up with name, email and password
+   * @param {String} name user's name
+   * @param {String} email email
+   * @param {String} password password
+   * @returns response body
+   */
+  function signup(name, email, password) {
+    const result = request({
+      method: 'POST',
+      url: '/auth/signup',
+      data: { name, email, password }
+    });
+    return result;
   }
 
   return (
     <ApiContext.Provider value={{
       refreshAccessToken,
       login,
+      signup
     }}
     >
       {children}

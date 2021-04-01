@@ -25,18 +25,12 @@ export default function LoginBox() {
 
   const { login } = useApi();
   const {
-    setAccessToken,
-    setRefreshToken,
     setRememberMe,
-    setUserId
   } = useDataStore();
 
   const onSubmit = async (values) => {
     const result = await login(values.email, values.password);
     if (result.success) {
-      setAccessToken(result.response.data.accessToken);
-      setRefreshToken(result.response.data.refreshToken);
-      setUserId(result.response.data.userId);
       history.push('/classroom');
     } else {
       setAlertMessage(result.response.data.message);
