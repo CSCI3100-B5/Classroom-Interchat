@@ -73,17 +73,17 @@ class API {
   // again, mostly copy from 'login' above
   /**
    * signup with name, email and password
-   * @param {String} user user
+   * @param {String} name user's name
    * @param {String} email email
    * @param {String} password password
    * @returns response body
    */
-  signup(user, email, password) {
-    console.log('signup API parameter', user, email, password);
+  signup(name, email, password) {
+    console.log('signup API parameter', name, email, password);
     return this.request({
       method: 'POST',
       url: '/auth/signup',
-      data: { user, email, password }
+      data: { name, email, password }
     });
   }
 
