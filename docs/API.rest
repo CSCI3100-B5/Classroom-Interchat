@@ -99,6 +99,8 @@ RESPONSE:
 ############################################################
 
 // Sign up
+// This endpoint does not log in the user automatically.
+// Send a separate login request to do so
 
 POST /api/auth/signup
 
@@ -120,6 +122,7 @@ RESPONSE:
 ############################################################
 
 // Request a new access token using the refresh token when the old one expires
+// Should be done automatically when any request fails with UNAUTHORIZED status
 
 GET /api/auth/token
 Authorization: Bearer <refresh token>
@@ -193,6 +196,9 @@ RESPONSE:
 
 // Update user profile data
 // Only allowed if :userId matches access token or user is admin
+// Can update name, email or password
+// Only need to provide fields that are being updated
+// Other fields can be omitted
 
 PATCH /api/user/:userId
 Authorization: Bearer <access token>
@@ -218,6 +224,8 @@ RESPONSE:
 // /token
 
 // Get all tokens of a given user id
+// "created" are tokens created by the user
+// "received" are tokens received by the user
 GET /api/token/:userId
 Authorization: Bearer <access token>
 
@@ -263,6 +271,9 @@ RESPONSE:
 
 ############################################################
 
+// Sets isValid of a token to false
+// isValid is just for instructors' reference, not "useful" in our system
+
 PATCH /api/token/:tokenId/invalidate
 Authorization: Bearer <access token>
 
@@ -273,4 +284,6 @@ RESPONSE: NO_CONTENT
 // create token is handled in socket.io
 
 // =============================================
-// classroom
+// /classroom
+
+// handled in socket.io
