@@ -78,12 +78,12 @@ class API {
    * @param {String} password password
    * @returns response body
    */
-  signup(username, email, password) {
-    console.log('signup API parameter', username, email, password);
+  signup(user, email, password) {
+    console.log('signup API parameter', user, email, password);
     return this.request({
       method: 'POST',
       url: '/auth/signup',
-      data: { username, email, password }
+      data: { user, email, password }
     });
   }
 
