@@ -72,7 +72,7 @@ export function AxiosProvider({ children }) {
         return refreshAccessToken()
           .then((result) => {
             if (result.success) {
-              error.response.config.headers.Authorization = `Bearer ${result.response.data.accessToken}`;
+              error.response.config.headers.Authorization = `Bearer ${result.response.data.accessToken}`; // eslint-disable-line no-param-reassign
               createAxiosResponseInterceptor();
               return axios(error.response.config);
             }
