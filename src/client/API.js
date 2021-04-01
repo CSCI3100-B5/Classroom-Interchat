@@ -70,6 +70,23 @@ class API {
     });
   }
 
+  // again, mostly copy from 'login' above
+  /**
+   * signup with name, email and password
+   * @param {String} name user's name
+   * @param {String} email email
+   * @param {String} password password
+   * @returns response body
+   */
+  signup(name, email, password) {
+    console.log('signup API parameter', name, email, password);
+    return this.request({
+      method: 'POST',
+      url: '/auth/signup',
+      data: { name, email, password }
+    });
+  }
+
   createAxiosResponseInterceptor() {
     const interceptor = this.#axios.interceptors.response.use(
       response => response,
