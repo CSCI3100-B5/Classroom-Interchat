@@ -73,7 +73,7 @@ class API {
   // again, mostly copy from 'login' above
   /**
    * signup with name, email and password
-   * @param {String} name name
+   * @param {String} user user
    * @param {String} email email
    * @param {String} password password
    * @returns response body
