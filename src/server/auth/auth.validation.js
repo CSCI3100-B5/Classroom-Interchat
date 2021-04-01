@@ -10,7 +10,7 @@ module.exports = {
   },
   signup: {
     body: Joi.object({
-      user: Joi.string().min(5).max(100).required(),
+      name: Joi.string().min(5).max(100).required(),
       email: Joi.string().email().required(),
       password: Joi.string().min(8).max(64).required()
     })

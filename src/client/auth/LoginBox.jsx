@@ -3,12 +3,12 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Button, Form, Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import API from '../API.js';
-import dataStore from '../dataStore.js';
+import { useApi } from '../contexts/ApiProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 // The Log in box, not an independent page.
 // This component is shown when the user select the log in
-// tab in the /login page.
+// tab in the /auth page.
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -23,22 +23,14 @@ export default function LoginBox() {
 
   const history = useHistory();
 
-  if (dataStore.refreshToken) {
-    API.refreshToken()
-      .then((result) => {
-        console.log(result);
-        if (result.success) {
-          history.push('/classroom');
-        }
-      });
-  }
+  const { login } = useApi();
+  const {
+    setRememberMe,
+  } = useDataStore();
 
   const onSubmit = async (values) => {
-    const result = await API.login(values.email, values.password);
+    const result = await login(values.email, values.password);
     if (result.success) {
-      dataStore.accessToken = result.response.data.accessToken;
-      dataStore.refreshToken = result.response.data.refreshToken;
-      if (values.rememberMe) dataStore.saveTokensToStorage();
       history.push('/classroom');
     } else {
       setAlertMessage(result.response.data.message);
@@ -106,7 +98,7 @@ export default function LoginBox() {
                 name="rememberMe"
                 label="Remember me"
                 checked={values.rememberMe}
-                onChange={handleChange}
+                onChange={(event) => { handleChange(event); setRememberMe(event.target.checked); }}
                 isInvalid={!!errors.rememberMe}
                 feedback={errors.rememberMe}
                 id="rememberMe"

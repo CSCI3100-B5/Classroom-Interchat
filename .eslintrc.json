@@ -9,6 +9,7 @@
     "no-console": "off",
     "comma-dangle": "off",
     "react/jsx-filename-extension": ["warn", { "allow": "as-needed" }],
-    "import/extensions": ["warn", "ignorePackages"]
+    "import/extensions": ["warn", "ignorePackages"],
+    "react/prop-types": "off"
   }
 }

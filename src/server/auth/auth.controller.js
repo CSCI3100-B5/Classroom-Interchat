@@ -50,7 +50,7 @@ async function signup(req, res, next) {
       return next(new APIError('This email is already used', httpStatus.BAD_REQUEST, true));
     }
     const user = new User({
-      user: req.body.user,
+      name: req.body.name,
       email: req.body.email,
       isAdmin: false,
       lastVerifiedEmail: null
@@ -58,7 +58,7 @@ async function signup(req, res, next) {
     await user.setPassword(req.body.password);
     await user.newEmailVerification();
     return res.json({
-      user: user.user,
+      name: user.name,
       email: user.email,
       id: user.id,
       createdAt: user.createdAt,

@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const socketio = require('socket.io');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const compress = require('compression');
@@ -11,10 +13,21 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const winstonInstance = require('./winston');
 const routes = require('../index.route');
+const listeners = require('../index.listener');
 const config = require('./config');
 const APIError = require('../helpers/APIError');
 
 const app = express();
+const server = http.Server(app);
+const io = socketio(server, {
+  cors: {
+    origin: '*'
+  }
+});
+
+io.on('connection', (socket) => {
+  listeners(socket, io);
+});
 
 if (config.env === 'development') {
   app.use(logger('dev'));
@@ -103,4 +116,4 @@ app.use((err, req, res, next) => res.status(err.status).json({ // eslint-disable
 }));
 
 
-module.exports = app;
+module.exports = { app, server, io };

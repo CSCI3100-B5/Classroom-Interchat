@@ -3,12 +3,11 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { Button, Form, Alert } from 'react-bootstrap';
-import API from '../API.js';
-import dataStore from '../dataStore.js';
+import { useApi } from '../contexts/ApiProvider.jsx';
 
 // The Sign up box, not an independent page.
 // This component is shown when the user select the sign up
-// tab in the /login page.
+// tab in the /auth page.
 
 const schema = yup.object().shape({
   signupName: yup.string().min(5).max(100).required(),
@@ -20,31 +19,25 @@ const schema = yup.object().shape({
 });
 
 export default function SignupBox() {
-  // mostly copyed from loginBox.jsx
-  // does not take email varification into accound
   const [showAlert, setAlertVisibility] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
   const history = useHistory();
 
-  if (dataStore.refreshToken) {
-    API.refreshToken()
-      .then((result) => {
-        console.log(result);
-        if (result.success) {
-          history.push('/classroom');
-        }
-      });
-  }
+  const { signup, login } = useApi();
 
   // assume 'values' passed to the 'onSubmit' are correct
   // that is, schema take care of format of input already
   const onSubmit = async (values) => {
-    const result = await API.signup(values.signupName, values.signupEmail, values.signupPassword);
+    const result = await signup(values.signupName, values.signupEmail, values.signupPassword);
     if (result.success) {
-      dataStore.accessToken = result.response.data.accessToken;
-      dataStore.refreshToken = result.response.data.refreshToken;
-      history.push('/classroom');
+      const loginResult = await login(values.signupEmail, values.signupPassword);
+      if (loginResult.success) {
+        history.push('/classroom');
+      } else {
+        setAlertMessage(loginResult.response.data.message);
+        setAlertVisibility(true);
+      }
     } else {
       setAlertMessage(result.response.data.message);
       setAlertVisibility(true);
@@ -64,10 +57,7 @@ export default function SignupBox() {
       </Alert>
       <Formik
         validationSchema={schema}
-        onSubmit={
-        // console.log;   Any way to run both funtion on Submit?
-        onSubmit
-      }
+        onSubmit={onSubmit}
         initialValues={{
           signupName: '',
           signupEmail: '',
