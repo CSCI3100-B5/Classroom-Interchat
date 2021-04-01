@@ -1,7 +1,5 @@
 const Joi = require('joi');
 
-// I am guessing that this 'user' also need to change to 'username'?
-
 module.exports = {
   // POST /api/auth/login
   login: {
