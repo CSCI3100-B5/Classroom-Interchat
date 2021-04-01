@@ -53,7 +53,8 @@ Message object
     "type": "SAQ|MCQ",
     "prompt": "<string>",
     "choices": [ "<string>" ],   // only MCQ
-    "correct": number     // only MCQ // index of correct answer inside "choices"
+    "correct": [ number ]     // only MCQ // index of correct answer inside "choices"
+                              // if there are more than one correct answer, assume all answers need to be checked to be considered correct
   }
   | { // question content
     "isResolved": boolean,

@@ -41,8 +41,8 @@ export function ApiProvider({ children }) {
    * @param {String} password password
    * @returns response body
    */
-  function login(email, password) {
-    const result = request({
+  async function login(email, password) {
+    const result = await request({
       method: 'POST',
       url: '/auth/login',
       data: { email, password }
@@ -62,8 +62,8 @@ export function ApiProvider({ children }) {
    * @param {String} password password
    * @returns response body
    */
-  function signup(name, email, password) {
-    const result = request({
+  async function signup(name, email, password) {
+    const result = await request({
       method: 'POST',
       url: '/auth/signup',
       data: { name, email, password }
