@@ -31,11 +31,17 @@ Content-Type: application/json
 POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
+
+  // in the data base, 'username' instead of 'name' is index
+  // so it is changed to user name
+  // I am guessing that userType is not needed?
+
 {
-  "name": "dedrfrgtbhyjg5",
+  // "name": "dedrfrgtbhyjg5",
+  "username": "dedrfrgtbhyjg5",
   "password": "password",
-  "email": "abcd@def.com",
-  "userType": "STUDENT"
+  "email": "abcd@def.com"
+  // "userType": "STUDENT"
 }
 
 ###

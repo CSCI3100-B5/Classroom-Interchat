@@ -9,7 +9,7 @@ const APIError = require('../helpers/APIError');
  * User Schema
  */
 const UserSchema = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true
   },
