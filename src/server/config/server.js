@@ -13,6 +13,7 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const winstonInstance = require('./winston');
 const routes = require('../index.route');
+const listeners = require('../index.listener');
 const config = require('./config');
 const APIError = require('../helpers/APIError');
 
@@ -25,6 +26,7 @@ const io = socketio(server, {
 });
 
 io.on('connection', (socket) => {
+  listeners(socket, io);
 });
 
 if (config.env === 'development') {

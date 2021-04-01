@@ -4,7 +4,7 @@ const debug = require('debug')('classroom-interchat:index');
 
 // config should be imported before importing any other file
 const config = require('./config/config');
-const { app, server, io } = require('./config/express');
+const { app, server } = require('./config/server');
 
 
 // make bluebird default Promise

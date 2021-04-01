@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import io from 'socket.io-client';
 import env from '../environment.js';
 import { useDataStore } from './DataStoreProvider.jsx';
@@ -13,11 +12,10 @@ export function useSocket() {
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
   const { accessToken, userId } = useDataStore();
-  const history = useHistory();
 
   useEffect(() => {
     const newSocket = io(
-      env.apiBase,
+      env.hostUrl,
       {
         auth: {
           token: accessToken // TODO: set as access token
@@ -27,8 +25,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
     newSocket.on('connect_error', (err) => {
       console.log(err);
-      // TODO: what error exactly? Assuming no authorization for now
-      history.push('/auth');
+      // TODO: on error prompt the user to log in again
     });
 
     return () => newSocket.close();

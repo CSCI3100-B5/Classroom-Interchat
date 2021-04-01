@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>DCS Editor</title>
     <script>
+      const hostUrl = "http://localhost:8080/";
       env = {
-        apiBase: "http://localhost:8080/api/"
+        hostUrl,
+        apiBase: hostUrl + "api/"
       };
     </script>
   </head>
