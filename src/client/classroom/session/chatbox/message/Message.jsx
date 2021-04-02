@@ -1,41 +1,41 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import QuestionMessage from './QuestionMessage.jsx';
 import TextMessage from './TextMessage.jsx';
-import QuizMessage from './QuizMessage.jsx';
+import QuizMessage from './quiz/QuizMessage.jsx';
 import StatusMessage from './StatusMessage.jsx';
+import ReplyMessage from './ReplyMessage.jsx';
 
-function Message(props) {
-  const { message } = props;
+function Message({ message }) {
   return (
     <div>
-      <p>{message.sender}</p>
-      <p>{message.timestamp.toString()}</p>
+      <p>{message.sender.name}</p>
+      <p>{message.createdAt.toString()}</p>
       {
         (() => {
           switch (message.type) {
-            case 'Text':
-              return (<TextMessage />);
-            case 'Quiz':
-              return (<QuizMessage />);
-            case 'Status':
-              return (<StatusMessage />);
-            case 'Question':
-              return (<QuestionMessage />);
+            case 'text':
+              return (<TextMessage message={message} />);
+            case 'quiz':
+              return (<QuizMessage message={message} />);
+            case 'status':
+              return (<StatusMessage message={message} />);
+            case 'question':
+              return (<QuestionMessage message={message} />);
+            case 'reply':
+              return (<ReplyMessage message={message} />);
             default:
-              return (<p>Unknown message type!</p>);
+              return (
+                <p>
+                  Unknown message type:
+                  {' '}
+                  {message.type}
+                </p>
+              );
           }
         })()
       }
     </div>
   );
 }
-Message.propTypes = {
-  message: PropTypes.shape({
-    sender: PropTypes.string.isRequired,
-    timestamp: PropTypes.instanceOf(Date),
-    type: PropTypes.oneOf(['Text', 'Quiz', 'Status', 'Question'])
-  }).isRequired
-};
 
 export default Message;

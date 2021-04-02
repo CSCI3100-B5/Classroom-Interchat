@@ -98,14 +98,70 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'poll',
+        type: 'quiz',
         content: {
           type: 'MCQ',
           prompt: 'How many bits in 8 bytes?',
           choices: [
             '1', '2', '4', '8', '16', '64'
           ],
-          correct: ['64']
+          multiSelect: false
+        }
+      },
+      {
+        id: 'fvbgfnhmtuyrt',
+        createdAt: new Date(),
+        classroom: 'wdefbgtrh54ger',
+        sender: {
+          id: 'defvfbrgfrvgdbr',
+          name: 'Michael',
+          email: 'michael@classroom-interchat.ml',
+          permission: 'instructor',
+          isMuted: false
+        },
+        type: 'quiz',
+        content: {
+          type: 'MCQ',
+          prompt: 'Select true?',
+          choices: [
+            'T', 't', 'True', 'f', 'F', 'false'
+          ],
+          multiSelect: true
+        }
+      },
+      {
+        id: ' dgbfhntmuynrgb',
+        createdAt: new Date(),
+        classroom: 'wdefbgtrh54ger',
+        sender: {
+          id: 'defvfbrgfrvgdbr',
+          name: 'Michael',
+          email: 'michael@classroom-interchat.ml',
+          permission: 'instructor',
+          isMuted: false
+        },
+        type: 'quiz',
+        content: {
+          type: 'MCQ',
+          prompt: 'Select true?',
+          choices: [
+            'T', 't', 'True', 'f', 'F', 'false'
+          ],
+          correct: [0, 1, 2],
+          result: [
+            {
+              userId: 'defvfbrgfrvgdbr',
+              choices: [0, 1, 2]
+            },
+            {
+              userId: 'frgth4htb',
+              choices: [1, 2]
+            },
+            {
+              userId: 'efvfbetnj4',
+              choices: [0, 1]
+            }
+          ]
         }
       },
       {
@@ -119,10 +175,41 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'poll',
+        type: 'quiz',
         content: {
           type: 'SAQ',
           prompt: 'Type some answer...'
+        }
+      },
+      {
+        id: 'vfbgnryjhtebf',
+        createdAt: new Date(),
+        classroom: 'wdefbgtrh54ger',
+        sender: {
+          id: 'defvfbrgfrvgdbr',
+          name: 'Michael',
+          email: 'michael@classroom-interchat.ml',
+          permission: 'instructor',
+          isMuted: false
+        },
+        type: 'quiz',
+        content: {
+          type: 'SAQ',
+          prompt: 'Type some answer...',
+          result: [
+            {
+              userId: 'defvfbrgfrvgdbr',
+              answer: 'Answer by Michael'
+            },
+            {
+              userId: 'frgth4htb',
+              answer: 'Answer by Henry'
+            },
+            {
+              userId: 'efvfbetnj4',
+              answer: 'Answer by Ann'
+            }
+          ]
         }
       },
       {
@@ -229,7 +316,7 @@ export default function JoinClassroom() {
                 }}
                 isValid={touched.classroomId && !errors.classroomId}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.classroomId}
               </Form.Control.Feedback>
             </Form.Group>

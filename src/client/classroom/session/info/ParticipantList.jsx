@@ -1,4 +1,4 @@
-import { Button } from 'react-bootstrap';
+import { Button, Badge } from 'react-bootstrap';
 import React from 'react';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 
@@ -12,9 +12,9 @@ function ParticipantList() {
           <li key={x.name}>
             {x.name}
             {(() => {
-              if (x.id === classroomMeta.host.id) return (<small>HOST</small>);
-              if (x.permission === 'instructor') return (<small>INSTRUCTOR</small>);
-              if (x.permission === 'requesting') return (<small>REQUESTING</small>);
+              if (x.id === classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
+              if (x.permission === 'instructor') return (<Badge variant="success">INSTRUCTOR</Badge>);
+              if (x.permission === 'requesting') return (<Badge variant="secondary">REQUESTING</Badge>);
               return null;
             })()}
             <Button variant="flat">Promote</Button>

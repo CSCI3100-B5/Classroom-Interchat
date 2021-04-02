@@ -65,7 +65,7 @@ export default function CreateClassroom() {
                 onChange={handleChange}
                 isValid={touched.classroomName && !errors.classroomName}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.classroomName}
               </Form.Control.Feedback>
             </Form.Group>

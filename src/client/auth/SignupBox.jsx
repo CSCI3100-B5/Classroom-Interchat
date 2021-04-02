@@ -79,7 +79,7 @@ export default function SignupBox() {
                 onChange={handleChange}
                 isValid={touched.signupName && !errors.signupName}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.signupName}
               </Form.Control.Feedback>
             </Form.Group>
@@ -92,7 +92,7 @@ export default function SignupBox() {
                 onChange={handleChange}
                 isValid={touched.signupEmail && !errors.signupEmail}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.signupEmail}
               </Form.Control.Feedback>
             </Form.Group>
@@ -105,7 +105,7 @@ export default function SignupBox() {
                 onChange={handleChange}
                 isValid={touched.signupPassword && !errors.signupPassword}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.signupPassword}
               </Form.Control.Feedback>
             </Form.Group>
@@ -118,7 +118,7 @@ export default function SignupBox() {
                 onChange={handleChange}
                 isValid={touched.confirmPassword && !errors.confirmPassword}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>

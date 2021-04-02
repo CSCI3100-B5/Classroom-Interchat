@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function TextMessage() {
+export default function TextMessage({ message }) {
   return (
     <div>
-      <p>The message text</p>
+      <p>{message.content}</p>
     </div>
   );
 }

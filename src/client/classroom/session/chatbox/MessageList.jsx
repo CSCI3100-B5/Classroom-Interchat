@@ -1,28 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
 export default function MessageList() {
-  const [messageList] = useState([
-    {
-      id: '1',
-      type: 'Text',
-      text: 'message text',
-      sender: 'name',
-      timestamp: new Date(),
-    },
-    {
-      id: '2',
-      type: 'Quiz',
-      text: 'message text 2',
-      sender: 'name2',
-      timestamp: new Date(),
-    }
-  ]);
+  const { messages } = useDataStore();
+
   return (
     <div>
       <ul>
         {
-          messageList.map(message => (
+          messages.map(message => (
             <li key={message.id}><Message message={message} /></li>
           ))
         }

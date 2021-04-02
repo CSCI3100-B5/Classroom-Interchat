@@ -72,7 +72,7 @@ export default function LoginBox() {
                 onChange={handleChange}
                 isValid={touched.email && !errors.email}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
@@ -85,7 +85,7 @@ export default function LoginBox() {
                 onChange={handleChange}
                 isValid={touched.password && !errors.password}
               />
-              <Form.Control.Feedback type="invalid">
+              <Form.Control.Feedback tooltip type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>

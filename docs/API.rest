@@ -48,9 +48,9 @@ Message object
   "createdAt": "<timestamp>",
   "classroom": "<classroom id>",
   "sender": "<user id>",
-  "type": "text|poll|status|question|reply",
+  "type": "text|quiz|status|question|reply",
   "content": "<string>"  // text content or status content
-  | {  // poll content
+  | {  // quiz content
     "type": "SAQ|MCQ",
     "prompt": "<string>",
     "choices": [ "<string>" ],   // only MCQ
@@ -67,10 +67,43 @@ Message object
   }
 }
 
-PollAnswer object
+// This object is not saved to the database, but is what the client receives
+// from server when a new quiz arrives
+// This object is embedded into Message.content
+QuizContent object
 {
-  "id": "<pollanswer id>",
-  "pollId": "<message id>",
+  "type": "SAQ|MCQ",
+  "prompt": "<string>",
+  "choices": [ "<string>" ],   // only MCQ
+  "multiSelect": boolean  // only MCQ
+}
+
+// This object is also not saved to the database, but is what the client receives
+// from server when a quiz result is released
+// This object is embedded into Message.content
+QuizContentWithResult object
+{
+  "type": "SAQ|MCQ",
+  "prompt": "<string>",
+  "choices": [ "<string>" ],   // only MCQ
+  "correct": [ number ],  // only MCQ
+  "result": [
+    { // for SAQ
+      "userId": "<user id>",
+      "answer": "<string>"
+    }
+  ] | [
+    { // for MCQ
+      "userId": "<user id>",
+      "choices": [ number ]
+    }
+  ]
+}
+
+QuizAnswer object
+{
+  "id": "<quizanswer id>",
+  "quizId": "<message id>",
   "createdAt": "<timestamp>",
   "content": "<string>" | number
 }

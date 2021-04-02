@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default function StatusMessage() {
+export default function StatusMessage({ message }) {
   return (
     <div>
       <p className="text-muted">
-        Status broadcast (e.g. someone left the chat, someone disabled the classroom)
+        {message.content}
       </p>
     </div>
   );
