@@ -3,18 +3,15 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Button, Form, Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import API from '../API.js';
-import dataStore from '../dataStore.js';
+import { useApi } from '../contexts/ApiProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 // The Log in box, not an independent page.
 // This component is shown when the user select the log in
-// tab in the /login page.
+// tab in the /auth page.
 
 const schema = yup.object().shape({
-  username: yup.string()
-    .min(6).max(64)
-    .matches(/[a-zA-Z][a-zA-Z0-9_-]+|[-_][a-zA-Z0-9_-]*[a-zA-Z][a-zA-Z0-9_-]*/)
-    .required(),
+  email: yup.string().email().required(),
   password: yup.string().min(8).max(64).required(),
   rememberMe: yup.bool().required(),
 });
@@ -26,22 +23,15 @@ export default function LoginBox() {
 
   const history = useHistory();
 
-  if (dataStore.refreshToken) {
-    API.refreshToken()
-      .then((result) => {
-        console.log(result);
-        if (result.success) {
-          history.push('/classroom');
-        }
-      });
-  }
+  const { login } = useApi();
+  const {
+    rememberMe,
+    setRememberMe,
+  } = useDataStore();
 
   const onSubmit = async (values) => {
-    const result = await API.login(values.username, values.password);
+    const result = await login(values.email, values.password);
     if (result.success) {
-      dataStore.accessToken = result.response.data.accessToken;
-      dataStore.refreshToken = result.response.data.refreshToken;
-      if (values.rememberMe) dataStore.saveTokensToStorage();
       history.push('/classroom');
     } else {
       setAlertMessage(result.response.data.message);
@@ -64,9 +54,9 @@ export default function LoginBox() {
         validationSchema={schema}
         onSubmit={onSubmit}
         initialValues={{
-          username: '',
+          email: '',
           password: '',
-          rememberMe: true
+          rememberMe
         }}
       >
         {({
@@ -77,17 +67,17 @@ export default function LoginBox() {
           errors,
         }) => (
           <Form className="m-4" noValidate onSubmit={handleSubmit}>
-            <Form.Group controlId="username">
-              <Form.Label>Username</Form.Label>
+            <Form.Group controlId="email">
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="text"
-                name="username"
-                value={values.username}
+                name="email"
+                value={values.email}
                 onChange={handleChange}
-                isValid={touched.username && !errors.username}
+                isValid={touched.email && !errors.email}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.username}
+                {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="password">
@@ -109,7 +99,7 @@ export default function LoginBox() {
                 name="rememberMe"
                 label="Remember me"
                 checked={values.rememberMe}
-                onChange={handleChange}
+                onChange={(event) => { handleChange(event); setRememberMe(event.target.checked); }}
                 isInvalid={!!errors.rememberMe}
                 feedback={errors.rememberMe}
                 id="rememberMe"

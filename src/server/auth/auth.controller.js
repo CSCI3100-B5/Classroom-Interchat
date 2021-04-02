@@ -3,24 +3,23 @@ const httpStatus = require('http-status');
 const crypto = require('crypto');
 const APIError = require('../helpers/APIError');
 const config = require('../config/config');
-const User = require('../user/user.model');
+const User = require('../models/user.model');
 
 function generateAccessToken(payload) {
   return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '10m' });
 }
 
 /**
- * Returns jwt access and refresh token if valid username and password is provided
+ * Returns jwt access and refresh token if valid email and password is provided
  */
 async function login(req, res, next) {
-  // TODO: fetch the user auth details from database
   let user;
   try {
-    user = await User.getByUsername(req.body.username);
+    user = await User.getByEmail(req.body.email);
   } catch (e) {
+    // TODO: return a more helpful error message
     return next(e);
   }
-  if (user.emailVerification) return next(new APIError('You need to verify your email address first', httpStatus.UNAUTHORIZED, true));
   if (!await user.comparePassword(req.body.password)) {
     const err = new APIError('Incorrect password', httpStatus.UNAUTHORIZED, true);
     return next(err);
@@ -38,8 +37,7 @@ async function login(req, res, next) {
   return res.json({
     accessToken,
     refreshToken,
-    userId: user.id,
-    username: user.username
+    userId: user.id
   });
 }
 
@@ -48,25 +46,23 @@ async function login(req, res, next) {
  */
 async function signup(req, res, next) {
   try {
-    if (await User.exists({ username: req.body.username })) {
-      return next(new APIError('Username is occupied', httpStatus.BAD_REQUEST, true));
-    }
     if (await User.exists({ email: req.body.email })) {
       return next(new APIError('This email is already used', httpStatus.BAD_REQUEST, true));
     }
     const user = new User({
-      username: req.body.username,
+      name: req.body.name,
       email: req.body.email,
-      userType: req.body.userType,
-      emailVerification: crypto.randomBytes(32).toString('hex')
+      isAdmin: false,
+      lastVerifiedEmail: null
     });
     await user.setPassword(req.body.password);
+    await user.newEmailVerification();
     return res.json({
-      username: user.username,
+      name: user.name,
       email: user.email,
-      userType: user.userType,
       id: user.id,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+      isAdmin: user.isAdmin
     });
   } catch (e) {
     return next(e);
@@ -81,22 +77,16 @@ async function signup(req, res, next) {
  * Returns a new access token if authorized with refresh token
  */
 async function token(req, res, next) {
-  // req.payload is assigned by jwt middleware if valid token is provided
-  let user;
-  try {
-    user = await User.get(req.payload.userId);
-  } catch (e) {
-    return next(e);
-  }
+  // req.payload and req.invoker is assigned if valid token is provided
+  const user = req.invoker;
   if (!user.isTokenIdValid(req.payload.tokenId)) {
-    return next(new APIError('This refresh token has expired', httpStatus.UNAUTHORIZED, true));
+    return next(new APIError('This refresh token has expired', httpStatus.FORBIDDEN, true));
   }
   const payload = { userId: user.id, tokenId: req.payload.tokenId };
   const accessToken = generateAccessToken(payload);
   return res.json({
     accessToken,
-    userId: user.id,
-    username: user.username
+    userId: user.id
   });
 }
 
@@ -104,29 +94,15 @@ async function token(req, res, next) {
  * Will remove refresh token only if it is provided in header.
  */
 async function logout(req, res, next) {
-  // req.payload is assigned by jwt middleware if valid token is provided
-  let user;
+  // req.payload and req.invoker is assigned if valid token is provided
   try {
-    user = await User.get(req.payload.userId);
-    await user.invalidateTokenId(req.payload.tokenId);
+    await req.invoker.invalidateTokenId(req.payload.tokenId);
   } catch (e) {
     return next(e);
   }
   return res.sendStatus(httpStatus.NO_CONTENT);
 }
 
-/**
- * This is a sample protected route.
- * Will return random number only if jwt token is provided in header.
- */
-function getRandomNumber(req, res) {
-  // req.payload is assigned by jwt middleware if valid token is provided
-  return res.json({
-    user: req.payload,
-    num: Math.random() * 100
-  });
-}
-
 module.exports = {
-  login, signup, token, logout, getRandomNumber
+  login, signup, token, logout
 };

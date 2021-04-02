@@ -2,17 +2,17 @@ http://localhost:8080/api/health-check
 
 ###
 
-GET http://localhost:8080/api/users
+GET http://localhost:8080/api/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDU0YTMzY2E5Zjk2ZmU0Y2I0NjI4ZjYiLCJ0b2tlbklkIjoiNmY3YTJlZWFiZmJhMzk4ZDZiZTYxYjRjZmFmZDc3MmYiLCJpYXQiOjE2MTYxNjA0MjYsImV4cCI6MTYxNjE2MTAyNn0.vBk08pE1f4cMrtVqXGIU9C8mUiEicPlpEQiaj1nJe6E
 
 ###
 
-POST http://localhost:8080/api/users
+POST http://localhost:8080/api/user
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDU0YTMzY2E5Zjk2ZmU0Y2I0NjI4ZjYiLCJ0b2tlbklkIjoiNmY3YTJlZWFiZmJhMzk4ZDZiZTYxYjRjZmFmZDc3MmYiLCJpYXQiOjE2MTYxNjA0MjYsImV4cCI6MTYxNjE2MTAyNn0.vBk08pE1f4cMrtVqXGIU9C8mUiEicPlpEQiaj1nJe6E
 
 {
-  "username": "Administrator",
+  "name": "Administrator",
   "password": "password"
 }
 
@@ -22,7 +22,7 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "Administrator",
+  "name": "Administrator",
   "password": "password"
 }
 
@@ -32,10 +32,9 @@ POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
 {
-  "username": "dedrfrgtbhyjg5",
+  "name": "dedrfrgtbhyjg5",
   "password": "password",
-  "email": "abcd@def.com",
-  "userType": "STUDENT"
+  "email": "abcd@def.com"
 }
 
 ###

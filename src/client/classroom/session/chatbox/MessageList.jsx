@@ -8,13 +8,13 @@ export default function MessageList() {
     {
       type: 'Text',
       text: 'message text',
-      sender: 'Username',
+      sender: 'name',
       timestamp: new Date(),
     },
     {
       type: 'Quiz',
       text: 'message text 2',
-      sender: 'Username2',
+      sender: 'name2',
       timestamp: new Date(),
     }
   ]);

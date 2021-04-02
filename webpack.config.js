@@ -8,7 +8,8 @@ module.exports = {
   entry: ['babel-polyfill', './src/client/index.jsx'],
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   module: {
     rules: [{
@@ -45,16 +46,15 @@ module.exports = {
   devServer: {
     port: 3000,
     open: true,
+    hot: true,
     historyApiFallback: true,
-    proxy: {
-      '/api': 'http://localhost:8080'
-    }
+    publicPath: '/'
   },
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      favicon: './public/favicon.ico'
+      favicon: './public/favicon.svg'
     })
   ]
 };

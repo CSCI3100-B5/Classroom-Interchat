@@ -1,19 +1,42 @@
+const path = require('path');
 const express = require('express');
+const http = require('http');
+const socketio = require('socket.io');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
 const cors = require('cors');
+const { stringReplace } = require('string-replace-middleware');
 const httpStatus = require('http-status');
 const expressWinston = require('express-winston');
 const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const winstonInstance = require('./winston');
 const routes = require('../index.route');
+const listeners = require('../index.listener');
 const config = require('./config');
 const APIError = require('../helpers/APIError');
+const middlewareWrap = require('../helpers/middlewareWrap');
+const { requireAccessToken } = require('../helpers/requireAuth');
 
 const app = express();
+const server = http.Server(app);
+const io = socketio(server, {
+  cors: {
+    origin: '*'
+  }
+});
+
+// Reuse the express requireAccessToken middleware here
+// for authenticating the user
+// requireAccessToken middleware also retrieves the user from database
+// it can be accessed via socket.request.invoker
+io.use(middlewareWrap(requireAccessToken));
+
+io.on('connection', (socket) => {
+  listeners(socket, io);
+});
 
 if (config.env === 'development') {
   app.use(logger('dev'));
@@ -28,7 +51,15 @@ app.use(compress());
 app.use(methodOverride());
 
 // secure apps by setting various HTTP headers
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'script-src': ["'self'", "'unsafe-inline'"],
+      'connect-src': ["'self'", "'unsafe-inline'", 'classroom-interchat-develop.herokuapp.com', 'classroom-interchat.herokuapp.com']
+    },
+  }
+}));
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
@@ -45,6 +76,14 @@ if (config.env === 'development') {
   }));
 }
 
+// replace frontend API url with current server url
+app.use(stringReplace({
+  'http://localhost:8080/': config.baseUrl
+}, {
+  contentTypeFilterRegexp: /^text\/html/
+}));
+
+// serve frontend files
 app.use(express.static('dist'));
 
 // mount all routes on /api path
@@ -66,11 +105,17 @@ app.use((err, req, res, next) => {
   return next(err);
 });
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
+// catch all API 404 and forward to error handler
+app.use('/api', (req, res, next) => {
   const err = new APIError('API not found', httpStatus.NOT_FOUND);
   return next(err);
 });
+
+// catch all other 404 and server index.html instead
+// This is needed because of how react router works
+// URLs that do not exist should be handled client-side
+// and it is react router's job to show the 404 page
+app.use((req, res) => res.sendFile(path.join(__dirname, '../../../dist', 'index.html')));
 
 // log error in winston transports except when executing test suite
 if (config.env !== 'test') {
@@ -86,4 +131,4 @@ app.use((err, req, res, next) => res.status(err.status).json({ // eslint-disable
 }));
 
 
-module.exports = app;
+module.exports = { app, server, io };

@@ -1,11 +1,8 @@
 # Validation requirements
 
-## Username
+## Name
 
-- Between 6 to 64 characters long
-- Must contain alphabets, digits, underscores and hyphens only
-- Cannot start with a digit
-- Must contain alphabets
+- Between 5 to 100 characters long
 
 ## Password
 
@@ -14,3 +11,4 @@
 ## Email
 
 - Valid email
+- Uniquely identifies a user

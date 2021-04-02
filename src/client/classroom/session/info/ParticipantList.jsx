@@ -11,8 +11,8 @@ function ParticipantList(props) {
     <ul>
       {
         classroom.participants.map(x => (
-          <li key={x.username}>
-            {x.username}
+          <li key={x.name}>
+            {x.name}
           </li>
         ))
       }
