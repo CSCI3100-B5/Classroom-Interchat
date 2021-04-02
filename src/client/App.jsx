@@ -2,20 +2,17 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Redirect
+  Route
 } from 'react-router-dom';
 import Landing from './landing/Landing.jsx';
 import ClassroomRoot from './classroom/index.jsx';
 import Auth from './auth/Auth.jsx';
 import Account from './account/Account.jsx';
+import NotFound from './not-found/NotFound.jsx';
 import { DataStoreProvider } from './contexts/DataStoreProvider.jsx';
 import { AxiosProvider } from './contexts/AxiosProvider.jsx';
 import { ApiProvider } from './contexts/ApiProvider.jsx';
 
-// This is the root of all pages. Page navigation is handled by
-// React router so that no browser refresh is needed to load a
-// new page.
 
 export default function App() {
   return (
@@ -40,9 +37,9 @@ export default function App() {
                   <Route exact path="/">
                     <Landing />
                   </Route>
-                  {/* This is the 404 route, currently just redirecting to home page */}
+                  {/* This is the 404 route */}
                   <Route>
-                    <Redirect to="/" />
+                    <NotFound />
                   </Route>
                 </Switch>
               </div>

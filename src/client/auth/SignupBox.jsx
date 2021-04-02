@@ -5,15 +5,12 @@ import { useHistory } from 'react-router-dom';
 import { Button, Form, Alert } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
-// The Sign up box, not an independent page.
-// This component is shown when the user select the sign up
-// tab in the /auth page.
 
 const schema = yup.object().shape({
   signupName: yup.string().min(5).max(100).required(),
   signupEmail: yup.string().email().required(),
   signupPassword: yup.string().min(8).max(64).required(),
-  confirmPassword: yup.string()
+  confirmPassword: yup.string().min(8).max(64)
     .oneOf([yup.ref('signupPassword'), null], 'The two passwords do not match')
     .required()
 });
@@ -33,7 +30,7 @@ export default function SignupBox() {
     if (result.success) {
       const loginResult = await login(values.signupEmail, values.signupPassword);
       if (loginResult.success) {
-        history.push('/classroom');
+        history.push('/account');
       } else {
         setAlertMessage(loginResult.response.data.message);
         setAlertVisibility(true);

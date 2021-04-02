@@ -10,12 +10,19 @@ export function useDataStore() {
 export function DataStoreProvider({ children }) {
   const [savedAccessToken, saveAccessToken] = useLocalStorage('accessToken', null);
   const [savedRefreshToken, saveRefreshToken] = useLocalStorage('refreshToken', null);
+  const [savedUser, saveUser] = useLocalStorage('user', null);
 
   const [accessToken, pSetAccessToken] = useState(() => savedAccessToken);
   const [refreshToken, pSetRefreshToken] = useState(() => savedRefreshToken);
   const [rememberMe, setRememberMe] = useState(true);
 
-  const [userId, setUserId] = useState(null);
+  // All info related to the classroom, except messages and participant list
+  const [classroomMeta, setClassroomMeta] = useState();
+
+  const [messages, setMessages] = useState([]);
+  const [participants, setParticipants] = useState([]);
+
+  const [user, pSetUser] = useState(() => savedUser);
 
   function setAccessToken(token) {
     pSetAccessToken(token);
@@ -25,6 +32,11 @@ export function DataStoreProvider({ children }) {
   function setRefreshToken(token) {
     pSetRefreshToken(token);
     if (rememberMe) saveRefreshToken(token);
+  }
+
+  function setUser(newUser) {
+    pSetUser(newUser);
+    saveUser(newUser);
   }
 
   function refreshTokenHeader() {
@@ -47,8 +59,14 @@ export function DataStoreProvider({ children }) {
       setRefreshToken,
       rememberMe,
       setRememberMe,
-      userId,
-      setUserId,
+      user,
+      setUser,
+      classroomMeta,
+      setClassroomMeta,
+      messages,
+      setMessages,
+      participants,
+      setParticipants,
 
       // computed
       accessTokenHeader,

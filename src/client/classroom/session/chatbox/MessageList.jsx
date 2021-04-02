@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import Message from './message/Message.jsx';
 
-// The message history, belonging to the chatbox.
-
 export default function MessageList() {
   const [messageList] = useState([
     {
+      id: '1',
       type: 'Text',
       text: 'message text',
       sender: 'name',
       timestamp: new Date(),
     },
     {
+      id: '2',
       type: 'Quiz',
       text: 'message text 2',
       sender: 'name2',
@@ -23,7 +23,7 @@ export default function MessageList() {
       <ul>
         {
           messageList.map(message => (
-            <li><Message message={message} /></li>
+            <li key={message.id}><Message message={message} /></li>
           ))
         }
       </ul>

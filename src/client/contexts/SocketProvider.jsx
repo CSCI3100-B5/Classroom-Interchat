@@ -33,7 +33,7 @@ export function SocketProvider({ children }) {
     newSocket.on('connect_error', (err) => {
       console.log(err);
       // TODO: on error prompt the user to log in again
-      history.push('/auth');
+      // TODO: DEBUG history.push('/auth');
     });
 
     return () => newSocket.close();

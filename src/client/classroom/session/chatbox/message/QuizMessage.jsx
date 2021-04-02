@@ -1,8 +1,6 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 
-// A type of message with interactive prompt.
-
 export default function QuizMessage() {
   return (
     <div>

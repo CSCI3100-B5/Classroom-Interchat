@@ -37,7 +37,13 @@ async function login(req, res, next) {
   return res.json({
     accessToken,
     refreshToken,
-    userId: user.id
+    user: {
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      isAdmin: user.isAdmin,
+      createdAt: user.createdAt
+    }
   });
 }
 

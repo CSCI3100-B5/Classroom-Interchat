@@ -10,6 +10,7 @@ Token object
   "createdBy": "<user id>",
   "receivedBy": "<user id>",
   "createdAt": "<timestmap>",
+  "classroom": "<classroom id>",
   "isValid": boolean,
   "value": "<string>"
 }
@@ -94,7 +95,13 @@ RESPONSE:
 {
   "accessToken": "<string>",
   "refreshToken": "<string>",
-  "userId": "<user id>"
+  "user": {
+    "name": "<string>",
+    "email": "<email>",
+    "id": "<user id>",
+    "isAdmin": boolean,
+    "createdAt": "<timestamp>"
+  }
 }
 
 ############################################################

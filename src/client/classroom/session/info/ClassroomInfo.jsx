@@ -1,18 +1,19 @@
 import React from 'react';
 import { Button, Card, Accordion } from 'react-bootstrap';
-import ClassroomPropType from './ClassroomPropType.js';
+import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import ParticipantList from './ParticipantList.jsx';
 
-// Information of the classroom, shown at the top of the classroom
-// session page. The participant list is opened from here.
-
-function ClassroomInfo(props) {
-  const { classroom } = props;
+function ClassroomInfo() {
+  const { classroomMeta, participants, user } = useDataStore();
   return (
     <div>
-      <p>{classroom.name}</p>
-      <p>{classroom.createdBy.name}</p>
-      <p>{classroom.participants.length}</p>
+      <p>{classroomMeta.name}</p>
+      <p>{user.name}</p>
+      <p>
+        {participants.length}
+        {' '}
+        participants
+      </p>
       <Button variant="danger">Leave</Button>
       <Accordion defaultActiveKey="0">
         <Card>
@@ -21,7 +22,7 @@ function ClassroomInfo(props) {
           </Accordion.Toggle>
           <Accordion.Collapse eventKey="0">
             <Card.Body>
-              <ParticipantList classroom={classroom} />
+              <ParticipantList />
             </Card.Body>
           </Accordion.Collapse>
         </Card>
@@ -29,7 +30,5 @@ function ClassroomInfo(props) {
     </div>
   );
 }
-
-ClassroomInfo.propTypes = ClassroomPropType;
 
 export default ClassroomInfo;

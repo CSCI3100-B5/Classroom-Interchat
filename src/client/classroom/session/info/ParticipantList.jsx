@@ -1,25 +1,31 @@
+import { Button } from 'react-bootstrap';
 import React from 'react';
-import ClassroomPropType from './ClassroomPropType.js';
+import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 
-// A list of participants. The layout of this component is undecided.
-// It may become a page, a pop-up in the classroom session page,
-// or just be part of the classroom session page.
 
-function ParticipantList(props) {
-  const { classroom } = props;
+function ParticipantList() {
+  const { classroomMeta, participants } = useDataStore();
   return (
     <ul>
       {
-        classroom.participants.map(x => (
+        participants.map(x => (
           <li key={x.name}>
             {x.name}
+            {(() => {
+              if (x.id === classroomMeta.host.id) return (<small>HOST</small>);
+              if (x.permission === 'instructor') return (<small>INSTRUCTOR</small>);
+              if (x.permission === 'requesting') return (<small>REQUESTING</small>);
+              return null;
+            })()}
+            <Button variant="flat">Promote</Button>
+            <Button variant="flat">Token</Button>
+            <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
+            <Button variant="danger">Kick</Button>
           </li>
         ))
       }
     </ul>
   );
 }
-
-ParticipantList.propTypes = ClassroomPropType;
 
 export default ParticipantList;

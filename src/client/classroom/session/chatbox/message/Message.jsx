@@ -5,18 +5,14 @@ import TextMessage from './TextMessage.jsx';
 import QuizMessage from './QuizMessage.jsx';
 import StatusMessage from './StatusMessage.jsx';
 
-// The base of all types of messages, besides deciding which message
-// component type to be used, it also displays common message
-// attributes, such as sender name and timestamp.
-
 function Message(props) {
   const { message } = props;
   return (
     <div>
       <p>{message.sender}</p>
-      <p>{message.timestamp}</p>
+      <p>{message.timestamp.toString()}</p>
       {
-        () => {
+        (() => {
           switch (message.type) {
             case 'Text':
               return (<TextMessage />);
@@ -29,7 +25,7 @@ function Message(props) {
             default:
               return (<p>Unknown message type!</p>);
           }
-        }
+        })()
       }
     </div>
   );

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
 
-// A type of message sent by students, expecting answers
-// from instructors or other students.
 
 export default function QuestionMessage() {
   return (

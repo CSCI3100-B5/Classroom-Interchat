@@ -6,10 +6,6 @@ import { useHistory } from 'react-router-dom';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
-// The Log in box, not an independent page.
-// This component is shown when the user select the log in
-// tab in the /auth page.
-
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().min(8).max(64).required(),
@@ -32,7 +28,7 @@ export default function LoginBox() {
   const onSubmit = async (values) => {
     const result = await login(values.email, values.password);
     if (result.success) {
-      history.push('/classroom');
+      history.push('/account');
     } else {
       setAlertMessage(result.response.data.message);
       setAlertVisibility(true);

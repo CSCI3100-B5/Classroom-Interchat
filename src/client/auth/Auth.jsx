@@ -8,28 +8,28 @@ import SignupBox from './SignupBox.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
-// The login page, containing a sign up box and a log in box.
 
 export default function Auth() {
-  const { refreshAccessToken } = useApi();
+  const { getUserProfile } = useApi();
   const {
     refreshToken,
     setRefreshToken,
-    setUserId,
+    user,
+    setUser
   } = useDataStore();
 
   const history = useHistory();
 
   useEffect(() => {
     (async () => {
-      if (refreshToken) {
-        const result = await refreshAccessToken();
+      if (refreshToken && user) {
+        const result = await getUserProfile(user.id);
         console.log(result);
         if (result.success) {
-          setUserId(result.response.data.userId);
-          history.push('/classroom');
+          history.push('/account');
         } else {
           setRefreshToken(null);
+          setUser(null);
         }
       }
     })();
