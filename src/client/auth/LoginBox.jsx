@@ -25,6 +25,7 @@ export default function LoginBox() {
 
   const { login } = useApi();
   const {
+    rememberMe,
     setRememberMe,
   } = useDataStore();
 
@@ -55,7 +56,7 @@ export default function LoginBox() {
         initialValues={{
           email: '',
           password: '',
-          rememberMe: true
+          rememberMe
         }}
       >
         {({

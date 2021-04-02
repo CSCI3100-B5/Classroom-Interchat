@@ -19,6 +19,7 @@ export function AxiosProvider({ children }) {
     baseURL: env.apiBase
   }));
   useEffect(() => {
+    console.log(`Requesting to ${env.apiBase}`);
     createAxiosResponseInterceptor(); // eslint-disable-line no-use-before-define
   }, []);
 
