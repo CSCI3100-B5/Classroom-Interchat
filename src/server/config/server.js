@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
@@ -16,6 +17,8 @@ const routes = require('../index.route');
 const listeners = require('../index.listener');
 const config = require('./config');
 const APIError = require('../helpers/APIError');
+const middlewareWrap = require('../helpers/middlewareWrap');
+const { requireAccessToken } = require('../helpers/requireAuth');
 
 const app = express();
 const server = http.Server(app);
@@ -24,6 +27,12 @@ const io = socketio(server, {
     origin: '*'
   }
 });
+
+// Reuse the express requireAccessToken middleware here
+// for authenticating the user
+// requireAccessToken middleware also retrieves the user from database
+// it can be accessed via socket.request.invoker
+io.use(middlewareWrap(requireAccessToken));
 
 io.on('connection', (socket) => {
   listeners(socket, io);
@@ -96,11 +105,14 @@ app.use((err, req, res, next) => {
   return next(err);
 });
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
+// catch all API 404 and forward to error handler
+app.use('/api', (req, res, next) => {
   const err = new APIError('API not found', httpStatus.NOT_FOUND);
   return next(err);
 });
+
+// catch all other 404 and server index.html instead
+app.use((req, res) => res.sendFile(path.join(__dirname, '../../../dist', 'index.html')));
 
 // log error in winston transports except when executing test suite
 if (config.env !== 'test') {

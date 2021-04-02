@@ -20,8 +20,11 @@ export function SocketProvider({ children }) {
     const newSocket = io(
       env.hostUrl,
       {
-        auth: {
-          token: accessToken
+        // auth: {
+        //   token: accessToken
+        // },
+        extraHeaders: {
+          Authorization: `Bearer ${accessToken}`
         }
       }
     );
