@@ -40,6 +40,7 @@ export default function App() {
                   <Route exact path="/">
                     <Landing />
                   </Route>
+                  {/* This is the 404 route, currently just redirecting to home page */}
                   <Route>
                     <Redirect to="/" />
                   </Route>

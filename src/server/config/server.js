@@ -112,6 +112,9 @@ app.use('/api', (req, res, next) => {
 });
 
 // catch all other 404 and server index.html instead
+// This is needed because of how react router works
+// URLs that do not exist should be handled client-side
+// and it is react router's job to show the 404 page
 app.use((req, res) => res.sendFile(path.join(__dirname, '../../../dist', 'index.html')));
 
 // log error in winston transports except when executing test suite
