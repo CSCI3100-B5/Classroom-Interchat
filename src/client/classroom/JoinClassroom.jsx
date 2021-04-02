@@ -51,6 +51,13 @@ export default function JoinClassroom() {
         isMuted: false
       },
       {
+        id: '6065c03c3ae34451fc031004',
+        name: 'Administrator',
+        email: 'admin@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
+      },
+      {
         id: 'frgth4htb',
         name: 'Henry',
         email: 'henry@classroom-interchat.ml',
@@ -134,9 +141,9 @@ export default function JoinClassroom() {
         createdAt: new Date(),
         classroom: 'wdefbgtrh54ger',
         sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
+          id: '6065c03c3ae34451fc031004',
+          name: 'Administrator',
+          email: 'admin@classroom-interchat.ml',
           permission: 'instructor',
           isMuted: false
         },
@@ -148,18 +155,60 @@ export default function JoinClassroom() {
             'T', 't', 'True', 'f', 'F', 'false'
           ],
           correct: [0, 1, 2],
+          multiSelect: true,
           result: [
             {
               userId: 'defvfbrgfrvgdbr',
-              choices: [0, 1, 2]
+              content: [0, 1, 2],
+              createdAt: new Date()
             },
             {
               userId: 'frgth4htb',
-              choices: [1, 2]
+              content: [1, 2],
+              createdAt: new Date()
             },
             {
               userId: 'efvfbetnj4',
-              choices: [0, 1]
+              content: [0, 1],
+              createdAt: new Date()
+            }
+          ]
+        }
+      },
+      {
+        id: ' vfbgnrythegrgrb',
+        createdAt: new Date(),
+        classroom: 'wdefbgtrh54ger',
+        sender: {
+          id: '6065c03c3ae34451fc031004',
+          name: 'Administrator',
+          email: 'admin@classroom-interchat.ml',
+          permission: 'instructor',
+          isMuted: false
+        },
+        type: 'quiz',
+        content: {
+          type: 'MCQ',
+          prompt: 'Select true?',
+          choices: [
+            'T', 't', 'True', 'f', 'F', 'false'
+          ],
+          multiSelect: true,
+          result: [
+            {
+              userId: 'defvfbrgfrvgdbr',
+              content: [0, 1, 2],
+              createdAt: new Date()
+            },
+            {
+              userId: 'frgth4htb',
+              content: [1, 2],
+              createdAt: new Date()
+            },
+            {
+              userId: 'efvfbetnj4',
+              content: [0, 1],
+              createdAt: new Date()
             }
           ]
         }
@@ -186,9 +235,9 @@ export default function JoinClassroom() {
         createdAt: new Date(),
         classroom: 'wdefbgtrh54ger',
         sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
+          id: '6065c03c3ae34451fc031004',
+          name: 'Administrator',
+          email: 'admin@classroom-interchat.ml',
           permission: 'instructor',
           isMuted: false
         },
@@ -199,15 +248,23 @@ export default function JoinClassroom() {
           result: [
             {
               userId: 'defvfbrgfrvgdbr',
-              answer: 'Answer by Michael'
+              content: 'Answer by Michael',
+              createdAt: new Date()
             },
             {
               userId: 'frgth4htb',
-              answer: 'Answer by Henry'
+              content: 'Answer by Henry',
+              createdAt: new Date()
             },
             {
               userId: 'efvfbetnj4',
-              answer: 'Answer by Ann'
+              content: 'Answer by Ann',
+              createdAt: new Date()
+            },
+            {
+              userId: 'efvrfbtnrn',
+              content: 'Answer by Ann',
+              createdAt: new Date()
             }
           ]
         }
