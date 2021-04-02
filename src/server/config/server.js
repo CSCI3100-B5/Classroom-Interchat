@@ -56,7 +56,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       'script-src': ["'self'", "'unsafe-inline'"],
-      'connect-src': ["'self'", "'unsafe-inline'", 'https://classroom-interchat-develop.herokuapp.com', 'https://classroom-interchat.herokuapp.com']
+      'connect-src': ["'self'", "'unsafe-inline'", 'classroom-interchat-develop.herokuapp.com', 'classroom-interchat.herokuapp.com']
     },
   }
 }));
