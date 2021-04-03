@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const APIError = require('../helpers/APIError');
 
+// TODO: GUIDE: All database models should be defined as separate files in this models/ folder
+// Copy this user model for reference
+
 /**
  * User Schema
  */

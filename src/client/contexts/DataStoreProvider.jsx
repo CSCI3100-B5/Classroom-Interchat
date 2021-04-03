@@ -24,6 +24,8 @@ export function DataStoreProvider({ children }) {
 
   const [user, pSetUser] = useState(() => savedUser);
 
+  // TODO: GUIDE: All app-wide states should be defined here
+
   function setAccessToken(token) {
     pSetAccessToken(token);
     if (rememberMe) saveAccessToken(token);
@@ -67,6 +69,7 @@ export function DataStoreProvider({ children }) {
       setMessages,
       participants,
       setParticipants,
+      // TODO: GUIDE: remember to export the defined states here
 
       // computed
       accessTokenHeader,

@@ -4,6 +4,8 @@ const authRoutes = require('./auth/auth.route');
 
 const router = express.Router();
 
+// TODO: GUIDE: remember to mount your xxx.route.js here
+
 /** GET /health-check - Check service health */
 router.get('/health-check', (req, res) => res.send('OK'));
 

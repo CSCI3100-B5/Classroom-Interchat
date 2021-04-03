@@ -34,7 +34,7 @@ export function ApiProvider({ children }) {
     return result;
   }
 
-  // TODO: API calls should be put here
+  // TODO: GUIDE: API calls should be put here
 
   /**
    * Login with email and password
