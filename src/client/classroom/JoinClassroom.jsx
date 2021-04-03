@@ -10,7 +10,7 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 
 const schema = yup.object().shape({
-  classroomId: yup.string().required(),
+  classroomId: yup.string().required().label('Classroom ID'),
 });
 
 
@@ -372,8 +372,9 @@ export default function JoinClassroom() {
                   onChange(event);
                 }}
                 isValid={touched.classroomId && !errors.classroomId}
+                isInvalid={touched.classroomId && errors.classroomId}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.classroomId}
               </Form.Control.Feedback>
             </Form.Group>

@@ -7,9 +7,10 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(8).max(64).required(),
-  rememberMe: yup.bool().required(),
+  email: yup.string().email().required().label('Email'),
+  password: yup.string().min(8).max(64).required()
+    .label('Password'),
+  rememberMe: yup.bool().required().label('Remember me'),
 });
 
 
@@ -71,8 +72,9 @@ export default function LoginBox() {
                 value={values.email}
                 onChange={handleChange}
                 isValid={touched.email && !errors.email}
+                isInvalid={touched.email && errors.email}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.email}
               </Form.Control.Feedback>
             </Form.Group>
@@ -84,12 +86,13 @@ export default function LoginBox() {
                 value={values.password}
                 onChange={handleChange}
                 isValid={touched.password && !errors.password}
+                isInvalid={touched.password && errors.password}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group>
+            <Form.Group controlId="rememberMe">
               <Form.Check
                 required
                 name="rememberMe"
@@ -98,7 +101,6 @@ export default function LoginBox() {
                 onChange={(event) => { handleChange(event); setRememberMe(event.target.checked); }}
                 isInvalid={!!errors.rememberMe}
                 feedback={errors.rememberMe}
-                id="rememberMe"
               />
             </Form.Group>
             <Button type="submit">Log in</Button>

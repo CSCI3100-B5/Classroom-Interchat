@@ -5,8 +5,9 @@ import { Button, Form, Alert } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
 const schema = yup.object().shape({
-  profileName: yup.string().min(5).max(100).required(),
-  profileEmail: yup.string().email().required(),
+  profileName: yup.string().min(5).max(100).required()
+    .label('Name'),
+  profileEmail: yup.string().email().required().label('Email'),
 });
 
 export default function ManageProfile() {
@@ -63,7 +64,7 @@ export default function ManageProfile() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit}>
+          <Form className="m-4" onSubmit={handleSubmit} noValidate>
             <Form.Group controlId="profileName">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -72,6 +73,7 @@ export default function ManageProfile() {
                 value={values.profileName}
                 onChange={handleChange}
                 isValid={touched.profileName && !errors.profileName}
+                isInvalid={touched.profileName && errors.profileName}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.profileName}
@@ -85,6 +87,7 @@ export default function ManageProfile() {
                 value={values.profileEmail}
                 onChange={handleChange}
                 isValid={touched.profileEmail && !errors.profileEmail}
+                isInvalid={touched.profileEmail && errors.profileEmail}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.profileEmail}

@@ -9,7 +9,10 @@ export default function ClassroomSession() {
   const { classroomMeta } = useDataStore();
 
   useEffect(() => {
-    if (!classroomMeta) history.push('/classroom');
+    if (!classroomMeta) {
+      console.log('Classroom meta does not exist, re-routing to join classroom');
+      history.push('/classroom');
+    }
   }, []);
   if (!classroomMeta) return (<p>No session detected...</p>);
   return (

@@ -12,6 +12,7 @@ export function ApiProvider({ children }) {
   const {
     setAccessToken,
     setRefreshToken,
+    accessTokenHeader,
     refreshTokenHeader,
     setUser
   } = useDataStore();
@@ -79,7 +80,8 @@ export function ApiProvider({ children }) {
   async function getUserProfile(userId) {
     const result = await request({
       method: 'GET',
-      url: `/user/${userId}`
+      url: `/user/${userId}`,
+      headers: accessTokenHeader()
     });
     if (result.success) {
       setUser(result.response.data);

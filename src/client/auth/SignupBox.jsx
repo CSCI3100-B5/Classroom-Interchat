@@ -7,12 +7,15 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 
 
 const schema = yup.object().shape({
-  signupName: yup.string().min(5).max(100).required(),
-  signupEmail: yup.string().email().required(),
-  signupPassword: yup.string().min(8).max(64).required(),
+  signupName: yup.string().min(5).max(100).required()
+    .label('Name'),
+  signupEmail: yup.string().email().required().label('Email'),
+  signupPassword: yup.string().min(8).max(64).required()
+    .label('Password'),
   confirmPassword: yup.string().min(8).max(64)
     .oneOf([yup.ref('signupPassword'), null], 'The two passwords do not match')
     .required()
+    .label('Confirm password')
 });
 
 export default function SignupBox() {
@@ -69,7 +72,7 @@ export default function SignupBox() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit}>
+          <Form className="m-4" onSubmit={handleSubmit} noValidate>
             <Form.Group controlId="signupName">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -78,8 +81,9 @@ export default function SignupBox() {
                 value={values.signupName}
                 onChange={handleChange}
                 isValid={touched.signupName && !errors.signupName}
+                isInvalid={touched.signupName && errors.signupName}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.signupName}
               </Form.Control.Feedback>
             </Form.Group>
@@ -91,8 +95,9 @@ export default function SignupBox() {
                 value={values.signupEmail}
                 onChange={handleChange}
                 isValid={touched.signupEmail && !errors.signupEmail}
+                isInvalid={touched.signupEmail && errors.signupEmail}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.signupEmail}
               </Form.Control.Feedback>
             </Form.Group>
@@ -104,8 +109,9 @@ export default function SignupBox() {
                 value={values.signupPassword}
                 onChange={handleChange}
                 isValid={touched.signupPassword && !errors.signupPassword}
+                isInvalid={touched.signupPassword && errors.signupPassword}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.signupPassword}
               </Form.Control.Feedback>
             </Form.Group>
@@ -117,8 +123,9 @@ export default function SignupBox() {
                 value={values.confirmPassword}
                 onChange={handleChange}
                 isValid={touched.confirmPassword && !errors.confirmPassword}
+                isInvalid={touched.confirmPassword && errors.confirmPassword}
               />
-              <Form.Control.Feedback tooltip type="invalid">
+              <Form.Control.Feedback type="invalid">
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>

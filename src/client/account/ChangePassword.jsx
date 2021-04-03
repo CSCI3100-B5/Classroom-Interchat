@@ -6,11 +6,14 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 
 
 const schema = yup.object().shape({
-  oldPassword: yup.string().min(8).max(64).required(),
-  newPassword: yup.string().min(8).max(64).required(),
+  oldPassword: yup.string().min(8).max(64).required()
+    .label('Old password'),
+  newPassword: yup.string().min(8).max(64).required()
+    .label('New password'),
   confirmPassword: yup.string().min(8).max(64)
     .oneOf([yup.ref('newPassword'), null], 'The two passwords do not match')
     .required()
+    .label('Confirm password')
 });
 
 export default function ChangePassword() {
@@ -64,7 +67,7 @@ export default function ChangePassword() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit}>
+          <Form className="m-4" onSubmit={handleSubmit} noValidate>
             <Form.Group controlId="oldPassword">
               <Form.Label>Old Password</Form.Label>
               <Form.Control
@@ -73,6 +76,7 @@ export default function ChangePassword() {
                 value={values.oldPassword}
                 onChange={handleChange}
                 isValid={touched.oldPassword && !errors.oldPassword}
+                isInvalid={touched.oldPassword && errors.oldPassword}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.oldPassword}
@@ -86,6 +90,7 @@ export default function ChangePassword() {
                 value={values.newPassword}
                 onChange={handleChange}
                 isValid={touched.newPassword && !errors.newPassword}
+                isInvalid={touched.newPassword && errors.newPassword}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.newPassword}
@@ -99,6 +104,7 @@ export default function ChangePassword() {
                 value={values.confirmPassword}
                 onChange={handleChange}
                 isValid={touched.confirmPassword && !errors.confirmPassword}
+                isInvalid={touched.confirmPassword && errors.confirmPassword}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.confirmPassword}
