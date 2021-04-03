@@ -1,27 +1,19 @@
 import React from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
+import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 
-// A type of message sent by students, expecting answers
-// from instructors or other students.
 
-export default function QuestionMessage() {
+export default function QuestionMessage({ message }) {
+  const { messages } = useDataStore();
+  const replies = messages.filter(x => x.type === 'reply' && x.content.replyTo === message.id);
   return (
     <div>
-      <p>Question text</p>
-      <Form>
-        <Form.Group controlId="reply">
-          <Form.Label>Reply</Form.Label>
-          <Form.Control type="text" placeholder="Type your reply" name="reply" />
-
-          <Form.Text className="text-muted">
-            Help other students out by replying
-          </Form.Text>
-        </Form.Group>
-
-        <Button variant="primary" type="submit">
-          Send
-        </Button>
-      </Form>
+      <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
+      <p>{message.content.content}</p>
+      <Button>Reply</Button>
+      {replies.length > 0
+        ? (<Button>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
+        : (<p className="text-muted">Send a reply</p>)}
     </div>
   );
 }

@@ -1,11 +1,9 @@
 import React from 'react';
 
-// A type of message with plain text only.
-
-export default function TextMessage() {
+export default function TextMessage({ message }) {
   return (
     <div>
-      <p>The message text</p>
+      <p>{message.content}</p>
     </div>
   );
 }

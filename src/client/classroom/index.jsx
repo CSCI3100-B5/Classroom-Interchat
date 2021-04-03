@@ -12,9 +12,6 @@ import ClassroomSession from './session/ClassroomSession.jsx';
 import { SocketProvider } from '../contexts/SocketProvider.jsx';
 import { RealtimeProvider } from '../contexts/RealtimeProvider.jsx';
 
-// The root of all classroom-related components
-// Routes pages such as join, create and classroom session page.
-
 export default function ClassroomRoot() {
   const { path, url } = useRouteMatch();
   return (
@@ -31,7 +28,7 @@ export default function ClassroomRoot() {
               <Route path={`${path}/create`}>
                 <CreateClassroom />
               </Route>
-              <Route path={`${path}/id/:classroomId`}>
+              <Route path={`${path}/session`}>
                 <ClassroomSession />
               </Route>
               <Route path={path}>

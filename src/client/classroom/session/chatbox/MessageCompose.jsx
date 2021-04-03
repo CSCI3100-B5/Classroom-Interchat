@@ -1,31 +1,20 @@
 import React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
-// The text box allowing users to send messages/questions.
-// This is a separate component because of its complexity.
+// TODO: reply to question
 
-export default function MessageCompose() {
+export default function MessageCompose({ onCreateQuiz }) {
   return (
-    <Form>
-      <Form.Group controlId="message">
-        <Form.Label>message</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="chat with your classmates"
-          name="message"
-        />
-      </Form.Group>
-      <Form.Group controlId="isQuestion">
-        <Form.Check type="checkbox" label="is a question" name="isQuestion" />
-      </Form.Group>
-
-      <Form.Text className="text-muted">
-        Your classmate(s) will help you lol.
-      </Form.Text>
-
-      <Button variant="primary" type="submit">
-        send message
-      </Button>
-    </Form>
+    <InputGroup>
+      <FormControl
+        placeholder="Type your message..."
+        aria-label="Type your message"
+      />
+      <InputGroup.Append>
+        <Button variant="outline-secondary">Send</Button>
+        <Button variant="outline-secondary">Send as question</Button>
+        <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
+      </InputGroup.Append>
+    </InputGroup>
   );
 }

@@ -10,6 +10,7 @@ Token object
   "createdBy": "<user id>",
   "receivedBy": "<user id>",
   "createdAt": "<timestmap>",
+  "classroom": "<classroom id>",
   "isValid": boolean,
   "value": "<string>"
 }
@@ -47,14 +48,14 @@ Message object
   "createdAt": "<timestamp>",
   "classroom": "<classroom id>",
   "sender": "<user id>",
-  "type": "text|poll|status|question|reply",
+  "type": "text|quiz|status|question|reply",
   "content": "<string>"  // text content or status content
-  | {  // poll content
+  | {  // quiz content
     "type": "SAQ|MCQ",
     "prompt": "<string>",
     "choices": [ "<string>" ],   // only MCQ
-    "correct": [ number ]     // only MCQ // index of correct answer inside "choices"
-                              // if there are more than one correct answer, assume all answers need to be checked to be considered correct
+    "correct": [ number ],     // only MCQ // index of correct answer inside "choices"
+    "multiSelect": boolean
   }
   | { // question content
     "isResolved": boolean,
@@ -66,12 +67,42 @@ Message object
   }
 }
 
-PollAnswer object
+// This object is not saved to the database, but is what the client receives
+// from server when a new quiz arrives
+// This object is embedded into Message.content
+QuizContent object
 {
-  "id": "<pollanswer id>",
-  "pollId": "<message id>",
+  "type": "SAQ|MCQ",
+  "prompt": "<string>",
+  "choices": [ "<string>" ],   // only MCQ
+  "multiSelect": boolean  // only MCQ
+}
+
+// This object is also not saved to the database, but is what the client receives
+// from server when a quiz result is released
+// This object is embedded into Message.content
+QuizContentWithResult object
+{
+  "type": "SAQ|MCQ",
+  "prompt": "<string>",
+  "choices": [ "<string>" ],   // only MCQ
+  "correct": [ number ],  // only MCQ
+  "multiSelect": boolean,
+  "result": [
+    {
+      "userId": "<user id>",
+      "content": "<string>" | [ number ],
+      "createdAt": "<timestamp>"
+    }
+  ]
+}
+
+QuizAnswer object
+{
+  "id": "<quizanswer id>",
+  "quizId": "<message id>",
   "createdAt": "<timestamp>",
-  "content": "<string>" | number
+  "content": "<string>" | [ number ]
 }
 
 ############################################################
@@ -94,7 +125,13 @@ RESPONSE:
 {
   "accessToken": "<string>",
   "refreshToken": "<string>",
-  "userId": "<user id>"
+  "user": {
+    "name": "<string>",
+    "email": "<email>",
+    "id": "<user id>",
+    "isAdmin": boolean,
+    "createdAt": "<timestamp>"
+  }
 }
 
 ############################################################

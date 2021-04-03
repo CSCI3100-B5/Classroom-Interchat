@@ -12,8 +12,9 @@ export function ApiProvider({ children }) {
   const {
     setAccessToken,
     setRefreshToken,
+    accessTokenHeader,
     refreshTokenHeader,
-    setUserId
+    setUser
   } = useDataStore();
   const request = useAxios();
 
@@ -50,7 +51,7 @@ export function ApiProvider({ children }) {
     if (result.success) {
       setAccessToken(result.response.data.accessToken);
       setRefreshToken(result.response.data.refreshToken);
-      setUserId(result.response.data.userId);
+      setUser(result.response.data.user);
     }
     return result;
   }
@@ -71,11 +72,29 @@ export function ApiProvider({ children }) {
     return result;
   }
 
+  /**
+   * Get user profile
+   * @param {String} userId userId
+   * @returns response body
+   */
+  async function getUserProfile(userId) {
+    const result = await request({
+      method: 'GET',
+      url: `/user/${userId}`,
+      headers: accessTokenHeader()
+    });
+    if (result.success) {
+      setUser(result.response.data);
+    }
+    return result;
+  }
+
   return (
     <ApiContext.Provider value={{
       refreshAccessToken,
       login,
-      signup
+      signup,
+      getUserProfile
     }}
     >
       {children}

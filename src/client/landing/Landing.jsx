@@ -4,9 +4,6 @@ import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import AppImage from './Icon@4x.png';
 
-// This is the homepage of our website, shown to the user when
-// they are not logged in.
-
 export default function App() {
   return (
     <div>

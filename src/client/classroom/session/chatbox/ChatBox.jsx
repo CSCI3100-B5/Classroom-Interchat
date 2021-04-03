@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MessageList from './MessageList.jsx';
 import MessageCompose from './MessageCompose.jsx';
-
-// A part of the classroom session page. A combination of the message
-// list and the send message text box.
+import CreateQuiz from './CreateQuiz.jsx';
 
 export default function ChatBox() {
+  const [showCreateQuiz, setShowCreateQuiz] = useState(false);
+  if (showCreateQuiz) {
+    return (
+      <div>
+        <CreateQuiz onBack={() => setShowCreateQuiz(false)} />
+      </div>
+    );
+  }
   return (
     <div>
       <MessageList />
-      <MessageCompose />
+      <MessageCompose onCreateQuiz={() => setShowCreateQuiz(true)} />
     </div>
   );
 }

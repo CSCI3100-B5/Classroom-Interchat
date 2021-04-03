@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
-// The message history, belonging to the chatbox.
-
 export default function MessageList() {
-  const [messageList] = useState([
-    {
-      type: 'Text',
-      text: 'message text',
-      sender: 'name',
-      timestamp: new Date(),
-    },
-    {
-      type: 'Quiz',
-      text: 'message text 2',
-      sender: 'name2',
-      timestamp: new Date(),
-    }
-  ]);
+  const { messages } = useDataStore();
+
+  const unresolvedQuestions = messages.filter(x => x.type === 'question' && !x.content.isResolved);
+
+  // TODO: filter by thread
+  // TODO: filter unresolved questions only
+  // TODO: collapse multiple messages
+
   return (
     <div>
+      {unresolvedQuestions.length ? (
+        <div>
+          {unresolvedQuestions.length}
+          {' '}
+          unresolved questions
+        </div>
+      ) : null}
       <ul>
         {
-          messageList.map(message => (
-            <li><Message message={message} /></li>
+          messages.map(message => (
+            <li key={message.id}><Message message={message} /></li>
           ))
         }
       </ul>
