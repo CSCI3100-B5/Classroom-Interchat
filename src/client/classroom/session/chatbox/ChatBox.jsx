@@ -8,7 +8,7 @@ export default function ChatBox() {
   if (showCreateQuiz) {
     return (
       <div>
-        <CreateQuiz />
+        <CreateQuiz onBack={() => setShowCreateQuiz(false)} />
       </div>
     );
   }
