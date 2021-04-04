@@ -28,6 +28,7 @@ export function DataStoreProvider({ children }) {
     user: savedUser
   });
 
+  // if accessToken/refreshToken/user changes, save them to localStorage
   useEffect(() => {
     if (data.rememberMe) saveAccessToken(data.accessToken);
   }, [data.rememberMe, data.accessToken]);

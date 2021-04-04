@@ -20,9 +20,6 @@ export function SocketProvider({ children }) {
     const newSocket = io(
       env.hostUrl,
       {
-        // auth: {
-        //   token: accessToken
-        // },
         extraHeaders: {
           Authorization: `Bearer ${data.accessToken}`
         }
@@ -31,7 +28,7 @@ export function SocketProvider({ children }) {
     console.log(`Socket connecting to ${env.hostUrl}`);
     setSocket(newSocket);
     newSocket.on('connect_error', (err) => {
-      console.log(err);
+      console.log('Socket connection error ', err);
       // TODO: on error prompt the user to log in again
       // TODO: DEBUG history.push('/auth');
     });

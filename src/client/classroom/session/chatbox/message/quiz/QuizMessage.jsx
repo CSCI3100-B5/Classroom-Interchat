@@ -9,7 +9,7 @@ import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 export default function QuizMessage({ message }) {
   const { data } = useDataStore();
   let quiz;
-  if (message.content.type === 'SAQ') {
+  if (message.type === 'saq') {
     if (message.content.result) {
       quiz = (<SAQResult message={message} />);
     } else {

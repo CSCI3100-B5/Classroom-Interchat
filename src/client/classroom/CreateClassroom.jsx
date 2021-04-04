@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Button, Form, Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useRealtime } from '../contexts/RealtimeProvider.jsx';
 
 
 const schema = yup.object().shape({
@@ -18,15 +19,19 @@ export default function CreateClassroom() {
 
   const history = useHistory();
 
-  // TODO: use data store
-  // const { data } = useDataStore();
+  const { createClassroom } = useRealtime();
 
-  // TODO: use create classroom socket API
+  const { data } = useDataStore();
+
+  useEffect(() => {
+    if (data.classroomMeta) history.push('/classroom/session');
+  }, [data.classroomMeta]);
 
   const onSubmit = async (values) => {
     // TODO: call create classroom API
     // TODO: remember to store classroom in data store
-    history.push('/classroom/session');
+    // history.push('/classroom/session');
+    createClassroom(values.classroomName);
   };
 
   return (

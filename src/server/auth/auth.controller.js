@@ -25,10 +25,10 @@ async function login(req, res, next) {
     return next(err);
   }
   const refreshId = crypto.randomBytes(16).toString('hex');
-  const payload = { userId: user.id, tokenId: refreshId };
+  const payload = { userId: user.id, authTokenId: refreshId };
   const accessToken = generateAccessToken(payload);
   const refreshToken = jwt.sign(payload, config.refreshTokenSecret);
-  user.tokenIds.push(refreshId);
+  user.authTokenIds.push(refreshId);
   try {
     await user.save();
   } catch (e) {
@@ -37,13 +37,7 @@ async function login(req, res, next) {
   return res.json({
     accessToken,
     refreshToken,
-    user: {
-      name: user.name,
-      email: user.email,
-      id: user.id,
-      isAdmin: user.isAdmin,
-      createdAt: user.createdAt
-    }
+    user: user.filterSafe()
   });
 }
 
@@ -63,13 +57,7 @@ async function signup(req, res, next) {
     });
     await user.setPassword(req.body.password);
     await user.newEmailVerification();
-    return res.json({
-      name: user.name,
-      email: user.email,
-      id: user.id,
-      createdAt: user.createdAt,
-      isAdmin: user.isAdmin
-    });
+    return res.json(user.filterSafe());
   } catch (e) {
     return next(e);
   }
@@ -85,10 +73,10 @@ async function signup(req, res, next) {
 async function token(req, res, next) {
   // req.payload and req.invoker is assigned if valid token is provided
   const user = req.invoker;
-  if (!user.isTokenIdValid(req.payload.tokenId)) {
+  if (!user.isAuthTokenIdValid(req.payload.authTokenId)) {
     return next(new APIError('This refresh token has expired', httpStatus.FORBIDDEN, true));
   }
-  const payload = { userId: user.id, tokenId: req.payload.tokenId };
+  const payload = { userId: user.id, authTokenId: req.payload.authTokenId };
   const accessToken = generateAccessToken(payload);
   return res.json({
     accessToken,
@@ -102,7 +90,7 @@ async function token(req, res, next) {
 async function logout(req, res, next) {
   // req.payload and req.invoker is assigned if valid token is provided
   try {
-    await req.invoker.invalidateTokenId(req.payload.tokenId);
+    await req.invoker.invalidateAuthTokenId(req.payload.authTokenId);
   } catch (e) {
     return next(e);
   }

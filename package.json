@@ -17,6 +17,7 @@
     "bcrypt": "^5.0.1",
     "bluebird": "^3.7.2",
     "bootstrap": "^4.6.0",
+    "cachegoose": "^8.0.0",
     "compose-middleware": "^5.0.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",

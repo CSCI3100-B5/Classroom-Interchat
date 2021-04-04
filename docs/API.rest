@@ -7,38 +7,52 @@
 Token object
 {
   "id": "<token id>",
-  "createdBy": "<user id>",
-  "receivedBy": "<user id>",
+  "createdBy": "<REF user id>",
+  "receivedBy": "<REF user id>",
   "createdAt": "<timestmap>",
-  "classroom": "<classroom id>",
+  "classroom": "<REF classroom id>",
   "isValid": boolean,
   "value": "<string>"
 }
 
 User object
 {
+  "id": "<user id>",
   "name": "<string>",
   "email": "<email>",
   "password": "<hash>",
-  "id": "<user id>",
   "isAdmin": boolean,
   "createdAt": "<timestamp>",
-  "tokenIds": [ "<string>" ],  // IDs of refresh and access tokens. Refresh tokens are only valid if their IDs are in this array
+  "authTokenIds": [ "<string>" ],  // IDs of refresh and access tokens. Refresh tokens are only valid if their IDs are in this array
   "emailVerification": "<string>" | null,  // the email verification code sent to user, null when email is already verified
-  "lastVerifiedEmail": "<email>"
+  "lastVerifiedEmail": "<email>",
+  "tokens": [ "<REF token id>" ]
 }
 
 Classroom object
 {
-  "name": "<string>",
   "id": "<classroom id>",
-  "host": "<user id>",
+  "name": "<string>",
+  "host": "<REF user id>",
   "createdAt": "<timestmap>",
   "participants": {
-    "userId": "<user id>",
+    "user": "<REF user id>",
     "permission": "instructor/student/requesting",
     "isMuted": boolean
   },
+  "messages": [ "<REF message id>" ],
+  "isMuted": boolean
+}
+
+// This object is not stored to the database. It is sent
+// by the server for previewing classroom before joining
+PeekClassroom response
+{
+  "id": "<classroom id>",
+  "name": "<string>",
+  "host": "<REF user id>",
+  "createdAt": "<timestmap>",
+  "participantCount": number,
   "isMuted": boolean
 }
 
@@ -46,15 +60,17 @@ Message object
 {
   "id": "<message id>",
   "createdAt": "<timestamp>",
-  "classroom": "<classroom id>",
-  "sender": "<user id>",
-  "type": "text|quiz|status|question|reply",
-  "content": "<string>"  // text content or status content
-  | {  // quiz content
-    "type": "SAQ|MCQ",
+  "classroom": "<REF classroom id>",
+  "sender": "<REF user id>",
+  "type": "text|mcq|saq|question|reply",
+  "content": "<string>"  // text content
+  | {  // saq content
     "prompt": "<string>",
-    "choices": [ "<string>" ],   // only MCQ
-    "correct": [ number ],     // only MCQ // index of correct answer inside "choices"
+  }
+  | {  // mcq content
+    "prompt": "<string>",
+    "choices": [ "<string>" ],
+    "correct": [ number ],     // index of correct answer inside "choices"
     "multiSelect": boolean
   }
   | { // question content
@@ -62,7 +78,7 @@ Message object
     "content": "<string>"
   }
   | { // reply content
-    "replyTo": "<message id>",
+    "replyTo": "<REF message id>", // replyTo should not be populated
     "content": "<string>"
   }
 }
@@ -70,7 +86,7 @@ Message object
 // This object is not saved to the database, but is what the client receives
 // from server when a new quiz arrives
 // This object is embedded into Message.content
-QuizContent object
+QuizContent repsonse
 {
   "type": "SAQ|MCQ",
   "prompt": "<string>",
@@ -81,7 +97,7 @@ QuizContent object
 // This object is also not saved to the database, but is what the client receives
 // from server when a quiz result is released
 // This object is embedded into Message.content
-QuizContentWithResult object
+QuizContentWithResult repsonse
 {
   "type": "SAQ|MCQ",
   "prompt": "<string>",
@@ -100,7 +116,7 @@ QuizContentWithResult object
 QuizAnswer object
 {
   "id": "<quizanswer id>",
-  "quizId": "<message id>",
+  "quiz": "<REF message id>",
   "createdAt": "<timestamp>",
   "content": "<string>" | [ number ]
 }
