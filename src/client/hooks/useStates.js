@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+// This is a wrapper for useState
+
 let globalInstantUpdate = false;
 
 export function setGlobalInstantUpdate(value) {

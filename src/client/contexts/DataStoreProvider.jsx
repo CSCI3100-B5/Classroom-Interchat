@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { useStates } from '../useStates.js';
+import { useStates } from '../hooks/useStates.js';
 
 const DataStoreContext = React.createContext();
 
