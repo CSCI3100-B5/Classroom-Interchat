@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const cachegoose = require('cachegoose');
 const util = require('util');
 const debug = require('debug')('classroom-interchat:index');
 
@@ -26,6 +27,9 @@ if (config.mongooseDebug) {
     debug(`${collectionName}.${method}`, util.inspect(query, false, 20), doc);
   });
 }
+
+// setup cachegoose
+cachegoose(mongoose);
 
 // listen on port config.port
 server.listen(config.port, () => {
