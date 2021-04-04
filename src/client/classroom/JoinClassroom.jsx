@@ -32,8 +32,8 @@ export default function JoinClassroom() {
     // TODO: call join classroom API
     // store an example classroom state for UI testing
     data.classroomMeta = {
-      name: 'CSCI3100',
       id: 'wdefbgtrh54ger',
+      name: 'CSCI3100',
       host: {
         id: 'defvfbrgfrvgdbr',
         name: 'Michael',

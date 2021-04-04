@@ -8,17 +8,18 @@ import ReplyMessage from './ReplyMessage.jsx';
 function Message({ message }) {
   return (
     <div>
-      <p>{message.sender.name}</p>
+      {message.sender ? (<p>{message.sender.name}</p>) : null}
       <p>{message.createdAt.toString()}</p>
       {
         (() => {
           switch (message.type) {
             case 'text':
-              return (<TextMessage message={message} />);
-            case 'quiz':
-              return (<QuizMessage message={message} />);
-            case 'status':
+              if (message.sender) return (<TextMessage message={message} />);
               return (<StatusMessage message={message} />);
+            case 'mcq':
+            case 'saq':
+              // TODO: update message structure
+              return (<QuizMessage message={message} />);
             case 'question':
               return (<QuestionMessage message={message} />);
             case 'reply':

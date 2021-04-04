@@ -14,7 +14,7 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const winstonInstance = require('./winston');
 const routes = require('../index.route');
-const listeners = require('../index.listener');
+const events = require('../index.events');
 const config = require('./config');
 const APIError = require('../helpers/APIError');
 const middlewareWrap = require('../helpers/middlewareWrap');
@@ -35,7 +35,7 @@ const io = socketio(server, {
 io.use(middlewareWrap(requireAccessToken));
 
 io.on('connection', (socket) => {
-  listeners(socket, io);
+  events(socket, io);
 });
 
 if (config.env === 'development') {

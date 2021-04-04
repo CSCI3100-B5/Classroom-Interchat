@@ -15,7 +15,6 @@ const { Schema } = mongoose;
  */
 const UserSchema = new Schema({
   // the actual database field name is _id, but you can access it with id
-  _id: Schema.Types.ObjectId,
   name: {
     type: String,
     required: true
@@ -67,6 +66,15 @@ const UserSchema = new Schema({
  * Methods
  */
 UserSchema.method({
+  filterSafe() {
+    return {
+      name: this.name,
+      email: this.email,
+      id: this.id,
+      isAdmin: this.isAdmin,
+      createdAt: this.createdAt
+    };
+  },
   isAuthTokenIdValid(authTokenId) {
     return this.authTokenIds.includes(authTokenId);
   },

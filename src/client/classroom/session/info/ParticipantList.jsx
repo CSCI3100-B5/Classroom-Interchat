@@ -9,10 +9,10 @@ function ParticipantList() {
     <ul>
       {
         data.participants.map(x => (
-          <li key={x.name}>
-            {x.name}
+          <li key={x.user.name}>
+            {x.user.name}
             {(() => {
-              if (x.id === data.classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
+              if (x.user.id === data.classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
               if (x.permission === 'instructor') return (<Badge variant="success">INSTRUCTOR</Badge>);
               if (x.permission === 'requesting') return (<Badge variant="secondary">REQUESTING</Badge>);
               return null;

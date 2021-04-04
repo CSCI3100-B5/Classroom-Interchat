@@ -9,7 +9,6 @@ const { Schema } = mongoose;
  * Classroom Schema
  */
 const ClassroomSchema = new Schema({
-  _id: Schema.Types.ObjectId,
   name: {
     type: String,
     required: true
@@ -22,19 +21,23 @@ const ClassroomSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  participants: [{
+  participants: [new Schema({
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User'
     },
     permission: {
       type: String,
-      enum: ['instructur', 'student', 'requesting']
+      enum: ['instructor', 'student', 'requesting']
     },
     isMuted: {
       type: Boolean,
       default: false
     }
+  })],
+  messages: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Message'
   }],
   isMuted: {
     type: Boolean,
@@ -53,6 +56,21 @@ const ClassroomSchema = new Schema({
  * Methods
  */
 ClassroomSchema.method({
+  filterSafe() {
+    return {
+      id: this.id,
+      name: this.name,
+      host: this.populated('host') ? this.host.filterSafe() : this.host,
+      createdAt: this.createdAt,
+      participants: this.participants.map(x => ({
+        user: this.populated('participants.user') ? x.user.filterSafe() : x.user,
+        permission: x.permission,
+        isMuted: x.isMuted
+      })),
+      messages: this.populated('messages') ? this.messages.map(x => x.filterSafe()) : this.messages,
+      isMuted: this.isMuted
+    };
+  }
 });
 
 /**

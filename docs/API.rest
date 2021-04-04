@@ -40,6 +40,19 @@ Classroom object
     "permission": "instructor/student/requesting",
     "isMuted": boolean
   },
+  "messages": [ "<REF message id>" ],
+  "isMuted": boolean
+}
+
+// This object is not stored to the database. It is sent
+// by the server for previewing classroom before joining
+PeekClassroom response
+{
+  "id": "<classroom id>",
+  "name": "<string>",
+  "host": "<REF user id>",
+  "createdAt": "<timestmap>",
+  "participantCount": number,
   "isMuted": boolean
 }
 
@@ -49,13 +62,15 @@ Message object
   "createdAt": "<timestamp>",
   "classroom": "<REF classroom id>",
   "sender": "<REF user id>",
-  "type": "text|quiz|status|question|reply",
-  "content": "<string>"  // text content or status content
-  | {  // quiz content
-    "type": "SAQ|MCQ",
+  "type": "text|mcq|saq|question|reply",
+  "content": "<string>"  // text content
+  | {  // saq content
     "prompt": "<string>",
-    "choices": [ "<string>" ],   // only MCQ
-    "correct": [ number ],     // only MCQ // index of correct answer inside "choices"
+  }
+  | {  // mcq content
+    "prompt": "<string>",
+    "choices": [ "<string>" ],
+    "correct": [ number ],     // index of correct answer inside "choices"
     "multiSelect": boolean
   }
   | { // question content
@@ -71,7 +86,7 @@ Message object
 // This object is not saved to the database, but is what the client receives
 // from server when a new quiz arrives
 // This object is embedded into Message.content
-QuizContent object
+QuizContent repsonse
 {
   "type": "SAQ|MCQ",
   "prompt": "<string>",
@@ -82,7 +97,7 @@ QuizContent object
 // This object is also not saved to the database, but is what the client receives
 // from server when a quiz result is released
 // This object is embedded into Message.content
-QuizContentWithResult object
+QuizContentWithResult repsonse
 {
   "type": "SAQ|MCQ",
   "prompt": "<string>",

@@ -37,13 +37,7 @@ async function login(req, res, next) {
   return res.json({
     accessToken,
     refreshToken,
-    user: {
-      name: user.name,
-      email: user.email,
-      id: user.id,
-      isAdmin: user.isAdmin,
-      createdAt: user.createdAt
-    }
+    user: user.filterSafe()
   });
 }
 
@@ -63,13 +57,7 @@ async function signup(req, res, next) {
     });
     await user.setPassword(req.body.password);
     await user.newEmailVerification();
-    return res.json({
-      name: user.name,
-      email: user.email,
-      id: user.id,
-      createdAt: user.createdAt,
-      isAdmin: user.isAdmin
-    });
+    return res.json(user.filterSafe());
   } catch (e) {
     return next(e);
   }

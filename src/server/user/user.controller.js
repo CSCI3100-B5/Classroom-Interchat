@@ -22,13 +22,7 @@ function get(req, res, next) {
   if (req.invoker.id !== req.user.id && !req.invoker.isAdmin) {
     return next(new APIError("Cannot access others' profiles", httpStatus.FORBIDDEN, true));
   }
-  return res.json({
-    name: req.user.name,
-    email: req.user.email,
-    id: req.user.id,
-    isAdmin: req.user.isAdmin,
-    createdAt: req.user.createdAt
-  });
+  return res.json(req.user.filterSafe());
 }
 
 /**
@@ -80,13 +74,7 @@ async function update(req, res, next) {
     }
     if (req.body.password) await user.setPassword(req.body.password);
     else await user.save();
-    return res.json({
-      name: req.user.name,
-      email: req.user.email,
-      id: req.user.id,
-      isAdmin: req.user.isAdmin,
-      createdAt: req.user.createdAt
-    });
+    return res.json(user.filterSafe());
   } catch (e) {
     return next(e);
   }
