@@ -12,7 +12,7 @@ export function useSocket() {
 
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
-  const { accessToken, userId } = useDataStore();
+  const { data } = useDataStore();
 
   const history = useHistory();
 
@@ -24,7 +24,7 @@ export function SocketProvider({ children }) {
         //   token: accessToken
         // },
         extraHeaders: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${data.accessToken}`
         }
       }
     );
@@ -37,7 +37,7 @@ export function SocketProvider({ children }) {
     });
 
     return () => newSocket.close();
-  }, [userId]);
+  }, [data.user]);
 
   return (
     <SocketContext.Provider value={socket}>

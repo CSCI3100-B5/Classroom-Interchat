@@ -11,31 +11,26 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 export default function Auth() {
   const { getUserProfile } = useApi();
-  const {
-    refreshToken,
-    setRefreshToken,
-    user,
-    setUser
-  } = useDataStore();
+  const { data } = useDataStore();
 
   const history = useHistory();
 
   useEffect(() => {
     (async () => {
-      if (refreshToken && user) {
-        const result = await getUserProfile(user.id);
+      if (data.refreshToken && data.user) {
+        const result = await getUserProfile(data.user.id);
         console.log(result);
         if (result.success) {
           history.push('/account');
         } else {
-          setRefreshToken(null);
-          setUser(null);
+          data.refreshToken = null;
+          data.user = null;
         }
       }
     })();
   }, []);
 
-  if (refreshToken) return (<p>Loading...</p>);
+  if (data.refreshToken) return (<p>Loading...</p>);
   return (
     <Container>
       <Row>

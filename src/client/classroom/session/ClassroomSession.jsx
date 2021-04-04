@@ -6,15 +6,15 @@ import { useDataStore } from '../../contexts/DataStoreProvider.jsx';
 
 export default function ClassroomSession() {
   const history = useHistory();
-  const { classroomMeta } = useDataStore();
+  const { data } = useDataStore();
 
   useEffect(() => {
-    if (!classroomMeta) {
+    if (!data.classroomMeta) {
       console.log('Classroom meta does not exist, re-routing to join classroom');
       history.push('/classroom');
     }
   }, []);
-  if (!classroomMeta) return (<p>No session detected...</p>);
+  if (!data.classroomMeta) return (<p>No session detected...</p>);
   return (
     <div>
       <ClassroomInfo />

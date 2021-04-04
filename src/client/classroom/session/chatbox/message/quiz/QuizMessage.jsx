@@ -7,7 +7,7 @@ import MCQResult from './MCQResult.jsx';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 
 export default function QuizMessage({ message }) {
-  const { user } = useDataStore();
+  const { data } = useDataStore();
   let quiz;
   if (message.content.type === 'SAQ') {
     if (message.content.result) {
@@ -24,7 +24,7 @@ export default function QuizMessage({ message }) {
     <div>
       <Badge>QUIZ</Badge>
       {quiz}
-      {message.sender.id === user.id ? (
+      {message.sender.id === data.user.id ? (
         <>
           <Button>End quiz</Button>
           <Button>Release results</Button>

@@ -21,17 +21,17 @@ export default function JoinClassroom() {
 
   const history = useHistory();
 
-  const { setClassroomMeta, setParticipants, setMessages } = useDataStore();
+  const { data } = useDataStore();
 
   // TODO: use data store
-  // const { ... } = useDataStore();
+  // const { data } = useDataStore();
 
   // TODO: use join classroom socket API
 
   const onSubmit = async (values) => {
     // TODO: call join classroom API
     // store an example classroom state for UI testing
-    setClassroomMeta({
+    data.classroomMeta = {
       name: 'CSCI3100',
       id: 'wdefbgtrh54ger',
       host: {
@@ -41,8 +41,8 @@ export default function JoinClassroom() {
       },
       createdAt: new Date(),
       isMuted: false
-    });
-    setParticipants([
+    };
+    data.participants = [
       {
         id: 'defvfbrgfrvgdbr',
         name: 'Michael',
@@ -78,8 +78,8 @@ export default function JoinClassroom() {
         permission: 'student',
         isMuted: false
       }
-    ]);
-    setMessages([
+    ];
+    data.messages = [
       {
         id: 'edwrtehgrwf',
         createdAt: new Date(),
@@ -317,7 +317,7 @@ export default function JoinClassroom() {
           content: 'Answering question'
         }
       }
-    ]);
+    ];
     history.push('/classroom/session');
   };
 

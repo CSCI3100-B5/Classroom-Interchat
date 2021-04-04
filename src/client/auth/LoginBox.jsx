@@ -21,10 +21,7 @@ export default function LoginBox() {
   const history = useHistory();
 
   const { login } = useApi();
-  const {
-    rememberMe,
-    setRememberMe,
-  } = useDataStore();
+  const { data } = useDataStore();
 
   const onSubmit = async (values) => {
     const result = await login(values.email, values.password);
@@ -53,7 +50,7 @@ export default function LoginBox() {
         initialValues={{
           email: '',
           password: '',
-          rememberMe
+          rememberMe: data.rememberMe
         }}
       >
         {({
@@ -98,7 +95,10 @@ export default function LoginBox() {
                 name="rememberMe"
                 label="Remember me"
                 checked={values.rememberMe}
-                onChange={(event) => { handleChange(event); setRememberMe(event.target.checked); }}
+                onChange={(event) => {
+                  handleChange(event);
+                  data.rememberMe = event.target.checked;
+                }}
                 isInvalid={!!errors.rememberMe}
                 feedback={errors.rememberMe}
               />

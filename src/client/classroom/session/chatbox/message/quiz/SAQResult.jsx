@@ -7,7 +7,7 @@ import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 
 export default function SAQResult({ message }) {
   const [groupView, setGroupView] = useState(true);
-  const { user } = useDataStore();
+  const { data } = useDataStore();
   let answerDigest = [];
   if (groupView) {
     message.content.result.forEach((x, id) => {
@@ -65,7 +65,7 @@ export default function SAQResult({ message }) {
                   <ToggleButton
                     required
                     className="m-1"
-                    disabled={message.sender.id !== user.id}
+                    disabled={message.sender.id !== data.user.id}
                     variant="outline-primary"
                     type="radio"
                     key={x.id}
@@ -87,7 +87,7 @@ export default function SAQResult({ message }) {
                 ))}
               </ButtonGroup>
             </Form.Group>
-            {message.sender.id === user.id ? (<Button type="submit">Award Token</Button>) : null }
+            {message.sender.id === data.user.id ? (<Button type="submit">Award Token</Button>) : null }
           </Form>
         )}
       </Formik>
