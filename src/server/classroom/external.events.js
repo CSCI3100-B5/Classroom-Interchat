@@ -9,7 +9,7 @@ const externalCtrl = require('./external.controller');
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
-module.exports = function externalListener(socket, io) {
+module.exports = function externalEvents(socket, io) {
   const events = new SocketValidatedEvents(socket, io);
 
   events.on('create classroom', paramValidation.createClassroom, externalCtrl.createClassroom);

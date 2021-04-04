@@ -18,7 +18,6 @@ function Message({ message }) {
               return (<StatusMessage message={message} />);
             case 'mcq':
             case 'saq':
-              // TODO: update message structure
               return (<QuizMessage message={message} />);
             case 'question':
               return (<QuestionMessage message={message} />);

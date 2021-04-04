@@ -9,11 +9,23 @@ const choicesSchema = {};
 const choicesDefault = {};
 
 for (let i = 0; i < 10; i++) {
-  choicesSchema[`choice${i}`] = yup.mixed().test(
-    `choice${i}-filled`,
-    'This choice must not be empty',
-    (value, context) => context.parent.type !== 'MCQ' || context.parent.choiceCount <= i || value
-  );
+  choicesSchema[`choice${i}`] = yup.mixed()
+    .test(
+      `choice${i}-filled`,
+      'This choice must not be empty',
+      (value, context) => context.parent.type !== 'MCQ' || context.parent.choiceCount <= i || value
+    )
+    .test(
+      `choice${i}-unique`,
+      'This choice must be unique',
+      (value, context) => {
+        if (context.parent.type !== 'MCQ' || context.parent.choiceCount <= i) return true;
+        for (let j = 0; j < context.parent.choiceCount; j++) {
+          if (j !== i && context.parent[`choice${j}`] === value) return false;
+        }
+        return true;
+      }
+    );
   choicesSchema[`choice${i}correct`] = yup.bool().required();
   choicesDefault[`choice${i}`] = '';
   choicesDefault[`choice${i}correct`] = false;
@@ -30,6 +42,19 @@ const schema = yup.object().shape({
         if (context.parent.type !== 'MCQ') return true;
         for (let i = 0; i < value; i++) {
           if (!context.parent[`choice${i}`]) return false;
+        }
+        return true;
+      },
+    )
+    .test(
+      'all-choices-unique',
+      'Not all choices are unique',
+      (value, context) => {
+        if (context.parent.type !== 'MCQ') return true;
+        for (let i = 0; i < value; i++) {
+          for (let j = i + 1; j < value; j++) {
+            if (context.parent[`choice${i}`] === context.parent[`choice${j}`]) return false;
+          }
         }
         return true;
       },

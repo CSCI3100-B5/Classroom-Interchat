@@ -78,7 +78,7 @@ Message object
     "content": "<string>"
   }
   | { // reply content
-    "replyTo": "<REF message id>",
+    "replyTo": "<REF message id>", // replyTo should not be populated
     "content": "<string>"
   }
 }

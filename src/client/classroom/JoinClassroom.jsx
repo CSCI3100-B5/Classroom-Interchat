@@ -44,37 +44,57 @@ export default function JoinClassroom() {
     };
     data.participants = [
       {
-        id: 'defvfbrgfrvgdbr',
-        name: 'Michael',
-        email: 'michael@classroom-interchat.ml',
+        user: {
+          id: 'defvfbrgfrvgdbr',
+          name: 'Michael',
+          email: 'michael@classroom-interchat.ml',
+          isAdmin: false,
+          createdAt: new Date()
+        },
         permission: 'instructor',
         isMuted: false
       },
       {
-        id: '6065c03c3ae34451fc031004',
-        name: 'Administrator',
-        email: 'admin@classroom-interchat.ml',
+        user: {
+          id: '6065c03c3ae34451fc031004',
+          name: 'Administrator',
+          email: 'admin@classroom-interchat.ml',
+          isAdmin: true,
+          createdAt: new Date()
+        },
         permission: 'instructor',
         isMuted: false
       },
       {
-        id: 'frgth4htb',
-        name: 'Henry',
-        email: 'henry@classroom-interchat.ml',
+        user: {
+          id: 'frgth4htb',
+          name: 'Henry',
+          email: 'henry@classroom-interchat.ml',
+          isAdmin: false,
+          createdAt: new Date()
+        },
         permission: 'requesting',
         isMuted: false
       },
       {
-        id: 'efvrfbtnrn',
-        name: 'Jimmy',
-        email: 'jimmy@classroom-interchat.ml',
+        user: {
+          id: 'efvrfbtnrn',
+          name: 'Jimmy',
+          email: 'jimmy@classroom-interchat.ml',
+          isAdmin: false,
+          createdAt: new Date()
+        },
         permission: 'student',
         isMuted: false
       },
       {
-        id: 'efvfbetnj4',
-        name: 'Ann',
-        email: 'ann@classroom-interchat.ml',
+        user: {
+          id: 'efvfbetnj4',
+          name: 'Ann',
+          email: 'ann@classroom-interchat.ml',
+          isAdmin: false,
+          createdAt: new Date()
+        },
         permission: 'student',
         isMuted: false
       }
@@ -105,9 +125,8 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'quiz',
+        type: 'mcq',
         content: {
-          type: 'MCQ',
           prompt: 'How many bits in 8 bytes?',
           choices: [
             '1', '2', '4', '8', '16', '64'
@@ -126,9 +145,8 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'quiz',
+        type: 'mcq',
         content: {
-          type: 'MCQ',
           prompt: 'Select true?',
           choices: [
             'T', 't', 'True', 'f', 'F', 'false'
@@ -147,9 +165,8 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'quiz',
+        type: 'mcq',
         content: {
-          type: 'MCQ',
           prompt: 'Select true?',
           choices: [
             'T', 't', 'True', 'f', 'F', 'false'
@@ -186,9 +203,8 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'quiz',
+        type: 'mcq',
         content: {
-          type: 'MCQ',
           prompt: 'Select true?',
           choices: [
             'T', 't', 'True', 'f', 'F', 'false'
@@ -224,9 +240,8 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'quiz',
+        type: 'saq',
         content: {
-          type: 'SAQ',
           prompt: 'Type some answer...'
         }
       },
@@ -241,9 +256,8 @@ export default function JoinClassroom() {
           permission: 'instructor',
           isMuted: false
         },
-        type: 'quiz',
+        type: 'saq',
         content: {
-          type: 'SAQ',
           prompt: 'Type some answer...',
           result: [
             {
@@ -273,14 +287,8 @@ export default function JoinClassroom() {
         id: 'rvbtnryntb',
         createdAt: new Date(),
         classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'status',
+        sender: null,
+        type: 'text',
         content: 'System status message'
       },
       {

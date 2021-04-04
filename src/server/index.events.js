@@ -1,4 +1,4 @@
-const external = require('./classroom/external.events');
+const externalEvents = require('./classroom/external.events');
 const User = require('./models/user.model');
 const Classroom = require('./models/classroom.model');
 const config = require('./config/config');
@@ -8,7 +8,7 @@ const config = require('./config/config');
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
-module.exports = function indexListener(socket, io) {
+module.exports = function indexEvents(socket, io) {
   // Wrap the event data in an object
   socket.use(async (event, next) => {
     event[1] = { payload: event[1] };
@@ -31,5 +31,5 @@ module.exports = function indexListener(socket, io) {
   if (config.env === 'development') socket.onAny((...args) => console.log(args));
 
   // TODO: GUIDE: register all listeners here
-  external(socket, io);
+  externalEvents(socket, io);
 };

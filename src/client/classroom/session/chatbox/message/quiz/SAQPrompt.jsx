@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import { useStates, bindState } from '../../../../../hooks/useStates.js';
 
 export default function SAQPrompt({ message }) {
-  const [answer, setAnswer] = useState('');
+  const data = useStates({
+    answer: ''
+  });
   const onSubmit = () => {
     // TODO: send answer to server
+    console.log(data.answer);
   };
   return (
     <div>
@@ -13,8 +17,7 @@ export default function SAQPrompt({ message }) {
         <FormControl
           placeholder="Type your answer..."
           aria-label="Type your answer"
-          value={answer}
-          onChange={e => setAnswer(e.target.value)}
+          {...bindState(data.$answer)}
         />
         <InputGroup.Append>
           <Button variant="outline-secondary" onClick={onSubmit}>Send</Button>
