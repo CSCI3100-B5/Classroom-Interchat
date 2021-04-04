@@ -9,11 +9,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDU0Y
 
 POST http://localhost:8080/api/user
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDU0YTMzY2E5Zjk2ZmU0Y2I0NjI4ZjYiLCJ0b2tlbklkIjoiNmY3YTJlZWFiZmJhMzk4ZDZiZTYxYjRjZmFmZDc3MmYiLCJpYXQiOjE2MTYxNjA0MjYsImV4cCI6MTYxNjE2MTAyNn0.vBk08pE1f4cMrtVqXGIU9C8mUiEicPlpEQiaj1nJe6E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDY1YzAzYzNhZTM0NDUxZmMwMzEwMDQiLCJ0b2tlbklkIjoiMGZhZTU2NzcwM2YyNTFjZGRjNTg1NDQzOWRmOGQ3MzgiLCJpYXQiOjE2MTc1MDg2NjksImV4cCI6MTYxNzUwOTI2OX0.o7LS7yboE6-ciEKlV7gf4dElz9mE7Xrcj0ViaFSL1Fk
 
 {
-  "name": "Administrator",
-  "password": "password"
+  "email": "henry2@classroom-interchat.ml",
+  "password": "password",
+  "name": "Henry",
+  "isAdmin": false
 }
 
 ###
@@ -22,7 +24,7 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "name": "Administrator",
+  "email": "admin@classroom-interchat.ml",
   "password": "password"
 }
 

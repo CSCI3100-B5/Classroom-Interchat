@@ -17,6 +17,7 @@ export function RealtimeProvider({ children }) {
 
   useEffect(() => {
     if (socket) socket.onAny((...args) => console.log(args));
+    setInterval(() => socket?.emit('hello world', {}), 1000);
   }, [socket]);
 
   return (
