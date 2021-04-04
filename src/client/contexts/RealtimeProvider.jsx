@@ -10,10 +10,8 @@ export function useRealtime() {
 
 export function RealtimeProvider({ children }) {
   const {
-    setAccessToken,
-    setRefreshToken,
+    data,
     refreshTokenHeader,
-    setUserId
   } = useDataStore();
   const socket = useSocket();
 

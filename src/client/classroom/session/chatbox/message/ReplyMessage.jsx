@@ -3,7 +3,7 @@ import { Badge } from 'react-bootstrap';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 
 export default function ReplyMessage({ message }) {
-  const { messages } = useDataStore();
+  const { data } = useDataStore();
   return (
     <div>
       <Badge>REPLY</Badge>
@@ -11,7 +11,7 @@ export default function ReplyMessage({ message }) {
       <p className="text-muted">
         Replying to
         {' '}
-        {messages.find(x => x.id === message.content.replyTo).content.content}
+        {data.messages.find(x => x.id === message.content.replyTo).content.content}
       </p>
     </div>
   );

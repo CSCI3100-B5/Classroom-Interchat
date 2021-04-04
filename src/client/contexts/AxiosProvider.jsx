@@ -11,9 +11,8 @@ export function useAxios() {
 
 export function AxiosProvider({ children }) {
   const {
-    setAccessToken,
+    data,
     refreshTokenHeader,
-    setRefreshToken
   } = useDataStore();
   const [axios] = useState(() => axiosStatic.create({
     baseURL: env.apiBase
@@ -50,7 +49,7 @@ export function AxiosProvider({ children }) {
       url: '/auth/token',
       headers: refreshTokenHeader()
     });
-    if (result.success) setAccessToken(result.response.data.accessToken);
+    if (result.success) data.accessToken = result.response.data.accessToken;
     return result;
   }
 
@@ -78,13 +77,13 @@ export function AxiosProvider({ children }) {
               return axios(error.response.config);
             }
 
-            setAccessToken(null);
-            setRefreshToken(null);
+            data.accessToken = null;
+            data.refreshToken = null;
             // TODO: should route to /login
             return Promise.reject(error);
           }).catch((e) => {
-            setAccessToken(null);
-            setRefreshToken(null);
+            data.accessToken = null;
+            data.refreshToken = null;
             // TODO: should route to /login
             return Promise.reject(e);
           })

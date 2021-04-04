@@ -3,9 +3,9 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
 export default function MessageList() {
-  const { messages } = useDataStore();
+  const { data } = useDataStore();
 
-  const unresolvedQuestions = messages.filter(x => x.type === 'question' && !x.content.isResolved);
+  const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
 
   // TODO: filter by thread
   // TODO: filter unresolved questions only
@@ -22,7 +22,7 @@ export default function MessageList() {
       ) : null}
       <ul>
         {
-          messages.map(message => (
+          data.messages.map(message => (
             <li key={message.id}><Message message={message} /></li>
           ))
         }

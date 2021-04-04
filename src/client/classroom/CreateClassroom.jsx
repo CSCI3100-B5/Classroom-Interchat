@@ -19,7 +19,7 @@ export default function CreateClassroom() {
   const history = useHistory();
 
   // TODO: use data store
-  // const { ... } = useDataStore();
+  // const { data } = useDataStore();
 
   // TODO: use create classroom socket API
 

@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage.js';
+import { useStates } from '../useStates.js';
 
 const DataStoreContext = React.createContext();
 
@@ -12,64 +13,50 @@ export function DataStoreProvider({ children }) {
   const [savedRefreshToken, saveRefreshToken] = useLocalStorage('refreshToken', null);
   const [savedUser, saveUser] = useLocalStorage('user', null);
 
-  const [accessToken, pSetAccessToken] = useState(() => savedAccessToken);
-  const [refreshToken, pSetRefreshToken] = useState(() => savedRefreshToken);
-  const [rememberMe, setRememberMe] = useState(true);
-
-  // All info related to the classroom, except messages and participant list
-  const [classroomMeta, setClassroomMeta] = useState();
-
-  const [messages, setMessages] = useState([]);
-  const [participants, setParticipants] = useState([]);
-
-  const [user, pSetUser] = useState(() => savedUser);
 
   // TODO: GUIDE: All app-wide states should be defined here
+  const data = useStates({
+    accessToken: savedAccessToken,
+    refreshToken: savedRefreshToken,
+    rememberMe: true,
 
-  function setAccessToken(token) {
-    pSetAccessToken(token);
-    if (rememberMe) saveAccessToken(token);
-  }
+    // All info related to the classroom, except messages and participant list
+    classroomMeta: null,
+    messages: [],
+    participants: [],
 
-  function setRefreshToken(token) {
-    pSetRefreshToken(token);
-    if (rememberMe) saveRefreshToken(token);
-  }
+    user: savedUser
+  });
 
-  function setUser(newUser) {
-    pSetUser(newUser);
-    saveUser(newUser);
-  }
+  useEffect(() => {
+    if (data.rememberMe) saveAccessToken(data.accessToken);
+  }, [data.rememberMe, data.accessToken]);
+
+  useEffect(() => {
+    if (data.rememberMe) saveRefreshToken(data.refreshToken);
+  }, [data.rememberMe, data.refreshToken]);
+
+  useEffect(() => {
+    saveUser(data.user);
+  }, [data.user]);
+
+  // TODO: GUIDE: put computed states here as functions
 
   function refreshTokenHeader() {
     return {
-      Authorization: `Bearer ${refreshToken}`
+      Authorization: `Bearer ${data.refreshToken}`
     };
   }
 
   function accessTokenHeader() {
     return {
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${data.accessToken}`
     };
   }
 
   return (
     <DataStoreContext.Provider value={{
-      accessToken,
-      setAccessToken,
-      refreshToken,
-      setRefreshToken,
-      rememberMe,
-      setRememberMe,
-      user,
-      setUser,
-      classroomMeta,
-      setClassroomMeta,
-      messages,
-      setMessages,
-      participants,
-      setParticipants,
-      // TODO: GUIDE: remember to export the defined states here
+      data,
 
       // computed
       accessTokenHeader,

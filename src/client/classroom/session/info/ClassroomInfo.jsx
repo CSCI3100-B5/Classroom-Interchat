@@ -4,13 +4,13 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import ParticipantList from './ParticipantList.jsx';
 
 function ClassroomInfo() {
-  const { classroomMeta, participants, user } = useDataStore();
+  const { data } = useDataStore();
   return (
     <div>
-      <p>{classroomMeta.name}</p>
-      <p>{user.name}</p>
+      <p>{data.classroomMeta.name}</p>
+      <p>{data.user.name}</p>
       <p>
-        {participants.length}
+        {data.participants.length}
         {' '}
         participants
       </p>

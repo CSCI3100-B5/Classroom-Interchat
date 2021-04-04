@@ -10,11 +10,9 @@ export function useApi() {
 
 export function ApiProvider({ children }) {
   const {
-    setAccessToken,
-    setRefreshToken,
+    data,
     accessTokenHeader,
     refreshTokenHeader,
-    setUser
   } = useDataStore();
   const request = useAxios();
 
@@ -30,7 +28,7 @@ export function ApiProvider({ children }) {
       url: '/auth/token',
       headers: refreshTokenHeader()
     });
-    if (result.success) setAccessToken(result.response.data.accessToken);
+    if (result.success) data.accessToken = result.response.data.accessToken;
     return result;
   }
 
@@ -49,9 +47,9 @@ export function ApiProvider({ children }) {
       data: { email, password }
     });
     if (result.success) {
-      setAccessToken(result.response.data.accessToken);
-      setRefreshToken(result.response.data.refreshToken);
-      setUser(result.response.data.user);
+      data.accessToken = result.response.data.accessToken;
+      data.refreshToken = result.response.data.refreshToken;
+      data.user = result.response.data.user;
     }
     return result;
   }
@@ -84,7 +82,7 @@ export function ApiProvider({ children }) {
       headers: accessTokenHeader()
     });
     if (result.success) {
-      setUser(result.response.data);
+      data.user = result.response.data;
     }
     return result;
   }

@@ -4,8 +4,8 @@ import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 
 
 export default function QuestionMessage({ message }) {
-  const { messages } = useDataStore();
-  const replies = messages.filter(x => x.type === 'reply' && x.content.replyTo === message.id);
+  const { data } = useDataStore();
+  const replies = data.messages.filter(x => x.type === 'reply' && x.content.replyTo === message.id);
   return (
     <div>
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
