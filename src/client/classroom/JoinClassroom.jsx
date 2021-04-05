@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
+import qs from 'qs';
 import * as yup from 'yup';
 import {
   Button, Form, Alert, Card
 } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useStates } from '../hooks/useStates.js';
 
 
 const schema = yup.object().shape({
-  classroomId: yup.string().required().label('Classroom ID'),
+  classroomId: yup.string().matches(/^[0-9a-f]{24}$/si, 'The classroom ID is invalid').label('Classroom ID'),
 });
 
 
 export default function JoinClassroom() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [classroomInfo, setClassroomInfo] = useState();
+  const location = useLocation();
 
   const history = useHistory();
 
   const { data } = useDataStore();
 
-  // TODO: use data store
-  // const { data } = useDataStore();
+  const localData = useStates({
+    showAlert: false,
+    alertMessage: '',
+    classroomInfo: null,
+    initialClassroomId: () => qs.parse(location.search, { ignoreQueryPrefix: true }).id ?? ''
+  });
 
   // TODO: use join classroom socket API
 
@@ -333,13 +337,13 @@ export default function JoinClassroom() {
     const classroomId = event.target.value;
     if (!await schema.isValid({ classroomId })) return;
     // TODO: call peek classroom API and populate classroom info
-    setClassroomInfo({
+    localData.classroomInfo = {
       id: 'advfbethgrf',
       name: 'CSCI3100',
       host: { name: 'Michael' },
       createdAt: new Date(),
       participantCount: 150
-    });
+    };
   };
 
   return (
@@ -347,18 +351,18 @@ export default function JoinClassroom() {
       <h3>Create Classroom</h3>
       <Alert
         className="m-2"
-        show={showAlert}
+        show={localData.showAlert}
         variant="warning"
-        onClose={() => setAlertVisibility(false)}
+        onClose={() => { localData.showAlert = false; }}
         dismissible
       >
-        {alertMessage}
+        {localData.alertMessage}
       </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
         initialValues={{
-          classroomId: '',
+          classroomId: localData.initialClassroomId,
         }}
       >
         {({
@@ -370,12 +374,13 @@ export default function JoinClassroom() {
         }) => (
           <Form className="m-4" noValidate onSubmit={handleSubmit}>
             <Form.Group controlId="classroomId">
-              <Form.Label>Paste invite link here</Form.Label>
+              <Form.Label>Paste invite link or classroom ID here</Form.Label>
               <Form.Control
                 type="text"
                 name="classroomId"
                 value={values.classroomId}
                 onChange={(event) => {
+                  // TODO: convert invite link to classroom ID
                   handleChange(event);
                   onChange(event);
                 }}
@@ -386,24 +391,24 @@ export default function JoinClassroom() {
                 {errors.classroomId}
               </Form.Control.Feedback>
             </Form.Group>
-            {classroomInfo
+            {localData.classroomInfo
               ? (
                 <Card>
-                  <p><b>{classroomInfo.name}</b></p>
+                  <p><b>{localData.classroomInfo.name}</b></p>
                   <span>
-                    {classroomInfo.participantCount}
+                    {localData.classroomInfo.participantCount}
                     {' '}
                     participants
                   </span>
                   <span>
                     Hosted by
                     {' '}
-                    {classroomInfo.host.name}
+                    {localData.classroomInfo.host.name}
                   </span>
                   <p>
                     Started at
                     {' '}
-                    {classroomInfo.createdAt.toString()}
+                    {localData.classroomInfo.createdAt.toString()}
                   </p>
                 </Card>
               ) : null}

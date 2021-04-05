@@ -21,6 +21,10 @@ const ClassroomSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  closedAt: {
+    type: Date,
+    default: null
+  },
   participants: [new Schema({
     user: {
       type: Schema.Types.ObjectId,
@@ -62,6 +66,7 @@ ClassroomSchema.method({
       name: this.name,
       host: this.populated('host') ? this.host.filterSafe() : this.host,
       createdAt: this.createdAt,
+      closedAt: this.closedAt,
       participants: this.participants.map(x => ({
         user: this.populated('participants.user') ? x.user.filterSafe() : x.user,
         permission: x.permission,

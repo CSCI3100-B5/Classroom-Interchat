@@ -14,5 +14,7 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('create classroom', paramValidation.createClassroom, externalCtrl.createClassroom);
 
+  setInterval(() => socket.emit('Ping', {}));
+
   events.register();
 };

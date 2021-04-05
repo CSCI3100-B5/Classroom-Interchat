@@ -35,6 +35,7 @@ Classroom object
   "name": "<string>",
   "host": "<REF user id>",
   "createdAt": "<timestmap>",
+  "closedAt": "<timestamp>", // null when the classroom is still open
   "participants": {
     "user": "<REF user id>",
     "permission": "instructor/student/requesting",
