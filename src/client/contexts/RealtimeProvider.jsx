@@ -39,10 +39,20 @@ export function RealtimeProvider({ children }) {
     socket.emit('create classroom', { name: classroomName });
   }
 
+  function peekClassroom(classroomId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('peek classroom', { classroomId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
-      createClassroom
+      createClassroom,
+      peekClassroom
     }}
     >
       {children}

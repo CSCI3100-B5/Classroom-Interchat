@@ -11,13 +11,13 @@ const config = require('./config/config');
 module.exports = function indexEvents(socket, io) {
   // Add a metadata object to the packet
   socket.use(async (event, next) => {
-    event[2] = {};
+    event.push({});
     next();
   });
   // Fetch the user from database
   socket.use(async (event, next) => {
     // TODO: remember to invalidate cache when user is changed
-    event[2].invoker = await User.getCached(socket.request.invoker.id);
+    event[event.length - 1].invoker = await User.getCached(socket.request.invoker.id);
     next();
   });
   // Fetch the classroom that the user is in from database
@@ -25,8 +25,10 @@ module.exports = function indexEvents(socket, io) {
   // socket.request.invokerClassroom
   socket.use(async (event, next) => {
     if (!socket.request.invokerClassroom) return next();
-    event[2].invokerClassroom = await Classroom.getCached(socket.request.invokerClassroom.id);
-    next();
+    event[event.length - 1].invokerClassroom = await Classroom.getCached(
+      socket.request.invokerClassroom.id
+    );
+    return next();
   });
   if (config.env === 'development') socket.onAny((...args) => console.log(args));
 

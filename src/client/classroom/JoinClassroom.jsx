@@ -9,6 +9,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useStates } from '../hooks/useStates.js';
+import { useRealtime } from '../contexts/RealtimeProvider.jsx';
 
 
 const schema = yup.object().shape({
@@ -23,10 +24,11 @@ export default function JoinClassroom() {
 
   const { data } = useDataStore();
 
+  const { peekClassroom } = useRealtime();
+
   const localData = useStates({
     showAlert: false,
     alertMessage: '',
-    classroomInfo: null,
     initialClassroomId: () => qs.parse(location.search, { ignoreQueryPrefix: true }).id ?? ''
   });
 
@@ -334,16 +336,16 @@ export default function JoinClassroom() {
   };
 
   const onChange = async (event) => {
-    const classroomId = event.target.value;
-    if (!await schema.isValid({ classroomId })) return;
-    // TODO: call peek classroom API and populate classroom info
-    localData.classroomInfo = {
-      id: 'advfbethgrf',
-      name: 'CSCI3100',
-      host: { name: 'Michael' },
-      createdAt: new Date(),
-      participantCount: 150
-    };
+    const classroomId = event.currentTarget.value;
+    if (!await schema.isValid({ classroomId })) {
+      data.peekClassroomMeta = null;
+      return;
+    }
+    try {
+      data.peekClassroomMeta = await peekClassroom(classroomId);
+    } catch (ex) {
+      data.peekClassroomMeta = ex;
+    }
   };
 
   return (
@@ -391,27 +393,46 @@ export default function JoinClassroom() {
                 {errors.classroomId}
               </Form.Control.Feedback>
             </Form.Group>
-            {localData.classroomInfo
-              ? (
-                <Card>
-                  <p><b>{localData.classroomInfo.name}</b></p>
-                  <span>
-                    {localData.classroomInfo.participantCount}
-                    {' '}
-                    participants
-                  </span>
-                  <span>
-                    Hosted by
-                    {' '}
-                    {localData.classroomInfo.host.name}
-                  </span>
-                  <p>
-                    Started at
-                    {' '}
-                    {localData.classroomInfo.createdAt.toString()}
-                  </p>
-                </Card>
-              ) : null}
+
+            <Card>
+              {(() => {
+                if (!data.peekClassroomMeta) return (<p>Enter classroom ID to see a preview</p>);
+                if (data.peekClassroomMeta.error) return (<p>{data.peekClassroomMeta.error}</p>);
+                let closedAt = null;
+                if (data.peekClassroomMeta.value.closedAt) {
+                  closedAt = (
+                    <p>
+                      <b>
+                        Closed at
+                        {' '}
+                        {data.peekClassroomMeta.value.closedAt.toString()}
+                      </b>
+                    </p>
+                  );
+                }
+                return (
+                  <>
+                    <p><b>{data.peekClassroomMeta.value.name}</b></p>
+                    <span>
+                      {data.peekClassroomMeta.value.participantCount}
+                      {' '}
+                      participants
+                    </span>
+                    <span>
+                      Hosted by
+                      {' '}
+                      {data.peekClassroomMeta.value.host.name}
+                    </span>
+                    <p>
+                      Started at
+                      {' '}
+                      {data.peekClassroomMeta.value.createdAt.toString()}
+                    </p>
+                    {closedAt}
+                  </>
+                );
+              })()}
+            </Card>
             <Button type="submit">Join Classroom</Button>
           </Form>
         )}

@@ -20,6 +20,8 @@ export function DataStoreProvider({ children }) {
     refreshToken: savedRefreshToken,
     rememberMe: true,
 
+    peekClassroomMeta: null,
+
     // All info related to the classroom, except messages and participant list
     classroomMeta: null,
     messages: [],

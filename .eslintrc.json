@@ -11,6 +11,7 @@
     "react/jsx-filename-extension": ["warn", { "allow": "as-needed" }],
     "import/extensions": ["warn", "ignorePackages"],
     "react/prop-types": "off",
-    "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }]
+    "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
+    "no-param-reassign": ["warn", { "props": false }]
   }
 }
