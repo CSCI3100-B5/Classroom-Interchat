@@ -348,7 +348,7 @@ export default function JoinClassroom() {
 
   return (
     <div>
-      <h3>Create Classroom</h3>
+      <h3>Join Classroom</h3>
       <Alert
         className="m-2"
         show={localData.showAlert}

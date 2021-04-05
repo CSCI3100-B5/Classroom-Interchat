@@ -6,16 +6,18 @@ const APIError = require('../helpers/APIError');
 
 /**
  *
- * @param {*} data
+ * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
-async function createClassroom(data, socket, io) {
+async function createClassroom(packet, socket, io) {
+  console.log(packet);
+  const [data, meta] = packet;
   let classroom = await Classroom.create({
-    name: data.payload.name,
-    host: data.invoker.id,
+    name: data.name,
+    host: meta.invoker.id,
     participants: [{
-      user: data.invoker.id,
+      user: meta.invoker.id,
       permission: 'instructor',
     }],
   });
