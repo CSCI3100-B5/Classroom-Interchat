@@ -21,11 +21,15 @@ module.exports = class SocketValidatedEvents {
       const [event, data] = packet;
       const entry = this.events.find(x => x.event === event);
       if (!entry) return next();
-      const { error, value } = entry.validation.validate(data.payload);
+      const { error, value } = entry.validation.validate(data);
       if (error) return next(new APIError(error, httpStatus.BAD_REQUEST, true));
-      packet[1].payload = value;
+      packet[1] = value;
       return next();
     });
-    this.events.forEach(({ event, handler }) => this.socket.on(event, data => handler(data, this.socket, this.io)));
+    this.events.forEach(
+      ({ event, handler }) => {
+        this.socket.on(event, (...packet) => handler(packet, this.socket, this.io));
+      }
+    );
   }
 };
