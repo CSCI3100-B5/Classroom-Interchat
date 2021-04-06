@@ -24,7 +24,7 @@ async function sendMessage(packet, socket, io) {
 
   classroom.messages.push(message);
   await classroom.save();
-  socket.emit('new message', message.filterSafe());
+  io.to(classroom.id).emit('new message', message.filterSafe());
   return callback({});
 }
 
