@@ -9,7 +9,7 @@ function ParticipantList() {
     <ul>
       {
         data.participants.map(x => (
-          <li key={x.user.name}>
+          <li key={x.user.id}>
             {x.user.name}
             {(() => {
               if (x.user.id === data.classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
@@ -17,6 +17,7 @@ function ParticipantList() {
               if (x.permission === 'requesting') return (<Badge variant="secondary">REQUESTING</Badge>);
               return null;
             })()}
+            {x.isOnline ? null : (<Badge>OFFLINE</Badge>)}
             <Button variant="flat">Promote</Button>
             <Button variant="flat">Token</Button>
             <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>

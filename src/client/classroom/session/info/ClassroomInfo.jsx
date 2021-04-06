@@ -1,10 +1,22 @@
 import React from 'react';
 import { Button, Card, Accordion } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
+import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import ParticipantList from './ParticipantList.jsx';
 
 function ClassroomInfo() {
   const { data } = useDataStore();
+  const { leaveClassroom } = useRealtime();
+
+  const onLeave = async () => {
+    try {
+      await leaveClassroom();
+    } catch (ex) {
+      // TODO: error UI
+      console.log(ex);
+    }
+  };
+
   return (
     <div>
       <p>{data.classroomMeta.name}</p>
@@ -14,7 +26,7 @@ function ClassroomInfo() {
         {' '}
         participants
       </p>
-      <Button variant="danger">Leave</Button>
+      <Button variant="danger" onClick={onLeave}>Leave</Button>
       <Accordion defaultActiveKey="0">
         <Card>
           <Accordion.Toggle as={Card.Header} eventKey="0">

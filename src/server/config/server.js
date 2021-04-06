@@ -33,6 +33,11 @@ const io = socketio(server, {
 // requireAccessToken middleware also retrieves the user from database
 // it can be accessed via socket.request.invoker
 io.use(middlewareWrap(requireAccessToken));
+// move socket.request to socket.data for persistence
+io.use((socket, next) => {
+  socket.data.invoker = socket.request.invoker;
+  next();
+});
 
 io.on('connection', (socket) => {
   events(socket, io);
@@ -56,7 +61,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       'script-src': ["'self'", "'unsafe-inline'"],
-      'connect-src': ["'self'", "'unsafe-inline'", 'classroom-interchat-develop.herokuapp.com', 'classroom-interchat.herokuapp.com']
+      'connect-src': ["'self'", "'unsafe-inline'", 'classroom-interchat-develop.herokuapp.com', 'classroom-interchat.herokuapp.com', '*']
     },
   }
 }));

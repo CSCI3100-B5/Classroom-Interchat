@@ -14,5 +14,15 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('create classroom', paramValidation.createClassroom, externalCtrl.createClassroom);
 
+  events.on('peek classroom', paramValidation.peekClassroom, externalCtrl.peekClassroom);
+
+  events.on('join classroom', paramValidation.joinClassroom, externalCtrl.joinClassroom);
+
+  events.on('disconnect', externalCtrl.lostConnection);
+
+  events.on('leave classroom', externalCtrl.leaveClassroom);
+
+  events.on('reconnect', console.log);
+
   events.register();
 };

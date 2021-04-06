@@ -68,9 +68,9 @@ const UserSchema = new Schema({
 UserSchema.method({
   filterSafe() {
     return {
+      id: this.id,
       name: this.name,
       email: this.email,
-      id: this.id,
       isAdmin: this.isAdmin,
       createdAt: this.createdAt
     };

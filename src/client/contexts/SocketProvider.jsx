@@ -27,9 +27,13 @@ export function SocketProvider({ children }) {
     );
     console.log(`Socket connecting to ${env.hostUrl}`);
     setSocket(newSocket);
-    newSocket.on('connect_error', (err) => {
-      console.log('Socket connection error ', err);
-      // TODO: on error prompt the user to log in again
+    newSocket.on('connect', (...args) => console.log('Socket connect', args));
+    newSocket.io.on('reconnect', (...args) => console.log('io reconnect', args));
+    newSocket.io.on('reconnect_error', (...args) => console.log('io reconnect error', args));
+    newSocket.on('disconnect', (...args) => console.log('Socket disconnect', args));
+    newSocket.on('connect_error', (...args) => {
+      console.log('Socket connection error ', args);
+      // TODO: refresh token
       // TODO: DEBUG history.push('/auth');
     });
 
