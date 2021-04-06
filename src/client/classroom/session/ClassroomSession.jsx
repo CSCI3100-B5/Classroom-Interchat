@@ -13,7 +13,8 @@ export default function ClassroomSession() {
       console.log('Classroom meta does not exist, re-routing to join classroom');
       history.push('/classroom');
     }
-  }, []);
+  }, [data.classroomMeta]);
+
   if (!data.classroomMeta) return (<p>No session detected...</p>);
   return (
     <div>

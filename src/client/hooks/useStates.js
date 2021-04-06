@@ -44,6 +44,13 @@ export function useStates(initialValues, instantUpdate = globalInstantUpdate) {
       return target[name][0];
     },
     set(target, name, value) {
+      if (name.startsWith('$')) {
+        if (!(value instanceof Array)) return false;
+        if (value.length < 2) return false;
+        const key = name.substr(1);
+        target[key] = value;
+        return true;
+      }
       target[name][1](value);
       return true;
     }

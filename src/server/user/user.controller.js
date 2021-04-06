@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const cachegoose = require('cachegoose');
 const User = require('../models/user.model');
 const APIError = require('./../helpers/APIError');
 
@@ -49,6 +50,7 @@ async function create(req, res, next) {
       lastVerifiedEmail: req.body.lastVerifiedEmail
     });
     await user.setPassword(req.body.password);
+    cachegoose.clearCache(`UserById-${user.id}`);
     return res.json(user);
   } catch (e) {
     return next(e);
@@ -74,6 +76,7 @@ async function update(req, res, next) {
     }
     if (req.body.password) await user.setPassword(req.body.password);
     else await user.save();
+    cachegoose.clearCache(`UserById-${user.id}`);
     return res.json(user.filterSafe());
   } catch (e) {
     return next(e);

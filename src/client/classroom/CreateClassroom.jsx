@@ -28,10 +28,12 @@ export default function CreateClassroom() {
   }, [data.classroomMeta]);
 
   const onSubmit = async (values) => {
-    // TODO: call create classroom API
-    // TODO: remember to store classroom in data store
-    // history.push('/classroom/session');
-    createClassroom(values.classroomName);
+    try {
+      await createClassroom(values.classroomName);
+    } catch (ex) {
+      setAlertMessage(ex.error);
+      setAlertVisibility(true);
+    }
   };
 
   return (
