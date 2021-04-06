@@ -202,8 +202,10 @@ async function leaveClassroom(packet, socket, io) {
       const instructors = classroom.participants.filter(x => x.permission === 'instructor');
       if (instructors.length === 0) {
         const student = [...classroom.participants].sort((a, b) => a.createdAt - b.createdAt)[0];
+        // TODO: why is this not updated?
         student.permission = 'instructor';
         classroom.host = student.user;
+        await classroom.save();
       } else {
         classroom.host = instructors.sort((a, b) => a.createdAt - b.createdAt)[0].user;
       }
