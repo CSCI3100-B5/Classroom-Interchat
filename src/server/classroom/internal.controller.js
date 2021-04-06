@@ -12,12 +12,8 @@ const APIError = require('../helpers/APIError');
 async function sendMessage(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  let classroom;
-  try {
-    classroom = await Classroom.getCached(data.classroomId);
-  } catch (ex) {
-    return callback({ error: ex.message });
-  }
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  const classroom = meta.invokerClassroom;
 
   const message = await Messages.Message.create({
     sender: meta.invoker.id,
@@ -29,6 +25,7 @@ async function sendMessage(packet, socket, io) {
   classroom.messages.push(message);
   await classroom.save();
   socket.emit('new message', message.filterSafe());
+  return callback({});
 }
 
 module.exports = {
