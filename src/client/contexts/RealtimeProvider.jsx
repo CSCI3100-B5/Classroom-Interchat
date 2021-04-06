@@ -30,6 +30,12 @@ export function RealtimeProvider({ children }) {
         data.participants = participants;
         data.messages = messages;
       });
+
+      socket.on('new incoming message', (payload) => {
+        console.log('realtime Provider new incoming message payload '.concat(data.message));
+        const { message } = payload;
+        data.messages.push(message);
+      });
     }
   }, [socket]);
 
@@ -39,10 +45,15 @@ export function RealtimeProvider({ children }) {
     socket.emit('create classroom', { name: classroomName });
   }
 
+  function sendMessage(messageContent) {
+    socket.emit('send message', { message: messageContent });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
-      createClassroom
+      createClassroom,
+      sendMessage
     }}
     >
       {children}

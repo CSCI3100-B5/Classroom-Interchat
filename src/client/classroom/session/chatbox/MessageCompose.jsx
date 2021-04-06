@@ -1,16 +1,20 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { useStates, bindState } from '../../../hooks/useStates.js';
+import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
+  const { sendMessage } = useRealtime();
+
   const data = useStates({
     message: ''
   });
 
   const onSend = () => {
-    console.log(data.message);
+    console.log('The content of message: '.concat(data.message));
+    sendMessage(data.message);
   };
 
   const onSendAsQuestion = () => {
