@@ -32,7 +32,8 @@ export function RealtimeProvider({ children }) {
       });
 
       socket.on('new incoming message', (payload) => {
-        console.log('realtime Provider new incoming message payload '.concat(data.message));
+        console.log('realtime Provider new incoming message payload ').concat(data.message);
+        console.log(payload);
         const { message } = payload;
         data.messages.push(message);
       });
@@ -46,7 +47,7 @@ export function RealtimeProvider({ children }) {
   }
 
   function sendMessage(messageContent) {
-    socket.emit('send message', { message: messageContent });
+    socket.emit('send message', { message: messageContent, classroomID: data.classroomMeta.id, });
   }
 
   return (
