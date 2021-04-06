@@ -117,7 +117,12 @@ export function RealtimeProvider({ children }) {
   }
 
   function sendMessage(messageContent) {
-    socket.emit('send message', { message: messageContent, classroomID: data.classroomMeta.id, });
+    return new Promise((resolve, reject) => {
+      socket.emit('send message', { message: messageContent }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
   }
 
   return (
@@ -126,7 +131,8 @@ export function RealtimeProvider({ children }) {
       createClassroom,
       joinClassroom,
       peekClassroom,
-      leaveClassroom
+      leaveClassroom,
+      sendMessage
     }}
     >
       {children}

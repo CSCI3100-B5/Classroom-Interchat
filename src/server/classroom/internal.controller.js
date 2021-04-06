@@ -1,5 +1,4 @@
 const httpStatus = require('http-status');
-const cachegoose = require('cachegoose');
 const Classroom = require('../models/classroom.model');
 const Messages = require('../models/message.model');
 const APIError = require('../helpers/APIError');
@@ -11,11 +10,14 @@ const APIError = require('../helpers/APIError');
  * @param {import('socket.io').Server} io
  */
 async function sendMessage(packet, socket, io) {
-  console.log('sendMessage receive packet: ');
-  console.log(packet);
+  const [data, callback, meta] = packet;
 
-  const [data, classroomID, meta] = packet;
-  const classroom = Classroom.statics.get(classroomID);
+  let classroom;
+  try {
+    classroom = await Classroom.getCached(data.classroomId);
+  } catch (ex) {
+    return callback({ error: ex.message });
+  }
 
   const message = await Messages.Message.create({
     sender: meta.invoker.id,
@@ -26,7 +28,7 @@ async function sendMessage(packet, socket, io) {
 
   classroom.messages.push(message);
   await classroom.save();
-  socket.emit('new incoming message', message.filterSafe());
+  socket.emit('new message', message.filterSafe());
 }
 
 module.exports = {
