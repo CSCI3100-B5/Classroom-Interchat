@@ -17,13 +17,12 @@ module.exports = function indexEvents(socket, io) {
   socket.use(addObject);
   // Fetch the user from database
   const addUser = async (event, next) => {
-    // TODO: remember to invalidate cache when user is changed
     event[event.length - 1].invoker = await User.getCached(socket.data.invoker.id);
     next();
   };
   socket.use(addUser);
   // Fetch the classroom that the user is in from database
-  // TODO: NOTE: this middleware assumes that the classroom is stored in
+  // This middleware assumes that the classroom is stored in
   // socket.data.invokerClassroom
   const addClassroom = async (event, next) => {
     if (!socket.data.invokerClassroom) return next();

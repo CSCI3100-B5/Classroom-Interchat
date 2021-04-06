@@ -331,8 +331,6 @@ export default function JoinClassroom() {
     }
   ];
 
-  // TODO: use join classroom socket API
-
   useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
   }, [data.classroomMeta]);

@@ -55,8 +55,8 @@ export function RealtimeProvider({ children }) {
         }
       });
 
-      socket.on('new participant', (payload) => {
-        const idx = data.participants.findIndex(x => x.id === payload.id);
+      socket.on('participant changed', (payload) => {
+        const idx = data.participants.findIndex(x => x.user.id === payload.user.id);
         console.log(data.participants, idx);
         if (idx >= 0) {
           const participants = [...data.participants];
@@ -65,6 +65,10 @@ export function RealtimeProvider({ children }) {
         } else {
           data.participants = [...data.participants, payload];
         }
+      });
+
+      socket.on('participant deleted', (payload) => {
+        data.participants = data.participants.filter(x => x.user.id !== payload.userId);
       });
 
       socket.on('meta changed', (payload) => {
@@ -102,12 +106,25 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function leaveClassroom() {
+    return new Promise((resolve, reject) => {
+      socket.emit('leave classroom', {}, (response) => {
+        if (response.error) reject(response);
+        data.classroomMeta = null;
+        data.messages = [];
+        data.participants = [];
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
       createClassroom,
       joinClassroom,
-      peekClassroom
+      peekClassroom,
+      leaveClassroom
     }}
     >
       {children}

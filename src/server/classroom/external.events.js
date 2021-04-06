@@ -20,6 +20,8 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('disconnect', externalCtrl.lostConnection);
 
+  events.on('leave classroom', externalCtrl.leaveClassroom);
+
   events.on('reconnect', console.log);
 
   events.register();
