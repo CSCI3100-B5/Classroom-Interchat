@@ -345,8 +345,8 @@ export default function JoinClassroom() {
     try {
       await joinClassroom(values.classroomId);
     } catch (ex) {
-      data.alertMessage = ex.error;
-      data.alertVisibility = true;
+      localData.alertMessage = ex.error;
+      localData.showAlert = true;
     }
   };
 

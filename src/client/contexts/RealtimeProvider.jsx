@@ -45,7 +45,6 @@ export function RealtimeProvider({ children }) {
 
       socket.on('new message', (payload) => {
         const idx = data.messages.findIndex(x => x.id === payload.id);
-        console.log(data.messages, idx);
         if (idx >= 0) {
           const messages = [...data.messages];
           messages[idx] = payload;
@@ -57,7 +56,6 @@ export function RealtimeProvider({ children }) {
 
       socket.on('participant changed', (payload) => {
         const idx = data.participants.findIndex(x => x.user.id === payload.user.id);
-        console.log(data.participants, idx);
         if (idx >= 0) {
           const participants = [...data.participants];
           participants[idx] = payload;

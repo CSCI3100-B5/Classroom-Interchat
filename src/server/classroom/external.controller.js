@@ -96,6 +96,7 @@ async function joinClassroom(packet, socket, io) {
   } catch (ex) {
     return callback({ error: ex.message });
   }
+  if (classroom.closedAt) return callback({ error: 'This classroom is already closed' });
   let participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
   if (participant) {
     const room = io.to(`${meta.invoker.id}-${classroom.id}`);
@@ -202,10 +203,11 @@ async function leaveClassroom(packet, socket, io) {
       const instructors = classroom.participants.filter(x => x.permission === 'instructor');
       if (instructors.length === 0) {
         const student = [...classroom.participants].sort((a, b) => a.createdAt - b.createdAt)[0];
-        // TODO: why is this not updated?
-        student.permission = 'instructor';
+        await Classroom.updateOne(
+          { _id: classroom.id, 'participants._id': student.id },
+          { $set: { 'participants.$.permission': 'instructor' } }
+        ).exec();
         classroom.host = student.user;
-        await classroom.save();
       } else {
         classroom.host = instructors.sort((a, b) => a.createdAt - b.createdAt)[0].user;
       }
