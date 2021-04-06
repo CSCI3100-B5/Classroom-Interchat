@@ -12,8 +12,19 @@ module.exports = class SocketValidatedEvents {
     this.events = [];
   }
 
-  on(event, validation, handler) {
-    this.events.push({ event, validation, handler });
+  on(event, validationOrHandler, handler) {
+    if (handler === undefined) {
+      this.events.push({
+        event,
+        handler: validationOrHandler
+      });
+    } else {
+      this.events.push({
+        event,
+        validation: validationOrHandler,
+        handler
+      });
+    }
   }
 
   register() {
@@ -21,6 +32,7 @@ module.exports = class SocketValidatedEvents {
       const [event, data] = packet;
       const entry = this.events.find(x => x.event === event);
       if (!entry) return next();
+      if (!entry.validation) return next();
       const { error, value } = entry.validation.validate(data);
       if (error) return next(new APIError(error, httpStatus.BAD_REQUEST, true));
       packet[1] = value;

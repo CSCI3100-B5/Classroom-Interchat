@@ -30,13 +30,58 @@ export function RealtimeProvider({ children }) {
         data.participants = participants;
         data.messages = messages;
       });
+
+      socket.on('peek update', (payload) => {
+        data.peekClassroomMeta = payload;
+      });
+
+      socket.on('kick', (payload) => {
+        const { reason } = payload;
+        // TODO: a UI to show the reason
+        data.classroomMeta = null;
+        data.participants = [];
+        data.messages = [];
+      });
+
+      socket.on('new message', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        console.log(data.messages, idx);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx] = payload;
+          data.messages = messages;
+        } else {
+          data.messages = [...data.messages, payload];
+        }
+      });
+
+      socket.on('new participant', (payload) => {
+        const idx = data.participants.findIndex(x => x.id === payload.id);
+        console.log(data.participants, idx);
+        if (idx >= 0) {
+          const participants = [...data.participants];
+          participants[idx] = payload;
+          data.participants = participants;
+        } else {
+          data.participants = [...data.participants, payload];
+        }
+      });
+
+      socket.on('meta changed', (payload) => {
+        data.classroomMeta = payload;
+      });
     }
   }, [socket]);
 
   // TODO: GUIDE: write all realtime event emitter here
 
   function createClassroom(classroomName) {
-    socket.emit('create classroom', { name: classroomName });
+    return new Promise((resolve, reject) => {
+      socket.emit('create classroom', { name: classroomName }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
   }
 
   function peekClassroom(classroomId) {
@@ -48,10 +93,20 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function joinClassroom(classroomId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('join classroom', { classroomId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
       createClassroom,
+      joinClassroom,
       peekClassroom
     }}
     >

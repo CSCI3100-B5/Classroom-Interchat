@@ -12,6 +12,7 @@
     "import/extensions": ["warn", "ignorePackages"],
     "react/prop-types": "off",
     "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
-    "no-param-reassign": ["warn", { "props": false }]
+    "no-param-reassign": ["warn", { "props": false }],
+    "no-underscore-dangle": ["warn", { "allow": ["_id"] }]
   }
 }

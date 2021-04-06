@@ -6,5 +6,8 @@ module.exports = {
   }),
   peekClassroom: Joi.object({
     classroomId: Joi.string().hex().length(24).required()
+  }),
+  joinClassroom: Joi.object({
+    classroomId: Joi.string().hex().length(24).required()
   })
 };

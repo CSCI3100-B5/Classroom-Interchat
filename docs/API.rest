@@ -39,6 +39,9 @@ Classroom object
   "participants": {
     "user": "<REF user id>",
     "permission": "instructor/student/requesting",
+    "createdAt": "<timestamp>", // represents the time when the user first join the classroom
+    "isOnline": boolean,
+    "lastOnlineAt": "<timestamp>", // only meaningful when isOnline = false
     "isMuted": boolean
   },
   "messages": [ "<REF message id>" ],

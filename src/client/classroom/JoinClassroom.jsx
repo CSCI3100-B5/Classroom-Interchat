@@ -24,7 +24,7 @@ export default function JoinClassroom() {
 
   const { data } = useDataStore();
 
-  const { peekClassroom } = useRealtime();
+  const { peekClassroom, joinClassroom } = useRealtime();
 
   const localData = useStates({
     showAlert: false,
@@ -32,307 +32,324 @@ export default function JoinClassroom() {
     initialClassroomId: () => qs.parse(location.search, { ignoreQueryPrefix: true }).id ?? ''
   });
 
-  // TODO: use join classroom socket API
+  // TODO: DEBUG: sample data
+  const classroomMetaSample = {
+    id: 'wdefbgtrh54ger',
+    name: 'CSCI3100',
+    host: {
+      id: 'defvfbrgfrvgdbr',
+      name: 'Michael',
+      email: 'michael@classroom-interchat.ml'
+    },
+    createdAt: new Date(),
+    isMuted: false
+  };
 
-  const onSubmit = async (values) => {
-    // TODO: call join classroom API
-    // store an example classroom state for UI testing
-    data.classroomMeta = {
-      id: 'wdefbgtrh54ger',
-      name: 'CSCI3100',
-      host: {
+  const participantsSample = [
+    {
+      user: {
         id: 'defvfbrgfrvgdbr',
         name: 'Michael',
-        email: 'michael@classroom-interchat.ml'
+        email: 'michael@classroom-interchat.ml',
+        isAdmin: false,
+        createdAt: new Date()
       },
-      createdAt: new Date(),
+      permission: 'instructor',
       isMuted: false
-    };
-    data.participants = [
-      {
-        user: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          isAdmin: false,
-          createdAt: new Date()
-        },
-        permission: 'instructor',
-        isMuted: false
+    },
+    {
+      user: {
+        id: '6065c03c3ae34451fc031004',
+        name: 'Administrator',
+        email: 'admin@classroom-interchat.ml',
+        isAdmin: true,
+        createdAt: new Date()
       },
-      {
-        user: {
-          id: '6065c03c3ae34451fc031004',
-          name: 'Administrator',
-          email: 'admin@classroom-interchat.ml',
-          isAdmin: true,
-          createdAt: new Date()
-        },
-        permission: 'instructor',
-        isMuted: false
+      permission: 'instructor',
+      isMuted: false
+    },
+    {
+      user: {
+        id: 'frgth4htb',
+        name: 'Henry',
+        email: 'henry@classroom-interchat.ml',
+        isAdmin: false,
+        createdAt: new Date()
       },
-      {
-        user: {
-          id: 'frgth4htb',
-          name: 'Henry',
-          email: 'henry@classroom-interchat.ml',
-          isAdmin: false,
-          createdAt: new Date()
-        },
+      permission: 'requesting',
+      isMuted: false
+    },
+    {
+      user: {
+        id: 'efvrfbtnrn',
+        name: 'Jimmy',
+        email: 'jimmy@classroom-interchat.ml',
+        isAdmin: false,
+        createdAt: new Date()
+      },
+      permission: 'student',
+      isMuted: false
+    },
+    {
+      user: {
+        id: 'efvfbetnj4',
+        name: 'Ann',
+        email: 'ann@classroom-interchat.ml',
+        isAdmin: false,
+        createdAt: new Date()
+      },
+      permission: 'student',
+      isMuted: false
+    }
+  ];
+
+  const messagesSample = [
+    {
+      id: 'edwrtehgrwf',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: 'frgth4htb',
+        name: 'Henry',
+        email: 'henry@classroom-interchat.ml',
         permission: 'requesting',
         isMuted: false
       },
-      {
-        user: {
-          id: 'efvrfbtnrn',
-          name: 'Jimmy',
-          email: 'jimmy@classroom-interchat.ml',
-          isAdmin: false,
-          createdAt: new Date()
-        },
-        permission: 'student',
+      type: 'text',
+      content: 'Test normal message content **bold** [url](https://www.google.com/)'
+    },
+    {
+      id: 'btgnrhymrnteb',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: 'defvfbrgfrvgdbr',
+        name: 'Michael',
+        email: 'michael@classroom-interchat.ml',
+        permission: 'instructor',
         isMuted: false
       },
-      {
-        user: {
-          id: 'efvfbetnj4',
-          name: 'Ann',
-          email: 'ann@classroom-interchat.ml',
-          isAdmin: false,
-          createdAt: new Date()
-        },
-        permission: 'student',
+      type: 'mcq',
+      content: {
+        prompt: 'How many bits in 8 bytes?',
+        choices: [
+          '1', '2', '4', '8', '16', '64'
+        ],
+        multiSelect: false
+      }
+    },
+    {
+      id: 'fvbgfnhmtuyrt',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: 'defvfbrgfrvgdbr',
+        name: 'Michael',
+        email: 'michael@classroom-interchat.ml',
+        permission: 'instructor',
         isMuted: false
+      },
+      type: 'mcq',
+      content: {
+        prompt: 'Select true?',
+        choices: [
+          'T', 't', 'True', 'f', 'F', 'false'
+        ],
+        multiSelect: true
       }
-    ];
-    data.messages = [
-      {
-        id: 'edwrtehgrwf',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'frgth4htb',
-          name: 'Henry',
-          email: 'henry@classroom-interchat.ml',
-          permission: 'requesting',
-          isMuted: false
-        },
-        type: 'text',
-        content: 'Test normal message content **bold** [url](https://www.google.com/)'
+    },
+    {
+      id: ' dgbfhntmuynrgb',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: '6065c03c3ae34451fc031004',
+        name: 'Administrator',
+        email: 'admin@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
       },
-      {
-        id: 'btgnrhymrnteb',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'mcq',
-        content: {
-          prompt: 'How many bits in 8 bytes?',
-          choices: [
-            '1', '2', '4', '8', '16', '64'
-          ],
-          multiSelect: false
-        }
-      },
-      {
-        id: 'fvbgfnhmtuyrt',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'mcq',
-        content: {
-          prompt: 'Select true?',
-          choices: [
-            'T', 't', 'True', 'f', 'F', 'false'
-          ],
-          multiSelect: true
-        }
-      },
-      {
-        id: ' dgbfhntmuynrgb',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: '6065c03c3ae34451fc031004',
-          name: 'Administrator',
-          email: 'admin@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'mcq',
-        content: {
-          prompt: 'Select true?',
-          choices: [
-            'T', 't', 'True', 'f', 'F', 'false'
-          ],
-          correct: [0, 1, 2],
-          multiSelect: true,
-          result: [
-            {
-              userId: 'defvfbrgfrvgdbr',
-              content: [0, 1, 2],
-              createdAt: new Date()
-            },
-            {
-              userId: 'frgth4htb',
-              content: [1, 2],
-              createdAt: new Date()
-            },
-            {
-              userId: 'efvfbetnj4',
-              content: [0, 1],
-              createdAt: new Date()
-            }
-          ]
-        }
-      },
-      {
-        id: ' vfbgnrythegrgrb',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: '6065c03c3ae34451fc031004',
-          name: 'Administrator',
-          email: 'admin@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'mcq',
-        content: {
-          prompt: 'Select true?',
-          choices: [
-            'T', 't', 'True', 'f', 'F', 'false'
-          ],
-          multiSelect: true,
-          result: [
-            {
-              userId: 'defvfbrgfrvgdbr',
-              content: [0, 1, 2],
-              createdAt: new Date()
-            },
-            {
-              userId: 'frgth4htb',
-              content: [1, 2],
-              createdAt: new Date()
-            },
-            {
-              userId: 'efvfbetnj4',
-              content: [0, 1],
-              createdAt: new Date()
-            }
-          ]
-        }
-      },
-      {
-        id: 'vrwbetnrytb',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'saq',
-        content: {
-          prompt: 'Type some answer...'
-        }
-      },
-      {
-        id: 'vfbgnryjhtebf',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: '6065c03c3ae34451fc031004',
-          name: 'Administrator',
-          email: 'admin@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'saq',
-        content: {
-          prompt: 'Type some answer...',
-          result: [
-            {
-              userId: 'defvfbrgfrvgdbr',
-              content: 'Answer by Michael',
-              createdAt: new Date()
-            },
-            {
-              userId: 'frgth4htb',
-              content: 'Answer by Henry',
-              createdAt: new Date()
-            },
-            {
-              userId: 'efvfbetnj4',
-              content: 'Answer by Ann',
-              createdAt: new Date()
-            },
-            {
-              userId: 'efvrfbtnrn',
-              content: 'Answer by Ann',
-              createdAt: new Date()
-            }
-          ]
-        }
-      },
-      {
-        id: 'rvbtnryntb',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: null,
-        type: 'text',
-        content: 'System status message'
-      },
-      {
-        id: 'ewvrbetnry',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'question',
-        content: {
-          isResolved: false,
-          content: 'Question expecting answer'
-        }
-      },
-      {
-        id: 'rbtnryrbetnr',
-        createdAt: new Date(),
-        classroom: 'wdefbgtrh54ger',
-        sender: {
-          id: 'defvfbrgfrvgdbr',
-          name: 'Michael',
-          email: 'michael@classroom-interchat.ml',
-          permission: 'instructor',
-          isMuted: false
-        },
-        type: 'reply',
-        content: {
-          replyTo: 'ewvrbetnry',
-          content: 'Answering question'
-        }
+      type: 'mcq',
+      content: {
+        prompt: 'Select true?',
+        choices: [
+          'T', 't', 'True', 'f', 'F', 'false'
+        ],
+        correct: [0, 1, 2],
+        multiSelect: true,
+        result: [
+          {
+            userId: 'defvfbrgfrvgdbr',
+            content: [0, 1, 2],
+            createdAt: new Date()
+          },
+          {
+            userId: 'frgth4htb',
+            content: [1, 2],
+            createdAt: new Date()
+          },
+          {
+            userId: 'efvfbetnj4',
+            content: [0, 1],
+            createdAt: new Date()
+          }
+        ]
       }
-    ];
-    history.push('/classroom/session');
+    },
+    {
+      id: ' vfbgnrythegrgrb',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: '6065c03c3ae34451fc031004',
+        name: 'Administrator',
+        email: 'admin@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
+      },
+      type: 'mcq',
+      content: {
+        prompt: 'Select true?',
+        choices: [
+          'T', 't', 'True', 'f', 'F', 'false'
+        ],
+        multiSelect: true,
+        result: [
+          {
+            userId: 'defvfbrgfrvgdbr',
+            content: [0, 1, 2],
+            createdAt: new Date()
+          },
+          {
+            userId: 'frgth4htb',
+            content: [1, 2],
+            createdAt: new Date()
+          },
+          {
+            userId: 'efvfbetnj4',
+            content: [0, 1],
+            createdAt: new Date()
+          }
+        ]
+      }
+    },
+    {
+      id: 'vrwbetnrytb',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: 'defvfbrgfrvgdbr',
+        name: 'Michael',
+        email: 'michael@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
+      },
+      type: 'saq',
+      content: {
+        prompt: 'Type some answer...'
+      }
+    },
+    {
+      id: 'vfbgnryjhtebf',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: '6065c03c3ae34451fc031004',
+        name: 'Administrator',
+        email: 'admin@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
+      },
+      type: 'saq',
+      content: {
+        prompt: 'Type some answer...',
+        result: [
+          {
+            userId: 'defvfbrgfrvgdbr',
+            content: 'Answer by Michael',
+            createdAt: new Date()
+          },
+          {
+            userId: 'frgth4htb',
+            content: 'Answer by Henry',
+            createdAt: new Date()
+          },
+          {
+            userId: 'efvfbetnj4',
+            content: 'Answer by Ann',
+            createdAt: new Date()
+          },
+          {
+            userId: 'efvrfbtnrn',
+            content: 'Answer by Ann',
+            createdAt: new Date()
+          }
+        ]
+      }
+    },
+    {
+      id: 'rvbtnryntb',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: null,
+      type: 'text',
+      content: 'System status message'
+    },
+    {
+      id: 'ewvrbetnry',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: 'defvfbrgfrvgdbr',
+        name: 'Michael',
+        email: 'michael@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
+      },
+      type: 'question',
+      content: {
+        isResolved: false,
+        content: 'Question expecting answer'
+      }
+    },
+    {
+      id: 'rbtnryrbetnr',
+      createdAt: new Date(),
+      classroom: 'wdefbgtrh54ger',
+      sender: {
+        id: 'defvfbrgfrvgdbr',
+        name: 'Michael',
+        email: 'michael@classroom-interchat.ml',
+        permission: 'instructor',
+        isMuted: false
+      },
+      type: 'reply',
+      content: {
+        replyTo: 'ewvrbetnry',
+        content: 'Answering question'
+      }
+    }
+  ];
+
+  // TODO: use join classroom socket API
+
+  useEffect(() => {
+    if (data.classroomMeta) history.push('/classroom/session');
+  }, [data.classroomMeta]);
+
+  const onSubmit = async (values) => {
+    // store an example classroom state for UI testing
+    /*
+    data.classroomMeta = classroomMetaSample
+    data.participants = participantsSample
+    data.messages = messagesSample
+    */
+    try {
+      await joinClassroom(values.classroomId);
+    } catch (ex) {
+      data.alertMessage = ex.error;
+      data.alertVisibility = true;
+    }
   };
 
   const onChange = async (event) => {

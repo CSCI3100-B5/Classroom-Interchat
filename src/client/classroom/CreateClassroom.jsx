@@ -28,7 +28,12 @@ export default function CreateClassroom() {
   }, [data.classroomMeta]);
 
   const onSubmit = async (values) => {
-    createClassroom(values.classroomName);
+    try {
+      await createClassroom(values.classroomName);
+    } catch (ex) {
+      setAlertMessage(ex.error);
+      setAlertVisibility(true);
+    }
   };
 
   return (

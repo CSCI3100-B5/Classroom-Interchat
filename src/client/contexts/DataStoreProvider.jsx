@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { useStates } from '../hooks/useStates.js';
+import { useStates, setGlobalInstantUpdate } from '../hooks/useStates.js';
 
 const DataStoreContext = React.createContext();
+setGlobalInstantUpdate(true);
 
 export function useDataStore() {
   return useContext(DataStoreContext);

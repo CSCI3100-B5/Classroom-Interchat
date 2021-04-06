@@ -5,6 +5,47 @@ const APIError = require('../helpers/APIError');
 
 const { Schema } = mongoose;
 
+const ParticipantSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  permission: {
+    type: String,
+    enum: ['instructor', 'student', 'requesting']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  isOnline: {
+    type: Boolean,
+    default: true
+  },
+  lastOnlineAt: {
+    type: Date,
+    default: Date.now
+  },
+  isMuted: {
+    type: Boolean,
+    default: false
+  }
+});
+
+ParticipantSchema.method({
+  filterSafe() {
+    return {
+      id: this.id,
+      user: this.user.filterSafe ? this.user.filterSafe() : this.user,
+      permission: this.permission,
+      createdAt: this.createdAt,
+      isOnline: this.isOnline,
+      lastOnlineAt: this.lastOnlineAt,
+      isMuted: this.isMuted
+    };
+  }
+});
+
 /**
  * Classroom Schema
  */
@@ -25,20 +66,7 @@ const ClassroomSchema = new Schema({
     type: Date,
     default: null
   },
-  participants: [new Schema({
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    permission: {
-      type: String,
-      enum: ['instructor', 'student', 'requesting']
-    },
-    isMuted: {
-      type: Boolean,
-      default: false
-    }
-  })],
+  participants: [ParticipantSchema],
   messages: [{
     type: Schema.Types.ObjectId,
     ref: 'Message'
@@ -67,15 +95,29 @@ ClassroomSchema.method({
       host: this.populated('host') ? this.host.filterSafe() : this.host,
       createdAt: this.createdAt,
       closedAt: this.closedAt,
-      participants: this.participants.map(x => ({
-        user: this.populated('participants.user') ? x.user.filterSafe() : x.user,
-        permission: x.permission,
-        isMuted: x.isMuted
-      })),
+      participants: this.participants.map(x => x.filterSafe()),
       messages: this.populated('messages') ? this.messages.map(x => x.filterSafe()) : this.messages,
       isMuted: this.isMuted
     };
-  }
+  },
+  filterMeta() {
+    return {
+      id: this.id,
+      name: this.name,
+      host: this.populated('host') ? this.host.filterSafe() : this.host,
+      createdAt: this.createdAt,
+      closedAt: this.closedAt,
+    };
+  },
+  filterPeek() {
+    return {
+      ...this.filterMeta(),
+      participantCount: this.participants.reduce(
+        (accu, curr) => accu + (curr.isOnline ? 1 : 0),
+        0
+      ),
+    };
+  },
 });
 
 /**
