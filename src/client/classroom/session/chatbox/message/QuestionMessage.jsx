@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge, Button } from 'react-bootstrap';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
+import MarkdownRender from './MarkdownRender.jsx';
 
 
 export default function QuestionMessage({ message }) {
@@ -9,7 +10,7 @@ export default function QuestionMessage({ message }) {
   return (
     <div>
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
-      <p>{message.content.content}</p>
+      <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
       <Button onClick={() => { data.replyToMessage = message; }}>
         Reply
       </Button>
