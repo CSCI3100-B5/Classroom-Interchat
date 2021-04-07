@@ -17,16 +17,19 @@ export default function MessageCompose({ onCreateQuiz }) {
   const onSend = () => {
     console.log('The content of message: '.concat(messageData.message));
     sendMessage(messageData.message);
+    messageData.message = '';
   };
 
   const onSendAsQuestion = () => {
     console.log(messageData.message);
     sendQuestionMessage(messageData.message);
+    messageData.message = '';
   };
 
   const onSendAsReply = () => {
     console.log(messageData.message);
     console.log(data.replyToMessage.id);
+    messageData.message = '';
   };
 
   return (
