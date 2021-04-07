@@ -26,23 +26,31 @@ export default function MessageCompose({ onCreateQuiz }) {
 
   const onSendAsReply = () => {
     console.log(messageData.message);
-    console.log(data.replyTo);
+    console.log(data.replyToMessage.id);
   };
 
   return (
-    data.replyTo != null
+    data.replyToMessage != null
       ? (
-        <InputGroup>
-          <FormControl
-            placeholder="Type your reply..."
-            aria-label="Type your reply"
-            {...bindState(messageData.$message)}
-          />
-          <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={onSendAsReply}>Send reply</Button>
-            <Button variant="outline-secondary" onClick={() => { data.replyTo = null; }}>Cancel reply</Button>
-          </InputGroup.Append>
-        </InputGroup>
+        <div>
+
+          Replying to
+          {' '}
+          {data.participants.find(x => x.user.id === data.replyToMessage.sender).user.name}
+          {'\'s Question'}
+
+          <InputGroup>
+            <FormControl
+              placeholder="Type your reply..."
+              aria-label="Type your reply"
+              {...bindState(messageData.$message)}
+            />
+            <InputGroup.Append>
+              <Button variant="outline-secondary" onClick={onSendAsReply}>Send reply</Button>
+              <Button variant="outline-secondary" onClick={() => { data.replyToMessage = null; }}>Cancel reply</Button>
+            </InputGroup.Append>
+          </InputGroup>
+        </div>
       )
       : (
         <InputGroup>
