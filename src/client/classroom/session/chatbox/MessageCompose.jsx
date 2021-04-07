@@ -37,10 +37,13 @@ export default function MessageCompose({ onCreateQuiz }) {
       ? (
         <div>
 
-          Replying to
-          {' '}
-          {data.participants.find(x => x.user.id === data.replyToMessage.sender).user.name}
-          {'\'s Question'}
+          <div>
+            Replying to
+            {' '}
+            {data.participants.find(x => x.user.id === data.replyToMessage.sender).user.name}
+            {'\'s Question'}
+            <Button variant="outline-danger" onClick={() => { data.replyToMessage = null; }}>Cancel reply</Button>
+          </div>
 
           <InputGroup>
             <FormControl
@@ -50,7 +53,6 @@ export default function MessageCompose({ onCreateQuiz }) {
             />
             <InputGroup.Append>
               <Button variant="outline-secondary" onClick={onSendAsReply}>Send reply</Button>
-              <Button variant="outline-secondary" onClick={() => { data.replyToMessage = null; }}>Cancel reply</Button>
             </InputGroup.Append>
           </InputGroup>
         </div>
