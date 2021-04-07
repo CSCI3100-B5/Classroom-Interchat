@@ -14,8 +14,6 @@ module.exports = function messageEvents(socket, io) {
 
   events.on('send message', paramValidation.sendMessage, messageCtrl.sendMessage);
 
-  events.on('send question message', paramValidation.sendQuestionMessage, messageCtrl.sendQuestionMessage);
-
   events.on('send reply message', paramValidation.sendReplyMessage, messageCtrl.sendReplyMessage);
 
   events.register();

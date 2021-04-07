@@ -7,23 +7,19 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
-  const { sendMessage, sendQuestionMessage, sendReplyMessage } = useRealtime();
+  const { sendMessage, sendReplyMessage } = useRealtime();
   const { data } = useDataStore();
 
   const messageData = useStates({
     message: '',
+    type: null
   });
 
   const onSend = () => {
     console.log('Message object: ', messageData);
-    sendMessage(messageData.message);
+    sendMessage(messageData.message, messageData.type);
     messageData.message = '';
-  };
-
-  const onSendAsQuestion = () => {
-    console.log('Message object: ', messageData);
-    sendQuestionMessage(messageData.message);
-    messageData.message = '';
+    messageData.type = null;
   };
 
   const onSendAsReply = () => {
@@ -67,8 +63,8 @@ export default function MessageCompose({ onCreateQuiz }) {
             {...bindState(messageData.$message)}
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={onSend}>Send</Button>
-            <Button variant="outline-secondary" onClick={onSendAsQuestion}>Send as question</Button>
+            <Button variant="outline-secondary" onClick={() => { messageData.type = 'text'; onSend(); }}>Send</Button>
+            <Button variant="outline-secondary" onClick={() => { messageData.type = 'question'; onSend(); }}>Send as question</Button>
             <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
           </InputGroup.Append>
         </InputGroup>
