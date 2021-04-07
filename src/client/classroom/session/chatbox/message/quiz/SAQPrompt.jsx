@@ -1,6 +1,7 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { useStates, bindState } from '../../../../../hooks/useStates.js';
+import MarkdownRender from '../MarkdownRender.jsx';
 
 export default function SAQPrompt({ message }) {
   const data = useStates({
@@ -12,7 +13,7 @@ export default function SAQPrompt({ message }) {
   };
   return (
     <div>
-      <p>{message.content.prompt}</p>
+      <div><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
       <InputGroup>
         <FormControl
           placeholder="Type your answer..."

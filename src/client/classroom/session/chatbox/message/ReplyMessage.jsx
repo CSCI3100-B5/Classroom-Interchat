@@ -1,13 +1,14 @@
 import React from 'react';
 import { Badge } from 'react-bootstrap';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
+import MarkdownRender from './MarkdownRender.jsx';
 
 export default function ReplyMessage({ message }) {
   const { data } = useDataStore();
   return (
     <div>
       <Badge>REPLY</Badge>
-      <p>{message.content.content}</p>
+      <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
       <p className="text-muted">
         Replying to
         {' '}

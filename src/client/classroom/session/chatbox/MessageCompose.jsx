@@ -1,5 +1,7 @@
 import React from 'react';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import {
+  InputGroup, FormControl, Button, Form
+} from 'react-bootstrap';
 import { useStates, bindState } from '../../../hooks/useStates.js';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
@@ -16,6 +18,7 @@ export default function MessageCompose({ onCreateQuiz }) {
   });
 
   const onSend = () => {
+    if (!messageData.message) return;
     console.log('Message object: ', messageData);
     sendMessage(messageData.message, messageData.information);
     messageData.message = '';
@@ -37,6 +40,7 @@ export default function MessageCompose({ onCreateQuiz }) {
 
           <InputGroup>
             <FormControl
+              as="textarea"
               placeholder="Type your reply..."
               aria-label="Type your reply"
               {...bindState(messageData.$message)}
@@ -45,6 +49,7 @@ export default function MessageCompose({ onCreateQuiz }) {
               <Button
                 variant="outline-secondary"
                 onClick={() => { messageData.information = { type: 'reply', qMessageID: data.replyToMessage.id }; onSend(); }}
+                disabled={!messageData.message}
               >
                 Send reply
               </Button>
@@ -55,6 +60,7 @@ export default function MessageCompose({ onCreateQuiz }) {
       : (
         <InputGroup>
           <FormControl
+            as="textarea"
             placeholder="Type your message..."
             aria-label="Type your message"
             {...bindState(messageData.$message)}
@@ -63,12 +69,14 @@ export default function MessageCompose({ onCreateQuiz }) {
             <Button
               variant="outline-secondary"
               onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
+              disabled={!messageData.message}
             >
               Send
             </Button>
             <Button
               variant="outline-secondary"
               onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
+              disabled={!messageData.message}
             >
               Send as question
             </Button>
