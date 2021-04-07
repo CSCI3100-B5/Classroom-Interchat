@@ -1,5 +1,7 @@
 import React from 'react';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import {
+  InputGroup, FormControl, Button, Form
+} from 'react-bootstrap';
 import { useStates, bindState } from '../../../hooks/useStates.js';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
@@ -15,18 +17,21 @@ export default function MessageCompose({ onCreateQuiz }) {
   });
 
   const onSend = () => {
+    if (!messageData.message) return;
     console.log('Message object: ', messageData);
     sendMessage(messageData.message);
     messageData.message = '';
   };
 
   const onSendAsQuestion = () => {
+    if (!messageData.message) return;
     console.log('Message object: ', messageData);
     sendQuestionMessage(messageData.message);
     messageData.message = '';
   };
 
   const onSendAsReply = () => {
+    if (!messageData.message) return;
     console.log('Message object: ', messageData);
     console.log(data.replyToMessage.id);
     messageData.message = '';
@@ -47,12 +52,13 @@ export default function MessageCompose({ onCreateQuiz }) {
 
           <InputGroup>
             <FormControl
+              as="textarea"
               placeholder="Type your reply..."
               aria-label="Type your reply"
               {...bindState(messageData.$message)}
             />
             <InputGroup.Append>
-              <Button variant="outline-secondary" onClick={onSendAsReply}>Send reply</Button>
+              <Button variant="outline-secondary" onClick={onSendAsReply} disabled={!messageData.message}>Send reply</Button>
             </InputGroup.Append>
           </InputGroup>
         </div>
@@ -60,13 +66,14 @@ export default function MessageCompose({ onCreateQuiz }) {
       : (
         <InputGroup>
           <FormControl
+            as="textarea"
             placeholder="Type your message..."
             aria-label="Type your message"
             {...bindState(messageData.$message)}
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={onSend}>Send</Button>
-            <Button variant="outline-secondary" onClick={onSendAsQuestion}>Send as question</Button>
+            <Button variant="outline-secondary" onClick={onSend} disabled={!messageData.message}>Send</Button>
+            <Button variant="outline-secondary" onClick={onSendAsQuestion} disabled={!messageData.message}>Send as question</Button>
             <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
           </InputGroup.Append>
         </InputGroup>
