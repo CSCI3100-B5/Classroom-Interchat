@@ -1,8 +1,8 @@
 const httpStatus = require('http-status');
 const cachegoose = require('cachegoose');
-const Classroom = require('../models/classroom.model');
-const Messages = require('../models/message.model');
-const APIError = require('../helpers/APIError');
+const Classroom = require('../../models/classroom.model');
+const Messages = require('../../models/message.model');
+const APIError = require('../../helpers/APIError');
 
 /**
  *
