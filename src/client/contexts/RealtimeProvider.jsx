@@ -116,18 +116,18 @@ export function RealtimeProvider({ children }) {
     });
   }
 
-  function sendMessage(messageContent) {
+  function sendMessage(messageContent, messageType) {
     return new Promise((resolve, reject) => {
-      socket.emit('send message', { message: messageContent }, (response) => {
+      socket.emit('send message', { message: messageContent, type: messageType }, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });
     });
   }
 
-  function sendQuestionMessage(messageContent) {
+  function sendReplyMessage(messageContent, questionMessageID) {
     return new Promise((resolve, reject) => {
-      socket.emit('send question message', { message: messageContent }, (response) => {
+      socket.emit('send reply message', { message: messageContent, qMessageID: questionMessageID }, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });
@@ -142,7 +142,7 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
-      sendQuestionMessage
+      sendReplyMessage
     }}
     >
       {children}

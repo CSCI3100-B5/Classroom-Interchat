@@ -9,32 +9,29 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
-  const { sendMessage, sendQuestionMessage } = useRealtime();
+  const { sendMessage, sendReplyMessage } = useRealtime();
   const { data } = useDataStore();
 
   const messageData = useStates({
     message: '',
+    type: null
   });
 
   const onSend = () => {
     if (!messageData.message) return;
     console.log('Message object: ', messageData);
-    sendMessage(messageData.message);
+    sendMessage(messageData.message, messageData.type);
     messageData.message = '';
-  };
-
-  const onSendAsQuestion = () => {
-    if (!messageData.message) return;
-    console.log('Message object: ', messageData);
-    sendQuestionMessage(messageData.message);
-    messageData.message = '';
+    messageData.type = null;
   };
 
   const onSendAsReply = () => {
     if (!messageData.message) return;
     console.log('Message object: ', messageData);
     console.log(data.replyToMessage.id);
+    sendReplyMessage(messageData.message, data.replyToMessage.id);
     messageData.message = '';
+    data.replyToMessage.id = null;
   };
 
   return (
@@ -72,8 +69,8 @@ export default function MessageCompose({ onCreateQuiz }) {
             {...bindState(messageData.$message)}
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={onSend} disabled={!messageData.message}>Send</Button>
-            <Button variant="outline-secondary" onClick={onSendAsQuestion} disabled={!messageData.message}>Send as question</Button>
+            <Button variant="outline-secondary" onClick={() => { messageData.type = 'text'; onSend(); }} disabled={!messageData.message}>Send</Button>
+            <Button variant="outline-secondary" onClick={() => { messageData.type = 'question'; onSend(); }} disabled={!messageData.message}>Send as question</Button>
             <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
           </InputGroup.Append>
         </InputGroup>

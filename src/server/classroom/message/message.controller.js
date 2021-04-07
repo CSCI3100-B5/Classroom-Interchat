@@ -15,10 +15,11 @@ async function sendMessage(packet, socket, io) {
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
+  const messageType = data.type;
 
   const message = await Messages.Message.create({
     sender: meta.invoker.id,
-    type: 'text',
+    type: messageType,
     content: data.message,
     classroom: classroom.id
   });
@@ -30,17 +31,17 @@ async function sendMessage(packet, socket, io) {
   return callback({});
 }
 
-async function sendQuestionMessage(packet, socket, io) {
+async function sendReplyMessage(packet, socket, io) {
   const [data, callback, meta] = packet;
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
 
-  const message = await Messages.QuestionMessage.create({
+  const message = await Messages.ReplyMessage.create({
     sender: meta.invoker.id,
-    type: 'question',
+    type: 'reply',
     content: {
-      isResolved: false,
+      replyTo: data.qMessageID,
       content: data.message
     },
     classroom: classroom.id
@@ -55,5 +56,5 @@ async function sendQuestionMessage(packet, socket, io) {
 
 module.exports = {
   sendMessage,
-  sendQuestionMessage
+  sendReplyMessage
 };
