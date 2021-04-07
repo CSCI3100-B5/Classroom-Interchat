@@ -30,7 +30,7 @@ export default function Auth() {
     })();
   }, []);
 
-  if (data.refreshToken) return (<p>Loading...</p>);
+  if (data.refreshToken && data.user) return (<p>Loading...</p>);
   return (
     <Container>
       <Row>
