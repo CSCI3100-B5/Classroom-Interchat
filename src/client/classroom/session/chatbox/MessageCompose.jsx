@@ -7,27 +7,19 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
-  const { sendMessage, sendReplyMessage } = useRealtime();
+  const { sendMessage, } = useRealtime();
   const { data } = useDataStore();
 
   const messageData = useStates({
     message: '',
-    type: null
+    information: null
   });
 
   const onSend = () => {
     console.log('Message object: ', messageData);
-    sendMessage(messageData.message, messageData.type);
+    sendMessage(messageData.message, messageData.information);
     messageData.message = '';
-    messageData.type = null;
-  };
-
-  const onSendAsReply = () => {
-    console.log('Message object: ', messageData);
-    console.log(data.replyToMessage.id);
-    sendReplyMessage(messageData.message, data.replyToMessage.id);
-    messageData.message = '';
-    data.replyToMessage.id = null;
+    messageData.information = null;
   };
 
   return (
@@ -50,7 +42,12 @@ export default function MessageCompose({ onCreateQuiz }) {
               {...bindState(messageData.$message)}
             />
             <InputGroup.Append>
-              <Button variant="outline-secondary" onClick={onSendAsReply}>Send reply</Button>
+              <Button
+                variant="outline-secondary"
+                onClick={() => { messageData.information = { type: 'reply', qMessageID: data.replyToMessage.id }; onSend(); }}
+              >
+                Send reply
+              </Button>
             </InputGroup.Append>
           </InputGroup>
         </div>
@@ -63,8 +60,18 @@ export default function MessageCompose({ onCreateQuiz }) {
             {...bindState(messageData.$message)}
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={() => { messageData.type = 'text'; onSend(); }}>Send</Button>
-            <Button variant="outline-secondary" onClick={() => { messageData.type = 'question'; onSend(); }}>Send as question</Button>
+            <Button
+              variant="outline-secondary"
+              onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
+            >
+              Send
+            </Button>
+            <Button
+              variant="outline-secondary"
+              onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
+            >
+              Send as question
+            </Button>
             <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
           </InputGroup.Append>
         </InputGroup>
