@@ -11,9 +11,9 @@ export default function QuestionMessage({ message }) {
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
       <p>{message.content.content}</p>
       <Button onClick={() => {
-        console.log(message.content.sender);
+        console.log(message.id);
         console.log(data.replyTo);
-        data.replyTo = message.content.sender;
+        data.replyTo = message.id;
       }}
       >
         Reply
