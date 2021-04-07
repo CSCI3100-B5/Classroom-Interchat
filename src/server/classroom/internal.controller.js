@@ -28,6 +28,29 @@ async function sendMessage(packet, socket, io) {
   return callback({});
 }
 
+async function sendQuestionMessage(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  const classroom = meta.invokerClassroom;
+
+  const message = await Messages.QuestionMessage.create({
+    sender: meta.invoker.id,
+    type: 'question',
+    content: {
+      isResolved: false,
+      content: data.message
+    },
+    classroom: classroom.id
+  });
+
+  classroom.messages.push(message);
+  await classroom.save();
+  io.to(classroom.id).emit('new message', message.filterSafe());
+  return callback({});
+}
+
 module.exports = {
-  sendMessage
+  sendMessage,
+  sendQuestionMessage
 };

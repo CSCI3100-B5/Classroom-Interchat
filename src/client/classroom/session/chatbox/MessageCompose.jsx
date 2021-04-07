@@ -6,7 +6,7 @@ import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
-  const { sendMessage } = useRealtime();
+  const { sendMessage, sendQuestionMessage } = useRealtime();
 
   const data = useStates({
     message: ''
@@ -19,6 +19,7 @@ export default function MessageCompose({ onCreateQuiz }) {
 
   const onSendAsQuestion = () => {
     console.log(data.message);
+    sendQuestionMessage(data.message);
   };
 
   return (

@@ -14,5 +14,7 @@ module.exports = function internalEvents(socket, io) {
 
   events.on('send message', paramValidation.sendMessage, internalCtrl.sendMessage);
 
+  events.on('send question message', paramValidation.sendQuestionMessage, internalCtrl.sendQuestionMessage);
+
   events.register();
 };
