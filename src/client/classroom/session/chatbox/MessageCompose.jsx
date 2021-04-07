@@ -15,18 +15,21 @@ export default function MessageCompose({ onCreateQuiz }) {
   });
 
   const onSend = () => {
-    console.log('The content of message: '.concat(messageData.message));
+    console.log('Message object: ', messageData);
     sendMessage(messageData.message);
+    messageData.message = '';
   };
 
   const onSendAsQuestion = () => {
-    console.log(messageData.message);
+    console.log('Message object: ', messageData);
     sendQuestionMessage(messageData.message);
+    messageData.message = '';
   };
 
   const onSendAsReply = () => {
-    console.log(messageData.message);
+    console.log('Message object: ', messageData);
     console.log(data.replyToMessage.id);
+    messageData.message = '';
   };
 
   return (
