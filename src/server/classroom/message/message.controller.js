@@ -25,6 +25,7 @@ async function sendMessage(packet, socket, io) {
 
   classroom.messages.push(message);
   await classroom.save();
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   io.to(classroom.id).emit('new message', message.filterSafe());
   return callback({});
 }
