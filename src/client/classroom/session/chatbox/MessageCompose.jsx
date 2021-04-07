@@ -7,7 +7,7 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
-  const { sendMessage, sendQuestionMessage } = useRealtime();
+  const { sendMessage, sendQuestionMessage, sendReplyMessage } = useRealtime();
   const { data } = useDataStore();
 
   const messageData = useStates({
@@ -29,7 +29,9 @@ export default function MessageCompose({ onCreateQuiz }) {
   const onSendAsReply = () => {
     console.log('Message object: ', messageData);
     console.log(data.replyToMessage.id);
+    sendReplyMessage(messageData.message, data.replyToMessage.id);
     messageData.message = '';
+    data.replyToMessage.id = null;
   };
 
   return (

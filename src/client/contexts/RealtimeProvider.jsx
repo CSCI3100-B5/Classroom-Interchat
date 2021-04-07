@@ -134,6 +134,15 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function sendReplyMessage(messageContent, questionMessageID) {
+    return new Promise((resolve, reject) => {
+      socket.emit('send reply message', { message: messageContent, qMessageID: questionMessageID }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -142,7 +151,8 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
-      sendQuestionMessage
+      sendQuestionMessage,
+      sendReplyMessage
     }}
     >
       {children}

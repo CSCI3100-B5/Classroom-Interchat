@@ -53,7 +53,31 @@ async function sendQuestionMessage(packet, socket, io) {
   return callback({});
 }
 
+async function sendReplyMessage(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  const classroom = meta.invokerClassroom;
+
+  const message = await Messages.ReplyMessage.create({
+    sender: meta.invoker.id,
+    type: 'reply',
+    content: {
+      replyTo: data.qMessageID,
+      content: data.message
+    },
+    classroom: classroom.id
+  });
+
+  classroom.messages.push(message);
+  await classroom.save();
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
+  io.to(classroom.id).emit('new message', message.filterSafe());
+  return callback({});
+}
+
 module.exports = {
   sendMessage,
-  sendQuestionMessage
+  sendQuestionMessage,
+  sendReplyMessage
 };

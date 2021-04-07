@@ -8,4 +8,10 @@ module.exports = {
   sendQuestionMessage: Joi.object({
     message: Joi.string().required(),
   }),
+
+  sendReplyMessage: Joi.object({
+    message: Joi.string().required(),
+    qMessageID: Joi.string().required(),
+  }),
+
 };
