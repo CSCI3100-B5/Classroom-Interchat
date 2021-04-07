@@ -47,6 +47,7 @@ async function sendMessage(packet, socket, io) {
         classroom: classroom.id
       }); break;
     default:
+      // Todo: deal with unknown type
       message = null;
   }
 
@@ -57,6 +58,30 @@ async function sendMessage(packet, socket, io) {
   return callback({});
 }
 
+/**
+ *
+ * @param {[*, *]} packet
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
+async function resolveQuestion(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  const classroom = meta.invokerClassroom;
+
+  const message = classroom.messages.find({ id: data.messageID });
+  message.content = { isResolved: true, content: message.content.content };
+  await message.save();
+  await classroom.save();
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
+  cachegoose.clearCache(`MessageById-${message.id}`);
+  io.to(classroom.id).emit('a question resolved', message.filterSafe());
+  return callback({});
+}
+
+
 module.exports = {
   sendMessage,
+  resolveQuestion,
 };

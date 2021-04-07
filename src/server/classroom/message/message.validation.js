@@ -8,4 +8,8 @@ module.exports = {
       qMessageID: Joi.string(),
     }
   }),
+
+  resolveQuestion: Joi.object({
+    messageID: Joi.string().required(),
+  }),
 };

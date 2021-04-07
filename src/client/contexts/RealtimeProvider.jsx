@@ -72,6 +72,11 @@ export function RealtimeProvider({ children }) {
       socket.on('meta changed', (payload) => {
         data.classroomMeta = payload;
       });
+
+      socket.on('a question resolved', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        data.messages[idx].content.isResolved = true;
+      });
     }
   }, [socket]);
 
@@ -125,6 +130,15 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function resolveQuestion(messageID) {
+    return new Promise((resolve, reject) => {
+      socket.emit('resolve question', { messageID }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -133,6 +147,7 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
+      resolveQuestion
     }}
     >
       {children}
