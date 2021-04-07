@@ -10,7 +10,14 @@ export default function QuestionMessage({ message }) {
     <div>
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
       <p>{message.content.content}</p>
-      <Button>Reply</Button>
+      <Button onClick={() => {
+        console.log(message.content.sender);
+        console.log(data.replyTo);
+        data.replyTo = message.content.sender;
+      }}
+      >
+        Reply
+      </Button>
       {replies.length > 0
         ? (<Button>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
         : (<p className="text-muted">Send a reply</p>)}
