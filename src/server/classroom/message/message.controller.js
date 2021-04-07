@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const cachegoose = require('cachegoose');
 const Classroom = require('../../models/classroom.model');
 const Messages = require('../../models/message.model');
 const APIError = require('../../helpers/APIError');
@@ -24,6 +25,7 @@ async function sendMessage(packet, socket, io) {
 
   classroom.messages.push(message);
   await classroom.save();
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   io.to(classroom.id).emit('new message', message.filterSafe());
   return callback({});
 }
@@ -46,6 +48,7 @@ async function sendQuestionMessage(packet, socket, io) {
 
   classroom.messages.push(message);
   await classroom.save();
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   io.to(classroom.id).emit('new message', message.filterSafe());
   return callback({});
 }
