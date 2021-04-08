@@ -64,6 +64,10 @@ export function DataStoreProvider({ children }) {
     };
   }
 
+  function getSelfParticipant() {
+    return data.participants.find(x => x.user.id === data.user.id);
+  }
+
   return (
     <DataStoreContext.Provider value={{
       data,
@@ -71,6 +75,7 @@ export function DataStoreProvider({ children }) {
       // computed
       accessTokenHeader,
       refreshTokenHeader,
+      getSelfParticipant
     }}
     >
       {children}

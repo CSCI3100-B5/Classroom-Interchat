@@ -1,5 +1,6 @@
 const externalEvents = require('./classroom/external/external.events');
 const messageEvents = require('./classroom/message/message.events');
+const instructorEvents = require('./classroom/instructor/instructor.events');
 const User = require('./models/user.model');
 const Classroom = require('./models/classroom.model');
 const config = require('./config/config');
@@ -47,4 +48,5 @@ module.exports = function indexEvents(socket, io) {
   // TODO: GUIDE: register all listeners here
   externalEvents(socket, io);
   messageEvents(socket, io);
+  instructorEvents(socket, io);
 };
