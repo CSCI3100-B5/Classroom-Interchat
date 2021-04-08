@@ -144,6 +144,24 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
+
+  function ansMCQuiz(values) {
+    return new Promise((resolve, reject) => {
+      socket.emit('send quiz', values, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function ansSAQuiz(values) {
+    return new Promise((resolve, reject) => {
+      socket.emit('send quiz', values, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -152,7 +170,9 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
-      sendQuiz
+      sendQuiz,
+      ansMCQuiz,
+      ansSAQuiz
     }}
     >
       {children}

@@ -2,14 +2,19 @@ import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { useStates, bindState } from '../../../../../hooks/useStates.js';
 import MarkdownRender from '../MarkdownRender.jsx';
+import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 
 export default function SAQPrompt({ message }) {
+  const { ansSAQuiz } = useRealtime();
   const data = useStates({
     answer: ''
   });
-  const onSubmit = () => {
+  const onSubmit = async () => {
     // TODO: send answer to server
+    if (!data.answer) return;
     console.log(data.answer);
+    ansSAQuiz(data.answer);
+    data.answer = '';
   };
   return (
     <div>

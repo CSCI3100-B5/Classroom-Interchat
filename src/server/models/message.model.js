@@ -33,6 +33,21 @@ MessageSchema.method({
       type: this.type,
       content: this.content
     };
+  },
+  filterWithoutAnswer() {
+    if (this.type !== 'mcq') return this.filterSafe();
+    return {
+      id: this.id,
+      createdAt: this.createdAt,
+      classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
+      sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+      type: this.type,
+      content: {
+        prompt: this.content.prompt,
+        choices: this.content.choices,
+        multiSelect: this.content.multiSelect
+      }
+    };
   }
 });
 
@@ -154,6 +169,7 @@ const SAQMessage = Message.discriminator('saq',
       }
     }
   }));
+
 
 module.exports = {
   Message,

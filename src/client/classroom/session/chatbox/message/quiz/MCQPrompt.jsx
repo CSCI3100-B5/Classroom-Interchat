@@ -3,15 +3,22 @@ import React from 'react';
 import {
   ButtonGroup, ToggleButton, Form, Button
 } from 'react-bootstrap';
+import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 
 export default function MCQPrompt({ message }) {
-  const onSubmit = (values) => {
+  const { ansMCQuiz } = useRealtime();
+  const onSubmit = async (values) => {
     // convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {
       values.choices = [values.choices]; // eslint-disable-line no-param-reassign
     }
     // TODO: send the answer to server
     console.log(values);
+    try {
+      await ansMCQuiz(values);
+    } catch (ex) {
+      console.log(ex);
+    }
   };
 
   return (
