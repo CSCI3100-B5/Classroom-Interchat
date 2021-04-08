@@ -37,6 +37,9 @@ async function sendMessage(packet, socket, io) {
         classroom: classroom.id
       }); break;
     case 'reply':
+      if (!classroom.messages.find(x => x._id === data.information.qMessageId)) {
+        return callback({ error: 'The message to reply to doesn\'t exist' });
+      }
       message = await Messages.ReplyMessage.create({
         sender: meta.invoker.id,
         type: 'reply',
@@ -67,10 +70,11 @@ async function resolveQuestion(packet, socket, io) {
   const [data, callback, meta] = packet;
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
-  const classroom = meta.invokerClassroom;
-
+  let classroom = meta.invokerClassroom;
+  classroom = await classroom.populate('messages').execPopulate();
   const message = classroom.messages.find({ id: data.messageId });
-  message.content = { isResolved: true, content: message.content.content };
+  if (!message) return callback({ error: 'The message does not exist' });
+  message.content.isResolved = true;
   await message.save();
   await classroom.save();
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
