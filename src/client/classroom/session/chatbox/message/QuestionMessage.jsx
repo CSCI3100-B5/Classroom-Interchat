@@ -16,10 +16,10 @@ export default function QuestionMessage({ message }) {
 
   let resolveButton = null;
   if (!message.content.isResolved) {
-    resolveButton = (message.sender === data.user.id
+    resolveButton = message.sender === data.user.id
       ? (<Button onClick={onResolveQuestion}>Resolve Question</Button>)
-      : (<p>not resolved</p>)
-  };
+      : (<p>not resolved</p>);
+  }
 
   return (
     <div>
