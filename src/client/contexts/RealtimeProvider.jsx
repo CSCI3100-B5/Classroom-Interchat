@@ -72,6 +72,21 @@ export function RealtimeProvider({ children }) {
       socket.on('meta changed', (payload) => {
         data.classroomMeta = payload;
       });
+
+      socket.on('question resolved', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx] = payload;
+          data.messages = messages;
+          if (data.replyToMessageId === payload.id) {
+            data.replyToMessageId = null;
+            console.log('cleared replyToMessageId');
+          }
+        } else {
+          console.log('on question resolved: id not found: ', payload);
+        }
+      });
     }
   }, [socket]);
 
@@ -116,13 +131,33 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function sendMessage(messageContent, messageInf) {
+    return new Promise((resolve, reject) => {
+      socket.emit('send message', { message: messageContent, information: messageInf }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function resolveQuestion(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('resolve question', { messageId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
       createClassroom,
       joinClassroom,
       peekClassroom,
-      leaveClassroom
+      leaveClassroom,
+      sendMessage,
+      resolveQuestion
     }}
     >
       {children}

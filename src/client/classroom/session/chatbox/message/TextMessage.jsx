@@ -1,9 +1,10 @@
 import React from 'react';
+import MarkdownRender from './MarkdownRender.jsx';
 
 export default function TextMessage({ message }) {
   return (
     <div>
-      <p>{message.content}</p>
+      <div><MarkdownRender>{message.content}</MarkdownRender></div>
     </div>
   );
 }

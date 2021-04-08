@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { useStates, setGlobalInstantUpdate } from '../hooks/useStates.js';
+import { useStates } from '../hooks/useStates.js';
 
 const DataStoreContext = React.createContext();
-setGlobalInstantUpdate(true);
 
 export function useDataStore() {
   return useContext(DataStoreContext);
@@ -27,6 +26,13 @@ export function DataStoreProvider({ children }) {
     classroomMeta: null,
     messages: [],
     participants: [],
+
+
+    replyToMessageId: null,
+    messageFilter: null,
+    // null for no filter
+    // a message id of a question to show that thread
+    // 'unresolved' to show all unresolved questions
 
     user: savedUser
   });

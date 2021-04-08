@@ -1,4 +1,4 @@
-const SocketValidatedEvents = require('../helpers/socketValidatedEvents');
+const SocketValidatedEvents = require('../../helpers/socketValidatedEvents');
 const paramValidation = require('./external.validation');
 const externalCtrl = require('./external.controller');
 
