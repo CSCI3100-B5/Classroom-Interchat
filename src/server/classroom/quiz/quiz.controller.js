@@ -79,6 +79,7 @@ async function ansMCQuiz(packet, socket, io) {
   const classroom = meta.invokerClassroom;
   const MCQanswer = data.values;
   const quizanswer = await QuizAnswer.SAQAnswer.create({
+    user: meta.invoker.id,
     content: {
       values: MCQanswer
     },
@@ -98,6 +99,7 @@ async function ansSAQuiz(packet, socket, io) {
   const classroom = meta.invokerClassroom;
   const SAQanswer = data.answer;
   const quizanswer = await QuizAnswer.SAQAnswer.create({
+    user: meta.invoker.id,
     content: {
       answer: SAQanswer
     },
