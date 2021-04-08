@@ -79,7 +79,6 @@ export function RealtimeProvider({ children }) {
           const messages = [...data.messages];
           messages[idx] = payload;
           data.messages = messages;
-          console.log(data.replyToMessageId, payload.id); // TODO: why is data.replyToMessageId null here?
           if (data.replyToMessageId === payload.id) {
             data.replyToMessageId = null;
             console.log('cleared replyToMessageId');

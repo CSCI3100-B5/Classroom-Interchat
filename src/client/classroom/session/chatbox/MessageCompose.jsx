@@ -39,8 +39,6 @@ export default function MessageCompose({ onCreateQuiz }) {
     }
   }, [data.replyToMessageId]);
 
-  console.log(data.replyToMessageId);
-
   const replyToMessage = data.replyToMessageId
     ? data.messages.find(x => x.id === data.replyToMessageId)
     : null;
