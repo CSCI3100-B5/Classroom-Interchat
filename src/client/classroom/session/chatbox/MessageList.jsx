@@ -12,7 +12,7 @@ export default function MessageList() {
   // TODO: filter unresolved questions only
   // TODO: collapse multiple messages
 
-  let messageList = data.filteredMessages !== [] ? data.filteredMessages : data.messages;
+  let messageList = data.filteredMessages.length > 0 ? data.filteredMessages : data.messages;
 
   // x is a unresolved question (x exist in the array)
   // or x is a reply to a unresolved question
