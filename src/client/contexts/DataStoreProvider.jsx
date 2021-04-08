@@ -29,7 +29,10 @@ export function DataStoreProvider({ children }) {
 
 
     replyToMessageId: null,
-    filteredMessages: [],
+    messageFilter: null,
+    // null for no filter
+    // a message id of a question to show that thread
+    // 'unresolved' to show all unresolved questions
 
     user: savedUser
   });

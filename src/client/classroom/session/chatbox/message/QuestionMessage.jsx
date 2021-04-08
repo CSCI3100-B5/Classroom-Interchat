@@ -1,5 +1,7 @@
 import React from 'react';
-import { Badge, Button } from 'react-bootstrap';
+import {
+  Badge, Button, ButtonGroup, ToggleButton
+} from 'react-bootstrap';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../contexts/RealtimeProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
@@ -23,7 +25,7 @@ export default function QuestionMessage({ message }) {
 
   // not tested
   const onViewReply = () => {
-    data.filteredMessages = message + replies;
+    data.messageFilter = message.id;
   };
 
   return (
@@ -37,7 +39,22 @@ export default function QuestionMessage({ message }) {
         </Button>
       )}
       {replies.length > 0
-        ? (<Button onClick={onViewReply}>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
+        ? (
+          <ButtonGroup toggle className="mb-2">
+            <ToggleButton
+              type="checkbox"
+              variant="info"
+              checked={data.messageFilter === message.id}
+              value="1"
+              onChange={() => {
+                if (data.messageFilter === message.id) data.messageFilter = null;
+                else data.messageFilter = message.id;
+              }}
+            >
+              {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
+            </ToggleButton>
+          </ButtonGroup>
+        )
         : (<p className="text-muted">Send a reply</p>)}
     </div>
   );

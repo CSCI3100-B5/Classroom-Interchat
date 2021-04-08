@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
@@ -12,23 +12,42 @@ export default function MessageList() {
   // TODO: filter unresolved questions only
   // TODO: collapse multiple messages
 
-  let messageList = data.filteredMessages.length > 0 ? data.filteredMessages : data.messages;
-
-  // x is a unresolved question (x exist in the array)
-  // or x is a reply to a unresolved question
-  const onViewUnresolved = () => {
-    messageList = data.messages.filter(x => unresolvedQuestions.includes(x)
-      || (x.type === 'reply' && unresolvedQuestions.includes(x.content.replyTo)));
-  };
+  let messageList;
+  if (!data.messageFilter) {
+    messageList = data.messages;
+  } else if (data.messageFilter === 'unresolved') {
+    messageList = unresolvedQuestions;
+  } else {
+    const question = data.messages.find(x => x.id === data.messageFilter);
+    if (question) {
+      messageList = data.messages.filter(
+        x => x.id === data.messageFilter || x.content?.replyTo === data.messageFilter
+      );
+    } else {
+      data.messageFilter = null;
+      messageList = data.messages;
+    }
+  }
 
   return (
     <div>
       {unresolvedQuestions.length ? (
-        <Button onClick={onViewUnresolved}>
-          {unresolvedQuestions.length}
-          {' '}
-          unresolved questions
-        </Button>
+        <ButtonGroup toggle className="mb-2">
+          <ToggleButton
+            type="checkbox"
+            variant="info"
+            checked={data.messageFilter === 'unresolved'}
+            value="1"
+            onChange={() => {
+              if (data.messageFilter === 'unresolved') data.messageFilter = null;
+              else data.messageFilter = 'unresolved';
+            }}
+          >
+            {unresolvedQuestions.length}
+            {' '}
+            unresolved questions
+          </ToggleButton>
+        </ButtonGroup>
       ) : null}
       <ul>
         {
