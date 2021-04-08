@@ -14,7 +14,8 @@ module.exports = function quizEvents(socket, io) {
 
   events.on('send quiz', paramValidation.sendQuiz, quizCtrl.sendQuiz);
 
-  events.on('Answer SAQ', paramValidation.ansSAQuiz, quizCtrl.ansSAQuiz);
+  events.on('answer saq', paramValidation.ansSAQuiz, quizCtrl.ansSAQuiz);
 
+  events.on('answer mcq', paramValidation.ansSAQuiz, quizCtrl.ansMCQuiz);
   events.register();
 };

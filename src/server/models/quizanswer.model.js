@@ -98,7 +98,7 @@ const MCQAnswerSchema = new mongoose.Schema({
 /**
  * @typedef MCQAnswer
  */
-const MCQAnswer = QuizAnswer.discriminator('mcq', MCQAnswerSchema);
+const MCQAnswer = QuizAnswer.discriminator('mcqanswer', MCQAnswerSchema);
 
 
 const SAQAnswerSchema = new mongoose.Schema({
@@ -111,7 +111,7 @@ const SAQAnswerSchema = new mongoose.Schema({
 /**
  * @typedef SAQAnswer
  */
-const SAQAnswer = QuizAnswer.discriminator('saq', SAQAnswerSchema);
+const SAQAnswer = QuizAnswer.discriminator('saqanswer', SAQAnswerSchema);
 
 module.exports = {
   QuizAnswer,

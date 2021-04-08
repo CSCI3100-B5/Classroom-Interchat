@@ -13,7 +13,12 @@ export default function SAQPrompt({ message }) {
     // TODO: send answer to server
     if (!data.answer) return;
     console.log(data.answer);
-    ansSAQuiz(data.answer);
+    try {
+      await ansSAQuiz(data.answer);
+    } catch (ex) {
+      console.log(ex);
+    }
+
     data.answer = '';
   };
   return (

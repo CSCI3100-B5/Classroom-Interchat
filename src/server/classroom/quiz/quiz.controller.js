@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const cachegoose = require('cachegoose');
 const Classroom = require('../../models/classroom.model');
-
+const QuizAnswer = require('../../models/quizanswer.model');
 const Messages = require('../../models/message.model');
 const APIError = require('../../helpers/APIError');
 
@@ -77,13 +77,17 @@ async function ansMCQuiz(packet, socket, io) {
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
-  const messageType = data.information.type;
-  let message;
+  const MCQanswer = data.values;
+  const quizanswer = await QuizAnswer.SAQAnswer.create({
+    content: {
+      values: MCQanswer
+    },
+  });
 
-  classroom.messages.push(message);// message
+  classroom.messages.push(quizanswer);// message
   await classroom.save();
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
-  io.to(classroom.id).emit('new quiz', message.filterSafe());
+  io.to(classroom.id).emit('new mcq answer', quizanswer.filterSafe());
   return callback({});
 }
 
@@ -93,20 +97,17 @@ async function ansSAQuiz(packet, socket, io) {
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
   const SAQanswer = data.answer;
-  let message;
-
-  message = await Messages.SAQPrompt.create({
-    sender: meta.invoker.id,
+  const quizanswer = await QuizAnswer.SAQAnswer.create({
     content: {
-      prompt: data.prompt
+      answer: SAQanswer
     },
-    classroom: classroom.id
   });
 
-  classroom.messages.push(message);// message
+
+  classroom.messages.push(quizanswer);// message
   await classroom.save();
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
-  io.to(classroom.id).emit('new quiz', message.filterWithoutAnswer());
+  io.to(classroom.id).emit('new saq answer', quizanswer.filterSafe());
   return callback({});
 }
 module.exports = {
