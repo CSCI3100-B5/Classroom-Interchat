@@ -29,6 +29,7 @@ export function DataStoreProvider({ children }) {
     participants: [],
 
     replyToMessage: null,
+    filteredMessages: [],
 
     user: savedUser
   });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
@@ -11,18 +12,27 @@ export default function MessageList() {
   // TODO: filter unresolved questions only
   // TODO: collapse multiple messages
 
+  let messageList = data.filteredMessages !== [] ? data.filteredMessages : data.messages;
+
+  // x is a unresolved question (x exist in the array)
+  // or x is a reply to a unresolved question
+  const onViewUnresolved = () => {
+    messageList = data.messages.filter(x => unresolvedQuestions.includes(x)
+      || (x.type === 'reply' && unresolvedQuestions.includes(x.content.replyTo)));
+  };
+
   return (
     <div>
       {unresolvedQuestions.length ? (
-        <div>
+        <Button onClick={onViewUnresolved}>
           {unresolvedQuestions.length}
           {' '}
           unresolved questions
-        </div>
+        </Button>
       ) : null}
       <ul>
         {
-          data.messages.map(message => (
+          messageList.map(message => (
             <li key={message.id}><Message message={message} /></li>
           ))
         }

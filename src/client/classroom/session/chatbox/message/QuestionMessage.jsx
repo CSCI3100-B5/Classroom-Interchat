@@ -21,6 +21,11 @@ export default function QuestionMessage({ message }) {
       : (<p>not resolved</p>);
   }
 
+  // not tested
+  const onViewReply = () => {
+    data.filteredMessages = message + replies;
+  };
+
   return (
     <div>
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
@@ -30,7 +35,7 @@ export default function QuestionMessage({ message }) {
         Reply
       </Button>
       {replies.length > 0
-        ? (<Button>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
+        ? (<Button onClick={onViewReply}>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
         : (<p className="text-muted">Send a reply</p>)}
     </div>
   );
