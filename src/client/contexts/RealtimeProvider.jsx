@@ -76,6 +76,17 @@ export function RealtimeProvider({ children }) {
         }
       });
 
+      socket.on('new mcq answer', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx] = payload;
+          data.messages = messages;
+        } else {
+          data.messages = [...data.messages, payload];
+        }
+      });
+
 
       socket.on('participant changed', (payload) => {
         const idx = data.participants.findIndex(x => x.user.id === payload.user.id);
@@ -156,18 +167,18 @@ export function RealtimeProvider({ children }) {
     });
   }
 
-  function ansMCQuiz(values) {
+  function ansMCQuiz(content, messageId) {
     return new Promise((resolve, reject) => {
-      socket.emit('ans mc quiz', values, (response) => {
+      socket.emit('ans mc quiz', { content, messageId }, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });
     });
   }
 
-  function ansSAQuiz(values) {
+  function ansSAQuiz(content, messageId) {
     return new Promise((resolve, reject) => {
-      socket.emit('ans sa quiz', values, (response) => {
+      socket.emit('ans sa quiz', { content, messageId }, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });

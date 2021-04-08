@@ -14,7 +14,7 @@ export default function SAQPrompt({ message }) {
     if (!data.answer) return;
     console.log(data.answer);
     try {
-      await ansSAQuiz(data.answer);
+      await ansSAQuiz(data.answer, message.id);
     } catch (ex) {
       console.log(ex);
     }

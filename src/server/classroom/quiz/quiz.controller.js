@@ -77,12 +77,10 @@ async function ansMCQuiz(packet, socket, io) {
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
-  const MCQanswer = data.values;
   const quizanswer = await QuizAnswer.SAQAnswer.create({
+    quiz: data.messageId,
     user: meta.invoker.id,
-    content: {
-      values: MCQanswer
-    },
+    content: data.content
   });
 
   classroom.messages.push(quizanswer);// message
@@ -97,12 +95,10 @@ async function ansSAQuiz(packet, socket, io) {
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
-  const SAQanswer = data.answer;
   const quizanswer = await QuizAnswer.SAQAnswer.create({
+    quiz: data.messageId,
     user: meta.invoker.id,
-    content: {
-      answer: SAQanswer
-    },
+    content: data.content,
   });
 
 

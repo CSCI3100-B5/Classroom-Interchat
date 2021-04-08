@@ -15,7 +15,7 @@ export default function MCQPrompt({ message }) {
     // TODO: send the answer to server
     console.log(values);
     try {
-      await ansMCQuiz(values);
+      await ansMCQuiz(values, message.id);
     } catch (ex) {
       console.log(ex);
     }
