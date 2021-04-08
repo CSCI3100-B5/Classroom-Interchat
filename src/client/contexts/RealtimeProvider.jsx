@@ -77,8 +77,13 @@ export function RealtimeProvider({ children }) {
         const idx = data.messages.findIndex(x => x.id === payload.id);
         if (idx >= 0) {
           const messages = [...data.messages];
-          messages[idx].content.isResolved = true;
+          messages[idx] = payload;
           data.messages = messages;
+          console.log(data.replyToMessageId, payload.id); // TODO: why is data.replyToMessageId null here?
+          if (data.replyToMessageId === payload.id) {
+            data.replyToMessageId = null;
+            console.log('cleared replyToMessageId');
+          }
         } else {
           console.log('on question resolved: id not found: ', payload);
         }

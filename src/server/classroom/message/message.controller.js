@@ -14,7 +14,7 @@ async function sendMessage(packet, socket, io) {
   const [data, callback, meta] = packet;
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
-  const classroom = meta.invokerClassroom;
+  let classroom = meta.invokerClassroom;
   const messageType = data.information.type;
   let message;
 
@@ -36,9 +36,16 @@ async function sendMessage(packet, socket, io) {
         },
         classroom: classroom.id
       }); break;
-    case 'reply':
-      if (!classroom.messages.find(x => x._id === data.information.qMessageId)) {
+    case 'reply': {
+      classroom = await classroom.populate('messages').execPopulate();
+      const replyToMessage = classroom.messages.find(
+        x => x._id.toString() === data.information.qMessageId
+      );
+      if (!replyToMessage) {
         return callback({ error: 'The message to reply to doesn\'t exist' });
+      }
+      if (replyToMessage.content.isResolved) {
+        return callback({ error: 'The message to reply to is already resolved' });
       }
       message = await Messages.ReplyMessage.create({
         sender: meta.invoker.id,
@@ -49,6 +56,7 @@ async function sendMessage(packet, socket, io) {
         },
         classroom: classroom.id
       }); break;
+    }
     default:
       return callback({ error: 'Unknown message type' });
   }
@@ -72,7 +80,7 @@ async function resolveQuestion(packet, socket, io) {
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   let classroom = meta.invokerClassroom;
   classroom = await classroom.populate('messages').execPopulate();
-  const message = classroom.messages.find({ id: data.messageId });
+  const message = classroom.messages.find(x => x.id === data.messageId);
   if (!message) return callback({ error: 'The message does not exist' });
   message.content.isResolved = true;
   await message.save();

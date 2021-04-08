@@ -31,9 +31,11 @@ export default function QuestionMessage({ message }) {
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
       {resolveButton}
       <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
-      <Button onClick={() => { data.replyToMessage = message; }}>
-        Reply
-      </Button>
+      {message.content.isResolved ? null : (
+        <Button onClick={() => { data.replyToMessageId = message.id; }}>
+          Reply
+        </Button>
+      )}
       {replies.length > 0
         ? (<Button onClick={onViewReply}>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
         : (<p className="text-muted">Send a reply</p>)}
