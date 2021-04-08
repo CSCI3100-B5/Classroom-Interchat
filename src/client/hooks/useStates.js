@@ -1,12 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 // This is a wrapper for useState
-
-let globalInstantUpdate = false;
-
-export function setGlobalInstantUpdate(value) {
-  globalInstantUpdate = value;
-}
 
 export function bindState(arrayOrGetter, setter) {
   if (setter === undefined) {
@@ -23,13 +17,15 @@ export function bindState(arrayOrGetter, setter) {
   };
 }
 
-export function useStates(initialValues, instantUpdate = globalInstantUpdate) {
+export function useStates(initialValues) {
   const data = {};
   Object.entries(initialValues).forEach(([key, value]) => {
     const [state, setState] = useState.call(this, value);
-    data[key] = [state, (val) => {
+    const stateContainer = useRef(null);
+    stateContainer.current = state;
+    data[key] = [stateContainer, (val) => {
       setState(val);
-      if (instantUpdate) data[key][0] = val;
+      data[key][0].current = val;
     }];
   });
   const proxy = new Proxy(data, {
@@ -39,9 +35,9 @@ export function useStates(initialValues, instantUpdate = globalInstantUpdate) {
       }
       if (name.startsWith('$')) {
         const key = name.substr(1);
-        return target[key];
+        return [target[key][0].current, target[key][1]];
       }
-      return target[name][0];
+      return target[name][0].current;
     },
     set(target, name, value) {
       if (name.startsWith('$')) {
