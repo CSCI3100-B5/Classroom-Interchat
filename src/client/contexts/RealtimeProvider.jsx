@@ -73,9 +73,15 @@ export function RealtimeProvider({ children }) {
         data.classroomMeta = payload;
       });
 
-      socket.on('a question resolved', (payload) => {
+      socket.on('question resolved', (payload) => {
         const idx = data.messages.findIndex(x => x.id === payload.id);
-        data.messages[idx].content.isResolved = true;
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx].content.isResolved = true;
+          data.messages = messages;
+        } else {
+          console.log('on question resolved: id not found: ', payload);
+        }
       });
     }
   }, [socket]);
@@ -130,9 +136,9 @@ export function RealtimeProvider({ children }) {
     });
   }
 
-  function resolveQuestion(messageID) {
+  function resolveQuestion(messageId) {
     return new Promise((resolve, reject) => {
-      socket.emit('resolve question', { messageID }, (response) => {
+      socket.emit('resolve question', { messageId }, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });

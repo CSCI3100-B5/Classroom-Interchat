@@ -41,14 +41,13 @@ async function sendMessage(packet, socket, io) {
         sender: meta.invoker.id,
         type: 'reply',
         content: {
-          replyTo: data.information.qMessageID,
+          replyTo: data.information.qMessageId,
           content: data.message
         },
         classroom: classroom.id
       }); break;
     default:
-      // Todo: deal with unknown type
-      message = null;
+      return callback({ error: 'Unknown message type' });
   }
 
   classroom.messages.push(message);
@@ -70,13 +69,12 @@ async function resolveQuestion(packet, socket, io) {
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
 
-  const message = classroom.messages.find({ id: data.messageID });
+  const message = classroom.messages.find({ id: data.messageId });
   message.content = { isResolved: true, content: message.content.content };
   await message.save();
   await classroom.save();
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
-  cachegoose.clearCache(`MessageById-${message.id}`);
-  io.to(classroom.id).emit('a question resolved', message.filterSafe());
+  io.to(classroom.id).emit('question resolved', message.filterSafe());
   return callback({});
 }
 

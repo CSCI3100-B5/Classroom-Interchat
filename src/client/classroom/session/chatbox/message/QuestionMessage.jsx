@@ -14,9 +14,17 @@ export default function QuestionMessage({ message }) {
     resolveQuestion(message.id);
   };
 
+  let resolveButton = null;
+  if (!message.content.isResolved) {
+    resolveButton = (message.sender === data.user.id
+      ? (<Button onClick={onResolveQuestion}>Resolve Question</Button>)
+      : (<p>not resolved</p>)
+  };
+
   return (
     <div>
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
+      {resolveButton}
       <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
       <Button onClick={() => { data.replyToMessage = message; }}>
         Reply
@@ -24,9 +32,6 @@ export default function QuestionMessage({ message }) {
       {replies.length > 0
         ? (<Button>{replies.length === 1 ? '1 reply' : `${replies.length} replies`}</Button>)
         : (<p className="text-muted">Send a reply</p>)}
-      { message.sender === data.user.id
-        ? (<Button onClick={onResolveQuestion}>Resolve Question</Button>)
-        : (<p>not resolved</p>) }
     </div>
   );
 }

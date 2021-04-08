@@ -48,7 +48,7 @@ export default function MessageCompose({ onCreateQuiz }) {
             <InputGroup.Append>
               <Button
                 variant="outline-secondary"
-                onClick={() => { messageData.information = { type: 'reply', qMessageID: data.replyToMessage.id }; onSend(); }}
+                onClick={() => { messageData.information = { type: 'reply', qMessageId: data.replyToMessage.id }; onSend(); }}
                 disabled={!messageData.message}
               >
                 Send reply

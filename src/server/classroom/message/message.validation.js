@@ -4,12 +4,12 @@ module.exports = {
   sendMessage: Joi.object({
     message: Joi.string().required(),
     information: {
-      type: Joi.string().required(),
-      qMessageID: Joi.string(),
+      type: Joi.string().valid('text', 'question', 'reply').required(),
+      qMessageId: Joi.string(),
     }
   }),
 
   resolveQuestion: Joi.object({
-    messageID: Joi.string().required(),
+    messageId: Joi.string().required(),
   }),
 };
