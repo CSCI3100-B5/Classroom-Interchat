@@ -3,7 +3,6 @@ import React from 'react';
 import {
   ButtonGroup, ToggleButton, Form, Button
 } from 'react-bootstrap';
-import MarkdownRender from '../MarkdownRender.jsx';
 
 export default function MCQPrompt({ message }) {
   const onSubmit = (values) => {
@@ -17,7 +16,7 @@ export default function MCQPrompt({ message }) {
 
   return (
     <div>
-      <div><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
+      <p>{message.content.prompt}</p>
       {message.content.multiSelect ? <p className="text-muted">You may choose more than 1 answer</p> : null}
       <Formik
         onSubmit={onSubmit}

@@ -3,7 +3,7 @@ const messageEvents = require('./classroom/message/message.events');
 const User = require('./models/user.model');
 const Classroom = require('./models/classroom.model');
 const config = require('./config/config');
-
+const quizEvents = require('./classroom/quiz/quiz.events');
 /**
  *
  * @param {import('socket.io').Socket} socket
@@ -47,4 +47,5 @@ module.exports = function indexEvents(socket, io) {
   // TODO: GUIDE: register all listeners here
   externalEvents(socket, io);
   messageEvents(socket, io);
+  quizEvents(socket,io);
 };
