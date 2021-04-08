@@ -4,7 +4,7 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
 export default function MessageList() {
-  const { data } = useDataStore();
+  const { data, getSelfParticipant } = useDataStore();
 
   const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
 
@@ -29,8 +29,19 @@ export default function MessageList() {
     }
   }
 
+  const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
+
   return (
     <div>
+      {getSelfParticipant()
+      && getSelfParticipant().permission !== 'student'
+      && requestingParticipants.length ? (
+        <div>
+          {requestingParticipants.length}
+          { ' '}
+          requesting for instructor permission
+        </div>
+        ) : null}
       {unresolvedQuestions.length ? (
         <ButtonGroup toggle className="mb-2">
           <ToggleButton

@@ -1,13 +1,57 @@
 import { Button, Badge } from 'react-bootstrap';
 import React from 'react';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
+import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 
 
 function ParticipantList() {
-  const { data } = useDataStore();
+  const { data, getSelfParticipant } = useDataStore();
+  const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
+
+  const onRequestPermission = async () => {
+    try {
+      await requestPermission();
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  const onCancelRequest = async () => {
+    try {
+      await cancelRequestPermission();
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  const onPromote = async (userId) => {
+    try {
+      await promoteParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  let permissionButton = null;
+  let perm = getSelfParticipant();
+  if (perm) {
+    perm = perm.permission;
+    if (perm === 'student') {
+      permissionButton = (
+        <Button onClick={onRequestPermission}>Request instructor permission</Button>
+      );
+    } else if (perm === 'requesting') {
+      permissionButton = (
+        <Button onClick={onCancelRequest}>Cancel permission request</Button>
+      );
+    }
+  }
+
   return (
-    <ul>
-      {
+    <>
+      {permissionButton}
+      <ul>
+        {
         data.participants.map(x => (
           <li key={x.user.id}>
             {x.user.name}
@@ -18,14 +62,15 @@ function ParticipantList() {
               return null;
             })()}
             {x.isOnline ? null : (<Badge>OFFLINE</Badge>)}
-            <Button variant="flat">Promote</Button>
+            <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
             <Button variant="flat">Token</Button>
             <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
             <Button variant="danger">Kick</Button>
           </li>
         ))
       }
-    </ul>
+      </ul>
+    </>
   );
 }
 

@@ -149,6 +149,33 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function requestPermission() {
+    return new Promise((resolve, reject) => {
+      socket.emit('request permission', {}, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function cancelRequestPermission(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('cancel request permission', {}, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function promoteParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('promote participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -157,7 +184,10 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
-      resolveQuestion
+      resolveQuestion,
+      requestPermission,
+      cancelRequestPermission,
+      promoteParticipant
     }}
     >
       {children}
