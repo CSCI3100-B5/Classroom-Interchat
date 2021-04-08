@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { useRealtime } from '../../contexts/RealtimeProvider.jsx'
 import {
   Button, Form, Alert, ButtonGroup, ToggleButton, InputGroup
 } from 'react-bootstrap';
@@ -66,7 +67,7 @@ const schema = yup.object().shape({
 export default function CreateQuiz({ onBack }) {
   const [showAlert, setAlertVisibility] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
+  const [sendQuiz] = useRealtime();
   const onSubmit = async (values) => {
     // clean the values object before submitting to server
     let cleanedValues = {
@@ -87,6 +88,7 @@ export default function CreateQuiz({ onBack }) {
 
     // TODO: submit quiz to server
     console.log(cleanedValues);
+    sendQuiz(cleanedValues);
   };
 
   return (

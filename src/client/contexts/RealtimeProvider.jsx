@@ -54,6 +54,18 @@ export function RealtimeProvider({ children }) {
         }
       });
 
+      socket.on('new quiz', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx] = payload;
+          data.messages = messages;
+        } else {
+          data.messages = [...data.messages, payload];
+        }
+      });
+
+
       socket.on('participant changed', (payload) => {
         const idx = data.participants.findIndex(x => x.user.id === payload.user.id);
         if (idx >= 0) {
@@ -124,7 +136,14 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
-
+  function sendQuiz(cleanedValues) {
+    return new Promise((resolve, reject) => {
+      socket.emit('send quiz', cleanedValues, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -133,6 +152,7 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
+      sendQuiz
     }}
     >
       {children}
