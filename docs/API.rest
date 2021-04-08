@@ -110,7 +110,7 @@ QuizContentWithResult repsonse
   "multiSelect": boolean,
   "result": [
     {
-      "userId": "<user id>",
+      "user": "<user id>",
       "content": "<string>" | [ number ],
       "createdAt": "<timestamp>"
     }
@@ -122,6 +122,7 @@ QuizAnswer object
   "id": "<quizanswer id>",
   "quiz": "<REF message id>",
   "createdAt": "<timestamp>",
+  "user": "<REF user id>",
   "content": "<string>" | [ number ]
 }
 

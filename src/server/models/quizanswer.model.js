@@ -7,32 +7,21 @@ const { Schema } = mongoose;
 
 /**
  * QuizAnswer Schema
- * QuizAnswer object
-{
-  "id": "<quizanswer id>",
-  "quiz": "<REF message id>",
-  "createdAt": "<timestamp>",
-  "content": "<string>" | [ number ]
-}
  */
 const QuizAnswerSchema = new Schema({
   quiz: {
     type: Schema.Types.ObjectId,
     ref: 'Message'
   },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   createdAt: {
     type: Date,
     default: Date.now
   },
-  content: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Message'
-  }],
-  isMuted: {
-    type: Boolean,
-    default: false
-  }
-});
+}, { discriminatorKey: 'type' });
 
 /**
  * Add your
@@ -45,7 +34,16 @@ const QuizAnswerSchema = new Schema({
  * Methods
  */
 QuizAnswerSchema.method({
-
+  filterSafe() {
+    return {
+      id: this.id,
+      createdAt: this.createdAt,
+      quiz: this.populated('quiz') ? this.quiz.filterSafe() : this.quiz,
+      user: this.populated('user') ? this.user.filterSafe() : this.user,
+      type: this.type,
+      content: this.content
+    };
+  }
 });
 
 /**
@@ -53,8 +51,8 @@ QuizAnswerSchema.method({
  */
 QuizAnswerSchema.statics = {
   /**
-   * Get QuizAnswer
-   * @param {ObjectId} id - The objectId of QuizAnswer.
+   * Get quiz answer
+   * @param {ObjectId} id - The objectId of the quiz answer.
    * @returns {Promise<User, APIError>}
    */
   get(id) {
@@ -70,9 +68,9 @@ QuizAnswerSchema.statics = {
   },
 
   /**
-   * List quizanswers in descending order of 'createdAt' timestamp.
-   * @param {number} skip - Number of quizanswers to be skipped.
-   * @param {number} limit - Limit number of classrooms to be returned.
+   * List quiz answers in descending order of 'createdAt' timestamp.
+   * @param {number} skip - Number of quiz answers to be skipped.
+   * @param {number} limit - Limit number of quiz answers to be returned.
    * @returns {Promise<User[]>}
    */
   list({ skip = 0, limit = 50 } = {}) {
@@ -87,4 +85,36 @@ QuizAnswerSchema.statics = {
 /**
  * @typedef QuizAnswer
  */
-module.exports = mongoose.model('QuizAnswer', QuizAnswerSchema, 'QuizAnswers');
+const QuizAnswer = mongoose.model('QuizAnswer', QuizAnswerSchema, 'QuizAnswers');
+
+
+const MCQAnswerSchema = new mongoose.Schema({
+  content: [{
+    type: Number,
+    required: true
+  }]
+});
+
+/**
+ * @typedef MCQAnswer
+ */
+const MCQAnswer = QuizAnswer.discriminator('mcq', MCQAnswerSchema);
+
+
+const SAQAnswerSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true
+  }
+});
+
+/**
+ * @typedef SAQAnswer
+ */
+const SAQAnswer = QuizAnswer.discriminator('saq', SAQAnswerSchema);
+
+module.exports = {
+  QuizAnswer,
+  MCQAnswer,
+  SAQAnswer
+};
