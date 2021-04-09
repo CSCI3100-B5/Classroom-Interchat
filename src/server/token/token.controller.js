@@ -34,11 +34,62 @@ function loadUser(req, res, next, id) {
 /**
  * Get all tokens of a given user id
  */
-function getUserTokens(req, res, next) {
-  // not done
-  const userId = req.user.id;
-  const createdList = Token.find({ createdBy: userId });
-  const receivedList = Token.find({ createdBy: userId });
+async function getUserTokens(req, res, next) {
+  const { user } = req.user;
+
+  const created = [];
+  const received = [];
+
+  await Token
+    .find({ createdBy: user.id })
+    .exec()
+    .than((Tokens) => {
+      Tokens.forEach((token) => {
+        const receiver = User.get(token.receivedBy);
+
+        created.push({
+          id: token.id,
+          createdBy: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+          },
+          receivedBy: {
+            id: receiver.id,
+            name: receiver.name,
+            email: receiver.email
+          },
+          createdAt: token.createdAt,
+          isValid: token.isValid
+        });
+      });
+    });
+
+  await Token
+    .find({ receivedBy: user.id })
+    .exec()
+    .than((Tokens) => {
+      Tokens.forEach((token) => {
+        const creater = User.get(token.createdBy);
+
+        created.push({
+          id: token.id,
+          createdBy: {
+            id: creater.id,
+            name: creater.name,
+            email: creater.email
+          },
+          receivedBy: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+          },
+          createdAt: token.createdAt,
+          isValid: token.isValid
+        });
+      });
+    });
+
   return { created, received };
 }
 

@@ -2,7 +2,7 @@ const express = require('express');
 const { validate } = require('express-validation');
 const paramValidation = require('./token.validation');
 const tokenCtrl = require('./token.controller');
-const { requireAccessToken, requireAdminAccess } = require('./../helpers/requireAuth');
+const { requireAccessToken } = require('./../helpers/requireAuth');
 
 // TODO: GUIDE: you may copy this file to make your xxx.route.js
 
