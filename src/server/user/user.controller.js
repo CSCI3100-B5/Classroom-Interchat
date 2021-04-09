@@ -9,7 +9,7 @@ const APIError = require('./../helpers/APIError');
 function load(req, res, next, id) {
   User.get(id)
     .then((user) => {
-      req.user = user; // eslint-disable-line no-param-reassign
+      req.user = user;
       return next();
     })
     .catch(e => next(e));

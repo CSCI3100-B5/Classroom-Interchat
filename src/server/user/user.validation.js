@@ -23,8 +23,8 @@ module.exports = {
       password: Joi.string().min(8).max(64),
       email: Joi.string().email()
     }),
-    params: {
+    params: Joi.object({
       userId: Joi.string().hex().required()
-    }
+    })
   }
 };
