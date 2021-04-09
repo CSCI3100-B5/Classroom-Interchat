@@ -11,7 +11,8 @@ function ParticipantList() {
     cancelRequestPermission,
     promoteParticipant,
     demoteParticipant,
-    kickParticipant
+    kickParticipant,
+    muteParticipant
   } = useRealtime();
 
   const onRequestPermission = async () => {
@@ -69,6 +70,14 @@ function ParticipantList() {
     }
   };
 
+  const onMute = async (userId) => {
+    try {
+      await muteParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
   return (
     <>
       {permissionButton}
@@ -85,8 +94,9 @@ function ParticipantList() {
             })()}
             {x.isOnline ? null : (<Badge>OFFLINE</Badge>)}
             <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
+            <Button variant="flat" onClick={() => onDemote(x.user.id)}>Deomote</Button>
             <Button variant="flat">Token</Button>
-            <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
+            <Button variant="flat" onClick={() => onMute(x.user.id)}>{x.isMuted ? 'Unmute' : 'Mute'}</Button>
             <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
           </li>
         ))
