@@ -18,5 +18,9 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('promote participant', paramValidation.promoteParticipant, instructorCtrl.promoteParticipant);
 
+  events.on('demote participant', paramValidation.demoteParticipant, instructorCtrl.demoteParticipant);
+
+  events.on('kick participant', paramValidation.kickParticipant, instructorCtrl.kickParticipant);
+
   events.register();
 };

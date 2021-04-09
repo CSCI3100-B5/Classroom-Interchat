@@ -176,6 +176,23 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function demoteParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('demote participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function kickParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('kick participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -187,7 +204,9 @@ export function RealtimeProvider({ children }) {
       resolveQuestion,
       requestPermission,
       cancelRequestPermission,
-      promoteParticipant
+      promoteParticipant,
+      demoteParticipant,
+      kickParticipant
     }}
     >
       {children}

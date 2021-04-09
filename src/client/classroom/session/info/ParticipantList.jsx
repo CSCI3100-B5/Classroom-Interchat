@@ -6,7 +6,13 @@ import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 
 function ParticipantList() {
   const { data, getSelfParticipant } = useDataStore();
-  const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
+  const {
+    requestPermission,
+    cancelRequestPermission,
+    promoteParticipant,
+    demoteParticipant,
+    kickParticipant
+  } = useRealtime();
 
   const onRequestPermission = async () => {
     try {
@@ -32,6 +38,14 @@ function ParticipantList() {
     }
   };
 
+  const onDemote = async (userId) => {
+    try {
+      await demoteParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
   let permissionButton = null;
   let perm = getSelfParticipant();
   if (perm) {
@@ -46,6 +60,14 @@ function ParticipantList() {
       );
     }
   }
+
+  const onKick = async (userId) => {
+    try {
+      await kickParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
 
   return (
     <>
@@ -65,7 +87,7 @@ function ParticipantList() {
             <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
             <Button variant="flat">Token</Button>
             <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
-            <Button variant="danger">Kick</Button>
+            <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
           </li>
         ))
       }

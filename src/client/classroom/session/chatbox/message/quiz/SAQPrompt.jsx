@@ -7,6 +7,7 @@ export default function SAQPrompt({ message }) {
   const data = useStates({
     answer: ''
   });
+
   const onSubmit = () => {
     // TODO: send answer to server
     console.log(data.answer);

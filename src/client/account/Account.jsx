@@ -6,6 +6,7 @@ import LaunchApp from './LaunchApp.jsx';
 import ManageProfile from './ManageProfile.jsx';
 import ChangePassword from './ChangePassword.jsx';
 import ManageTokens from './ManageTokens.jsx';
+import Logout from './Logout.jsx';
 
 // TODO: The UI is implemented as a tab control here, but a continuous
 // scrollable page is preferred
@@ -28,6 +29,9 @@ export default function Account() {
             <Nav.Item>
               <Nav.Link eventKey="manageTokens">Manage Tokens</Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+              <Nav.Link eventKey="logout">Logout</Nav.Link>
+            </Nav.Item>
           </Nav>
         </Col>
         <Col sm={9}>
@@ -47,6 +51,10 @@ export default function Account() {
             <Tab.Pane eventKey="manageTokens" className="m-2">
               <h3>Manage Tokens</h3>
               <ManageTokens />
+            </Tab.Pane>
+            <Tab.Pane eventKey="logout" className="m-2">
+              <h3>Logout</h3>
+              <Logout />
             </Tab.Pane>
           </Tab.Content>
         </Col>
