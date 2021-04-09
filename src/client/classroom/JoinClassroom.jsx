@@ -7,8 +7,8 @@ import {
 } from 'react-bootstrap';
 import { useHistory, useLocation } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
+import { useStates } from 'use-states';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
-import { useStates } from '../hooks/useStates.js';
 import { useRealtime } from '../contexts/RealtimeProvider.jsx';
 
 

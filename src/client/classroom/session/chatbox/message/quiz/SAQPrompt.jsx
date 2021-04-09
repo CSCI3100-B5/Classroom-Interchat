@@ -1,6 +1,6 @@
 import React from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
-import { useStates, bindState } from '../../../../../hooks/useStates.js';
+import { useStates, bindState } from 'use-states';
 import MarkdownRender from '../MarkdownRender.jsx';
 
 export default function SAQPrompt({ message }) {

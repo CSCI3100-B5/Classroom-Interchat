@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   InputGroup, FormControl, Button, Form
 } from 'react-bootstrap';
-import { useStates, bindState } from '../../../hooks/useStates.js';
+import { useStates, bindState } from 'use-states';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 
