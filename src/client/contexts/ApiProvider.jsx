@@ -87,6 +87,34 @@ export function ApiProvider({ children }) {
     return result;
   }
 
+  /**
+   * Get all tokens of a given user id
+   * @param {String} userId userId
+   * @returns response body
+   */
+  async function getUserTokens(userId) {
+    const result = await request({
+      method: 'GET',
+      url: `/token/${userId}`,
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
+  /**
+   * Sets isValid of a token to false
+   * @param {String} tokenId tokenId
+   * @returns response
+   */
+  async function setTokenFalse(tokenId) {
+    const result = await request({
+      method: 'PATCH',
+      url: `/token/${tokenId}/invalidate`,
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
   return (
     <ApiContext.Provider value={{
       refreshAccessToken,

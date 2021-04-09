@@ -31,6 +31,30 @@ function loadUser(req, res, next, id) {
 // TODO: invalidate token
 // TODO: get all tokens of a user
 
+/**
+ * Get all tokens of a given user id
+ */
+function getUserTokens(req, res, next) {
+  // not done
+  const userId = req.user.id;
+  const createdList = Token.find({ createdBy: userId });
+  const receivedList = Token.find({ createdBy: userId });
+  return { created, received };
+}
+
+/**
+ * Sets isValid of a token to false
+ */
+function setTokenFalse(req, res, next) {
+  const { token } = req;
+  token.isValid = false;
+  token.save();
+  return res.json({});
+}
+
 module.exports = {
-  loadToken, loadUser
+  loadToken,
+  loadUser,
+  getUserTokens,
+  setTokenFalse
 };
