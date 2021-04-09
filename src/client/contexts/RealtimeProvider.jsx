@@ -106,6 +106,21 @@ export function RealtimeProvider({ children }) {
       socket.on('meta changed', (payload) => {
         data.classroomMeta = payload;
       });
+
+      socket.on('question resolved', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx] = payload;
+          data.messages = messages;
+          if (data.replyToMessageId === payload.id) {
+            data.replyToMessageId = null;
+            console.log('cleared replyToMessageId');
+          }
+        } else {
+          console.log('on question resolved: id not found: ', payload);
+        }
+      });
     }
   }, [socket]);
 
@@ -167,6 +182,15 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function resolveQuestion(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('resolve question', { messageId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   function ansMCQuiz(content, messageId) {
     return new Promise((resolve, reject) => {
       socket.emit('ans mc quiz', { content, messageId }, (response) => {
@@ -184,6 +208,34 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
+
+  function requestPermission() {
+    return new Promise((resolve, reject) => {
+      socket.emit('request permission', {}, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function cancelRequestPermission(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('cancel request permission', {}, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function promoteParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('promote participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -194,7 +246,11 @@ export function RealtimeProvider({ children }) {
       sendMessage,
       sendQuiz,
       ansMCQuiz,
-      ansSAQuiz
+      ansSAQuiz,
+      resolveQuestion,
+      requestPermission,
+      cancelRequestPermission,
+      promoteParticipant
     }}
     >
       {children}

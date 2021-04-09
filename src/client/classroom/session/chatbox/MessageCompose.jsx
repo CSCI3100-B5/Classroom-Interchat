@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   InputGroup, FormControl, Button, Form
 } from 'react-bootstrap';
-import { useStates, bindState } from '../../../hooks/useStates.js';
+import { useStates, bindState } from 'use-states';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
-  const { sendMessage, } = useRealtime();
+  const { sendMessage } = useRealtime();
   const { data } = useDataStore();
 
   const messageData = useStates({
@@ -17,25 +17,43 @@ export default function MessageCompose({ onCreateQuiz }) {
     information: null
   });
 
-  const onSend = () => {
+  const onSend = async () => {
     if (!messageData.message) return;
-    console.log('Message object: ', messageData);
-    sendMessage(messageData.message, messageData.information);
+    console.log('Message object: ', { message: messageData.message, information: messageData.information });
+    try {
+      await sendMessage(messageData.message, messageData.information);
+    } catch (ex) {
+      console.log('send message error: ', ex);
+    }
     messageData.message = '';
     messageData.information = null;
   };
 
+
+  useEffect(() => {
+    const replyToMessage = data.replyToMessageId
+      ? data.messages.find(x => x.id === data.replyToMessageId)
+      : null;
+    if (!replyToMessage || replyToMessage.content.isResolved) {
+      data.replyToMessageId = null;
+    }
+  }, [data.replyToMessageId]);
+
+  const replyToMessage = data.replyToMessageId
+    ? data.messages.find(x => x.id === data.replyToMessageId)
+    : null;
+
   return (
-    data.replyToMessage != null
+    replyToMessage !== null
       ? (
         <div>
 
           <div>
             Replying to
             {' '}
-            {data.participants.find(x => x.user.id === data.replyToMessage.sender).user.name}
+            {data.participants.find(x => x.user.id === replyToMessage.sender).user.name}
             {'\'s Question'}
-            <Button variant="outline-danger" onClick={() => { data.replyToMessage = null; }}>Cancel reply</Button>
+            <Button variant="outline-danger" onClick={() => { data.replyToMessageId = null; }}>Cancel reply</Button>
           </div>
 
           <InputGroup>
@@ -48,7 +66,7 @@ export default function MessageCompose({ onCreateQuiz }) {
             <InputGroup.Append>
               <Button
                 variant="outline-secondary"
-                onClick={() => { messageData.information = { type: 'reply', qMessageID: data.replyToMessage.id }; onSend(); }}
+                onClick={() => { messageData.information = { type: 'reply', qMessageId: data.replyToMessageId }; onSend(); }}
                 disabled={!messageData.message}
               >
                 Send reply

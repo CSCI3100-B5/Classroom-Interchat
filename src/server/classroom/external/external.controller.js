@@ -190,7 +190,6 @@ async function leaveClassroom(packet, socket, io) {
   io.to(classroom.id).emit('new message', message.filterSafe());
   await classroom.save();
 
-  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   socket.leave(classroom.id);
   socket.leave(`${meta.invoker.id}-${classroom.id}`);
   socket.data.invokerClassroom = null;
@@ -226,6 +225,7 @@ async function leaveClassroom(packet, socket, io) {
       await classroom.save();
     }
   }
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   notifyClassroomMetaChanged(classroom, io);
   return callback({});
 }

@@ -73,24 +73,6 @@ MessageSchema.statics = {
   },
 
   /**
-   * Get message
-   * @param {ObjectId} id - The objectId of message.
-   * @returns {Promise<User, APIError>}
-   */
-  getCached(id) {
-    return this.findById(id)
-      .cache(0, `MessageById-${id}`)
-      .exec()
-      .then((message) => {
-        if (message) {
-          return message;
-        }
-        const err = new APIError('No such message exists!', httpStatus.NOT_FOUND);
-        return Promise.reject(err);
-      });
-  },
-
-  /**
    * List message in descending order of 'createdAt' timestamp.
    * @param {number} skip - Number of message to be skipped.
    * @param {number} limit - Limit number of message to be returned.

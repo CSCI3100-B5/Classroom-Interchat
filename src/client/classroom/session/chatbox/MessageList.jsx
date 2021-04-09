@@ -1,9 +1,10 @@
 import React from 'react';
+import { ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 
 export default function MessageList() {
-  const { data } = useDataStore();
+  const { data, getSelfParticipant } = useDataStore();
 
   const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
 
@@ -11,18 +12,57 @@ export default function MessageList() {
   // TODO: filter unresolved questions only
   // TODO: collapse multiple messages
 
+  let messageList;
+  if (!data.messageFilter) {
+    messageList = data.messages;
+  } else if (data.messageFilter === 'unresolved') {
+    messageList = unresolvedQuestions;
+  } else {
+    const question = data.messages.find(x => x.id === data.messageFilter);
+    if (question) {
+      messageList = data.messages.filter(
+        x => x.id === data.messageFilter || x.content?.replyTo === data.messageFilter
+      );
+    } else {
+      data.messageFilter = null;
+      messageList = data.messages;
+    }
+  }
+
+  const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
+
   return (
     <div>
-      {unresolvedQuestions.length ? (
+      {getSelfParticipant()
+      && getSelfParticipant().permission !== 'student'
+      && requestingParticipants.length ? (
         <div>
-          {unresolvedQuestions.length}
-          {' '}
-          unresolved questions
+          {requestingParticipants.length}
+          { ' '}
+          requesting for instructor permission
         </div>
+        ) : null}
+      {unresolvedQuestions.length ? (
+        <ButtonGroup toggle className="mb-2">
+          <ToggleButton
+            type="checkbox"
+            variant="info"
+            checked={data.messageFilter === 'unresolved'}
+            value="1"
+            onChange={() => {
+              if (data.messageFilter === 'unresolved') data.messageFilter = null;
+              else data.messageFilter = 'unresolved';
+            }}
+          >
+            {unresolvedQuestions.length}
+            {' '}
+            unresolved questions
+          </ToggleButton>
+        </ButtonGroup>
       ) : null}
       <ul>
         {
-          data.messages.map(message => (
+          messageList.map(message => (
             <li key={message.id}><Message message={message} /></li>
           ))
         }

@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from 'react';
+import { useStates } from 'use-states';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { useStates, setGlobalInstantUpdate } from '../hooks/useStates.js';
 
 const DataStoreContext = React.createContext();
-setGlobalInstantUpdate(true);
 
 export function useDataStore() {
   return useContext(DataStoreContext);
@@ -28,7 +27,12 @@ export function DataStoreProvider({ children }) {
     messages: [],
     participants: [],
 
-    replyToMessage: null,
+
+    replyToMessageId: null,
+    messageFilter: null,
+    // null for no filter
+    // a message id of a question to show that thread
+    // 'unresolved' to show all unresolved questions
 
     user: savedUser
   });
@@ -60,6 +64,10 @@ export function DataStoreProvider({ children }) {
     };
   }
 
+  function getSelfParticipant() {
+    return data.participants.find(x => x.user.id === data.user.id);
+  }
+
   return (
     <DataStoreContext.Provider value={{
       data,
@@ -67,6 +75,7 @@ export function DataStoreProvider({ children }) {
       // computed
       accessTokenHeader,
       refreshTokenHeader,
+      getSelfParticipant
     }}
     >
       {children}
