@@ -38,7 +38,8 @@ MessageSchema.method({
           correct: this.content.correct,
           multiSelect: this.content.multiSelect,
           closedAt: this.content.closedAt,
-          result: this.populated('content.result') ? this.content.result.map(x => x.filterSafe()) : this.content.result
+          results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
+          resultsReleased: this.content.resultsReleased
         }
       };
     }
@@ -52,7 +53,8 @@ MessageSchema.method({
         content: {
           prompt: this.content.prompt,
           closedAt: this.content.closedAt,
-          result: this.populated('content.result') ? this.content.result.map(x => x.filterSafe()) : this.content.result
+          results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
+          resultsReleased: this.content.resultsReleased
         }
       };
     }
@@ -77,7 +79,8 @@ MessageSchema.method({
           prompt: this.content.prompt,
           choices: this.content.choices,
           multiSelect: this.content.multiSelect,
-          closedAt: this.content.closedAt
+          closedAt: this.content.closedAt,
+          resultsReleased: this.content.resultsReleased
         }
       };
     }
@@ -90,7 +93,8 @@ MessageSchema.method({
         type: this.type,
         content: {
           prompt: this.content.prompt,
-          closedAt: this.content.closedAt
+          closedAt: this.content.closedAt,
+          resultsReleased: this.content.resultsReleased
         }
       };
     }
@@ -191,10 +195,14 @@ const MCQMessage = Message.discriminator('mcq',
         type: Date,
         default: null
       },
-      result: [{
+      results: [{
         type: Schema.Types.ObjectId,
         ref: 'QuizAnswer'
-      }]
+      }],
+      resultsReleased: {
+        type: Boolean,
+        default: false
+      }
     }
   }));
 
@@ -208,10 +216,14 @@ const SAQMessage = Message.discriminator('saq',
         type: Date,
         default: null
       },
-      result: [{
+      results: [{
         type: Schema.Types.ObjectId,
         ref: 'QuizAnswer'
-      }]
+      }],
+      resultsReleased: {
+        type: Boolean,
+        default: false
+      }
     }
   }));
 

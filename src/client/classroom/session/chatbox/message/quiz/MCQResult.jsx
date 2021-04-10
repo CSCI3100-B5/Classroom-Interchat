@@ -19,7 +19,7 @@ export default function MCQResult({ message }) {
 
   return (
     <div>
-      <h5>Quiz Result</h5>
+      <h5>Quiz Results</h5>
       <p>{message.content.prompt}</p>
       {message.content.multiSelect ? <p className="text-muted">You may choose more than 1 answer</p> : null}
       <Formik
@@ -42,10 +42,10 @@ export default function MCQResult({ message }) {
                   const btnContent = (
                     <>
                       <Badge>
-                        {(message.content.result.reduce(
+                        {(message.content.results.reduce(
                           (prev, curr) => (prev + (curr.content.includes(idx) ? 1 : 0)),
                           0
-                        ) / message.content.result.length * 100).toFixed(2)}
+                        ) / message.content.results.length * 100).toFixed(2)}
                         %
                       </Badge>
                       {x}

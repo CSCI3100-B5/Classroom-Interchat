@@ -10,7 +10,7 @@ import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 export default function QuizMessage({ message }) {
   const { data } = useDataStore();
 
-  const { endQuiz } = useRealtime();
+  const { endQuiz, releaseResults } = useRealtime();
 
   const onEndQuiz = async () => {
     try {
@@ -20,14 +20,22 @@ export default function QuizMessage({ message }) {
     }
   };
 
+  const onReleaseResults = async () => {
+    try {
+      await releaseResults(message.id);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
   let quiz;
   if (message.type === 'saq') {
-    if (message.content.result) {
+    if (message.content.results) {
       quiz = (<SAQResult message={message} />);
     } else {
       quiz = (<SAQPrompt message={message} />);
     }
-  } else if (message.content.result) {
+  } else if (message.content.results) {
     quiz = (<MCQResult message={message} />);
   } else {
     quiz = (<MCQPrompt message={message} />);
@@ -38,9 +46,12 @@ export default function QuizMessage({ message }) {
       {quiz}
       {(() => {
         if ((message.sender.id ?? message.sender) === data.user.id) {
-          return message.content.closedAt
-            ? (<Button>Release results</Button>)
-            : (<Button onClick={onEndQuiz}>End quiz</Button>);
+          if (!message.content.closedAt) {
+            return (<Button onClick={onEndQuiz}>End quiz</Button>);
+          }
+          if (!message.content.resultsReleased) {
+            return (<Button onClick={onReleaseResults}>Release results</Button>);
+          }
         }
         return null;
       })()}

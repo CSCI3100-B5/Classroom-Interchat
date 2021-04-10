@@ -36,6 +36,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
     newSocket.on('connect', (...args) => console.log('Socket connect', args));
     // TODO: auto-join classroom if previously disconnected without leaving
+    // TODO: show connection error
     newSocket.io.on('reconnect', (...args) => console.log('io reconnect', args));
     newSocket.io.on('reconnect_error', (...args) => console.log('io reconnect error', args));
     newSocket.on('disconnect', (...args) => console.log('Socket disconnect', args));

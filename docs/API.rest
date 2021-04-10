@@ -71,7 +71,7 @@ Message object
   | {  // saq content
     "prompt": "<string>",
     "closedAt": "<timestamp>",
-    "result": [ "<REF quiz answer>" ]
+    "results": [ "<REF quiz answer>" ]
   }
   | {  // mcq content
     "prompt": "<string>",
@@ -79,7 +79,7 @@ Message object
     "correct": [ number ],     // index of correct answer inside "choices"
     "multiSelect": boolean,
     "closedAt": "<timestamp>",
-    "result": [ "<REF quiz answer>" ]
+    "results": [ "<REF quiz answer>" ]
   }
   | { // question content
     "isResolved": boolean,
@@ -105,14 +105,14 @@ QuizContent repsonse
 // This object is also not saved to the database, but is what the client receives
 // from server when a quiz result is released
 // This object is embedded into Message.content
-QuizContentWithResult repsonse
+QuizContentWithResults repsonse
 {
   "type": "SAQ|MCQ",
   "prompt": "<string>",
   "choices": [ "<string>" ],   // only MCQ
   "correct": [ number ],  // only MCQ
   "multiSelect": boolean,
-  "result": [
+  "results": [
     {
       "user": "<user id>",
       "content": "<string>" | [ number ],

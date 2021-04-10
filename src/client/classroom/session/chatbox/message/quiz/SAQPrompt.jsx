@@ -18,8 +18,6 @@ export default function SAQPrompt({ message }) {
     } catch (ex) {
       console.log(ex);
     }
-
-    data.answer = '';
   };
   return (
     <div>

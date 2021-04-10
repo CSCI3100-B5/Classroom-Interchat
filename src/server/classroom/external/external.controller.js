@@ -144,8 +144,16 @@ async function joinClassroom(packet, socket, io) {
   io.to(classroom.id).emit('participant changed', participant.filterSafe());
   callback({});
   classroom = await classroom.populate('host').populate('participants.user').populate('messages').execPopulate();
-  // TODO: emit different quiz to different participants
-  return socket.emit('catch up', classroom.filterSafe());
+  // TODO: different handling when results are released
+  const retClassroom = classroom.filterSafe();
+  retClassroom.messages = await Promise.all(classroom.messages.map(async (x) => {
+    if (x.type !== 'mcq' && x.type !== 'saq') return x.filterSafe();
+    if (x.content.resultsReleased || x.sender._id.equals(meta.invoker._id)) {
+      return (await x.populate('content.results').execPopulate()).filterSafe();
+    }
+    return x.filterWithoutAnswer();
+  }));
+  return socket.emit('catch up', retClassroom);
 }
 
 

@@ -12,10 +12,12 @@ export default function MCQPrompt({ message }) {
     if (!(values.choices instanceof Array)) {
       values.choices = [values.choices]; // eslint-disable-line no-param-reassign
     }
-    // TODO: send the answer to server
-    console.log(values);
+    const cleanedChoices = values.choices.map(
+      x => message.content.choices.indexOf(x)
+    ).sort((a, b) => a - b);
+    console.log(cleanedChoices);
     try {
-      await ansMCQuiz(values, message.id);
+      await ansMCQuiz(cleanedChoices, message.id);
     } catch (ex) {
       console.log(ex);
     }

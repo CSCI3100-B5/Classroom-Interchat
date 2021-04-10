@@ -78,7 +78,8 @@ export default function CreateQuiz({ onBack }) {
       cleanedValues = {
         ...cleanedValues,
         choices: [],
-        correct: []
+        correct: [],
+        multiSelect: values.multiSelect
       };
       for (let i = 0; i < values.choiceCount; i++) {
         cleanedValues.choices.push(values[`choice${i}`]);
@@ -86,7 +87,6 @@ export default function CreateQuiz({ onBack }) {
       }
       if (cleanedValues.correct.length === 0) {
         delete cleanedValues.correct;
-        cleanedValues.multiSelect = values.multiSelect;
       }
     }
 
@@ -237,21 +237,7 @@ export default function CreateQuiz({ onBack }) {
                     required
                     name="multiSelect"
                     label="Allow choosing multiple answers"
-                    disabled={(() => {
-                      for (let i = 0; i < values.choiceCount; i++) {
-                        if (values[`choice${i}correct`]) return true;
-                      }
-                      return false;
-                    })()}
-                    checked={(() => {
-                      let cnt = 0;
-                      for (let i = 0; i < values.choiceCount; i++) {
-                        cnt += +values[`choice${i}correct`];
-                      }
-                      if (cnt === 0) return values.multiSelect;
-                      if (cnt === 1) return false;
-                      return true;
-                    })()}
+                    checked={values.multiSelect}
                     onChange={handleChange}
                     isInvalid={!!errors.multiSelect}
                     feedback={errors.multiSelect}
