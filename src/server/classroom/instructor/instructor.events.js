@@ -20,7 +20,7 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('demote participant', paramValidation.demoteParticipant, instructorCtrl.demoteParticipant);
 
-  events.on('kick participant', paramValidation.kickParticipant, instructorCtrl.kickParticipant);
+  events.on('mute participant', paramValidation.muteParticipant, instructorCtrl.muteParticipant);
 
   events.register();
 };

@@ -197,13 +197,14 @@ async function demoteParticipant(packet, socket, io) {
   return callback({});
 }
 
+
 /**
- * Mark a participant's permission as requesting
+ * Mute a participant in the classroom
  * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
-async function kickParticipant(packet, socket, io) {
+async function muteParticipant(packet, socket, io) {
   const [data, callback, meta] = packet;
 
   if (!meta.invokerClassroom) {
@@ -218,7 +219,7 @@ async function kickParticipant(packet, socket, io) {
   );
   if (participant.permission !== 'instructor') {
     return callback({
-      error: 'Only instructors can kick participants'
+      error: 'Only instructors can mute participants'
     });
   }
   const target = meta.invokerClassroom.participants.find(
@@ -239,5 +240,5 @@ module.exports = {
   cancelRequestPermission,
   promoteParticipant,
   demoteParticipant,
-  kickParticipant
+  muteParticipant
 };

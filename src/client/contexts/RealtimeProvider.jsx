@@ -193,6 +193,16 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
+
+  function muteParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('mute participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -206,7 +216,8 @@ export function RealtimeProvider({ children }) {
       cancelRequestPermission,
       promoteParticipant,
       demoteParticipant,
-      kickParticipant
+      kickParticipant,
+      muteParticipant
     }}
     >
       {children}

@@ -13,5 +13,8 @@ module.exports = {
   }),
   kickParticipant: Joi.object({
     userId: Joi.string().hex().length(24).required()
+  }),
+  muteParticipant: Joi.object({
+    userId: Joi.string().hex().length(24).required()
   })
 };
