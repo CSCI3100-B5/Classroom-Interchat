@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Badge, Button, ButtonGroup, ToggleButton
 } from 'react-bootstrap';
+import { BsFillQuestionCircleFill } from 'react-icons/bs';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../contexts/RealtimeProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
@@ -30,6 +31,7 @@ export default function QuestionMessage({ message }) {
 
   return (
     <div>
+      <BsFillQuestionCircleFill />
       <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
       {resolveButton}
       <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
