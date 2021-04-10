@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import env from '../environment.js';
 import { useDataStore } from './DataStoreProvider.jsx';
 import { useApi } from './ApiProvider.jsx';
+import { useToast } from './ToastProvider.jsx';
 
 const SocketContext = React.createContext();
 
@@ -15,6 +16,7 @@ export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
   const { data } = useDataStore();
   const [socketAccessToken, setSocketAccessToken] = useState();
+  const { toast } = useToast();
 
   const history = useHistory();
   const { refreshAccessToken } = useApi();
@@ -44,7 +46,8 @@ export function SocketProvider({ children }) {
           { classroomId: data.classroomMeta.id },
           (response) => {
             if (response.error) {
-              console.log(response);
+              console.log('Auto-rejoin classroom failed', response);
+              toast('error', 'Failed to rejoin classroom automatically', response.error);
               data.classroomMeta = null;
               data.participants = [];
               data.messages = [];
@@ -64,6 +67,7 @@ export function SocketProvider({ children }) {
         console.log('Refreshing jwt token for socket connection');
         const response = await refreshAccessToken();
         if (response.success) return setSocketAccessToken(response.response.data.accessToken);
+        toast('error', 'Error when requsting for permission', response.response.message);
         data.classroomMeta = null;
         data.participants = [];
         data.messages = [];

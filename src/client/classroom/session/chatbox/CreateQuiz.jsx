@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
-  Button, Form, Alert, ButtonGroup, ToggleButton, InputGroup
+  Button, Form, ButtonGroup, ToggleButton, InputGroup
 } from 'react-bootstrap';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../contexts/ToastProvider.jsx';
 
 const choicesSchema = {};
 const choicesDefault = {};
@@ -65,9 +66,8 @@ const schema = yup.object().shape({
 });
 
 export default function CreateQuiz({ onBack }) {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
   const { sendQuiz } = useRealtime();
+  const { toast } = useToast();
   const onSubmit = async (values) => {
     // clean the values object before submitting to server
     let cleanedValues = {
@@ -90,27 +90,17 @@ export default function CreateQuiz({ onBack }) {
       }
     }
 
-    console.log(cleanedValues);
     try {
       await sendQuiz(cleanedValues);
       onBack();
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when creating quiz', ex.error);
     }
   };
 
   return (
     <div>
       <Button variant="flat" onClick={onBack}>Back</Button>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}

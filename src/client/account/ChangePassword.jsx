@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
 
@@ -17,40 +17,15 @@ const schema = yup.object().shape({
 });
 
 export default function ChangePassword() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   // TODO: use the PATCH /user/:userId API
   // const { signup, login } = useApi();
 
   const onSubmit = async (values) => {
     // TODO: send the API request
-    // const result = await signup(values.signupName, values.signupEmail, values.signupPassword);
-    // if (result.success) {
-    //   const loginResult = await login(values.signupEmail, values.signupPassword);
-    //   if (loginResult.success) {
-    //     history.push('/classroom');
-    //   } else {
-    //     setAlertMessage(loginResult.response.data.message);
-    //     setAlertVisibility(true);
-    //   }
-    // } else {
-    //   setAlertMessage(result.response.data.message);
-    //   setAlertVisibility(true);
-    // }
   };
 
   return (
     <div>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}

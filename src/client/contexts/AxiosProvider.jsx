@@ -25,7 +25,7 @@ export function AxiosProvider({ children }) {
         async (error) => {
           console.log('error interceptor', { ...error });
           // Reject promise if usual error
-          if (error.response.status !== 401 || error.config.isRetry) {
+          if (error.response.status !== 401 || error.response.data.message !== 'jwt expired') {
             return Promise.reject(error);
           }
 
@@ -39,7 +39,7 @@ export function AxiosProvider({ children }) {
             .then((result) => {
               if (result.success) {
                 error.response.config.headers.Authorization = `Bearer ${result.response.data.accessToken}`;
-                return axios.request({ isRetry: true, ...error.config });
+                return axios.request(error.config);
               }
 
               data.accessToken = null;

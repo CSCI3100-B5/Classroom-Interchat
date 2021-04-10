@@ -6,17 +6,20 @@ import MCQPrompt from './MCQPrompt.jsx';
 import MCQResult from './MCQResult.jsx';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 
 export default function QuizMessage({ message }) {
   const { data } = useDataStore();
 
   const { endQuiz, releaseResults } = useRealtime();
 
+  const { toast } = useToast();
+
   const onEndQuiz = async () => {
     try {
       await endQuiz(message.id);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when end quiz', ex.error);
     }
   };
 
@@ -24,7 +27,7 @@ export default function QuizMessage({ message }) {
     try {
       await releaseResults(message.id);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when releasing results', ex.error);
     }
   };
 

@@ -113,7 +113,7 @@ export function RealtimeProvider({ children }) {
           data.messages = messages;
           if (data.replyToMessageId === payload.id) {
             data.replyToMessageId = null;
-            console.log('cleared replyToMessageId');
+            console.log('cleared replyToMessageId because question is resolved');
           }
         } else {
           console.log('on question resolved: id not found: ', payload);
