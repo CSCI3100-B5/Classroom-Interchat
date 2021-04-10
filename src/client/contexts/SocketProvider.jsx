@@ -67,12 +67,20 @@ export function SocketProvider({ children }) {
         data.classroomMeta = null;
         data.participants = [];
         data.messages = [];
+        data.rememberMe = true;
+        data.refreshToken = null;
+        data.accessToken = null;
+        data.user = null;
         return history.push('/auth');
       }
       if (error.message === 'jwt malformed') {
         data.classroomMeta = null;
         data.participants = [];
         data.messages = [];
+        data.rememberMe = true;
+        data.refreshToken = null;
+        data.accessToken = null;
+        data.user = null;
         return history.push('/auth');
       }
     });
