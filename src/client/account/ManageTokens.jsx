@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Table, Col } from 'react-bootstrap';
 
 
 export default function ManageTokens() {
@@ -16,41 +16,46 @@ export default function ManageTokens() {
   };
 
   return (
-    <div>
+    <div className="mt-4">
       <h4>Tokens Sent</h4>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>ID</th>
-            <th>Classroom</th>
-            <th>Value</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sentTokens.map((token, idx) => (
-            <tr key={token.id}>
-              <td>{idx + 1}</td>
-              <th>{token.id}</th>
-              <th>{token.classroom.name}</th>
-              <th>{token.value}</th>
-              <th>{token.isValid ? 'Valid' : 'Invalid'}</th>
-              <th><Button variant="flat" onClick={invalidateToken(token)}>Invalidate</Button></th>
+      <Col sm={11}>
+        <Table striped bordered hover variant="light">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th className="text-center">ID</th>
+              <th className="text-center">Classroom</th>
+              <th className="text-center">Value</th>
+              <th className="text-center">Status</th>
+              <th className="text-center">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-      <h4>Tokens Received</h4>
-      <Table striped bordered hover>
+          </thead>
+          <tbody>
+            {sentTokens.map((token, idx) => (
+              <tr key={token.id}>
+                <td>{idx + 1}</td>
+                <th>{token.id}</th>
+                <th>{token.classroom.name}</th>
+                <th>{token.value}</th>
+                <th>{token.isValid ? 'Valid' : 'Invalid'}</th>
+                <th><Button variant="flat" onClick={invalidateToken(token)}>Invalidate</Button></th>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Col>
+      <div className="mt-4">
+        <h4>Tokens Received</h4>
+      </div>
+      <Col sm={9}>
+      <Table striped bordered hover variant="light">
         <thead>
           <tr>
             <th>#</th>
-            <th>ID</th>
-            <th>Classroom</th>
-            <th>Value</th>
-            <th>Status</th>
+            <th className="text-center">ID</th>
+            <th className="text-center">Classroom</th>
+            <th className="text-center">Value</th>
+            <th className="text-center">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -65,6 +70,8 @@ export default function ManageTokens() {
           ))}
         </tbody>
       </Table>
+      </Col>
+      <Col></Col>
     </div>
 
   );

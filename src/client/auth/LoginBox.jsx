@@ -60,7 +60,7 @@ export default function LoginBox() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" noValidate onSubmit={handleSubmit}>
+          <Form className="mt-4 mx-1" noValidate onSubmit={handleSubmit}>
             <Form.Group controlId="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -103,7 +103,7 @@ export default function LoginBox() {
                 feedback={errors.rememberMe}
               />
             </Form.Group>
-            <Button type="submit">Log in</Button>
+            <Button className="btn btn-secondary btn-block" type="submit"><strong>Log in</strong></Button>
           </Form>
         )}
       </Formik>
