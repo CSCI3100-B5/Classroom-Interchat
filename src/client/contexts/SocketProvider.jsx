@@ -36,17 +36,45 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
     newSocket.on('connect', (...args) => console.log('Socket connect', args));
     // TODO: auto-join classroom if previously disconnected without leaving
-    // TODO: show connection error
-    newSocket.io.on('reconnect', (...args) => console.log('io reconnect', args));
+    newSocket.io.on('reconnect', (retryCount) => {
+      console.log('io reconnect', retryCount);
+      if (data.classroomMeta) {
+        newSocket.emit(
+          'join classroom',
+          { classroomId: data.classroomMeta.id },
+          (response) => {
+            if (response.error) {
+              console.log(response);
+              data.classroomMeta = null;
+              data.participants = [];
+              data.messages = [];
+              history.push('/classroom');
+            }
+          }
+        );
+        console.log('Attempting to reconnect to classroom');
+      }
+    });
+    // TODO: show internet warning
     newSocket.io.on('reconnect_error', (...args) => console.log('io reconnect error', args));
     newSocket.on('disconnect', (...args) => console.log('Socket disconnect', args));
     newSocket.on('connect_error', async (error) => {
       console.log('Socket connection error ', error);
       if (error.message === 'jwt expired') {
         console.log('Refreshing jwt token for socket connection');
-        setSocketAccessToken((await refreshAccessToken()).response.data.accessToken);
+        const response = await refreshAccessToken();
+        if (response.success) return setSocketAccessToken(response.response.data.accessToken);
+        data.classroomMeta = null;
+        data.participants = [];
+        data.messages = [];
+        return history.push('/auth');
       }
-      // TODO: DEBUG history.push('/auth');
+      if (error.message === 'jwt malformed') {
+        data.classroomMeta = null;
+        data.participants = [];
+        data.messages = [];
+        return history.push('/auth');
+      }
     });
 
     return () => newSocket.close();

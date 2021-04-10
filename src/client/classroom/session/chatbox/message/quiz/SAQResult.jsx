@@ -65,7 +65,10 @@ export default function SAQResult({ message }) {
                   <ToggleButton
                     required
                     className="m-1"
-                    disabled={(message.sender.id ?? message.sender) !== data.user.id}
+                    disabled={
+                      (message.sender.id ?? message.sender) !== data.user.id
+                      || !message.content.closedAt
+                    }
                     variant="outline-primary"
                     type="radio"
                     key={x.id}
@@ -87,7 +90,11 @@ export default function SAQResult({ message }) {
                 ))}
               </ButtonGroup>
             </Form.Group>
-            {(message.sender.id ?? message.sender) === data.user.id ? (<Button type="submit">Award Token</Button>) : null }
+            {
+            (message.sender.id ?? message.sender) === data.user.id && message.content.closedAt
+              ? (<Button type="submit">Award Token</Button>)
+              : null
+            }
           </Form>
         )}
       </Formik>

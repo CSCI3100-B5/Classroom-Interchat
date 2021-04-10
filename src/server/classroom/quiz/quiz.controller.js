@@ -77,7 +77,7 @@ async function sendQuiz(packet, socket, io) {
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   // TODO: emit different quiz to different participants
   socket.to(classroom.id).emit('new quiz', message.filterWithoutAnswer());
-  socket.emit('new quiz', message.filterSafe());
+  io.to(meta.invoker.id).emit('new quiz', message.filterSafe());
   return callback({});
 }
 
@@ -114,7 +114,7 @@ async function endQuiz(packet, socket, io) {
   await message.save();
   message = await message.populate('content.results').execPopulate();
   socket.to(classroom.id).emit('end quiz', message.filterWithoutAnswer());
-  socket.emit('end quiz', message.filterSafe());
+  io.to(meta.invoker.id).emit('end quiz', message.filterSafe());
   return callback({});
 }
 
@@ -151,7 +151,7 @@ async function releaseResults(packet, socket, io) {
   await message.save();
   message = await message.populate('content.results').execPopulate();
   socket.to(classroom.id).emit('quiz digest', message.filterSafe());
-  socket.emit('update quiz', message.filterSafe());
+  io.to(meta.invoker.id).emit('update quiz', message.filterSafe());
   return callback({});
 }
 
