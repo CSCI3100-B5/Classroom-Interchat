@@ -1,0 +1,19 @@
+#div {
+    background-color: #67cfe980;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    width: 30vw;
+    word-wrap: break-word;
+    border-radius: 1vw;
+    border: 1px solid #000000;
+    font-size:1.2vw; 
+  }
+reply{
+ margin-left: 1vw;
+ font-size:1.2vw ;    
+}
+
+p{
+margin-left: 1vw;
+font-size:1vw;    
+}

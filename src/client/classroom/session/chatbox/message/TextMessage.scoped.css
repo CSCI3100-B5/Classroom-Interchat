@@ -1,0 +1,18 @@
+.myMessage {
+    background-color: #67cfe980;
+    margin-left: 60vw;
+    margin-right: 1vw;
+    width: 30vw;
+    word-wrap: break-word;
+    border-radius: 1vw;
+    border: 1px solid #000000;
+  }
+.otherMessage {
+    background-color: #67cfe980;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    width: 30vw;
+    word-wrap: break-word;
+    border-radius: 1vw;
+    border: 1px solid #000000;
+  }
