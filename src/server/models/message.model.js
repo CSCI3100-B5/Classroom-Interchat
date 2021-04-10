@@ -25,6 +25,38 @@ const MessageSchema = new Schema({
 
 MessageSchema.method({
   filterSafe() {
+    if (this.type === 'mcq') {
+      return {
+        id: this.id,
+        createdAt: this.createdAt,
+        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
+        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        type: this.type,
+        content: {
+          prompt: this.content.prompt,
+          choices: this.content.choices,
+          multiSelect: this.content.multiSelect,
+          closedAt: this.content.closedAt,
+          results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
+          resultsReleased: this.content.resultsReleased
+        }
+      };
+    }
+    if (this.type === 'saq') {
+      return {
+        id: this.id,
+        createdAt: this.createdAt,
+        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
+        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        type: this.type,
+        content: {
+          prompt: this.content.prompt,
+          closedAt: this.content.closedAt,
+          results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
+          resultsReleased: this.content.resultsReleased
+        }
+      };
+    }
     return {
       id: this.id,
       createdAt: this.createdAt,
@@ -33,6 +65,39 @@ MessageSchema.method({
       type: this.type,
       content: this.content
     };
+  },
+  filterWithoutAnswer() {
+    if (this.type === 'mcq') {
+      return {
+        id: this.id,
+        createdAt: this.createdAt,
+        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
+        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        type: this.type,
+        content: {
+          prompt: this.content.prompt,
+          choices: this.content.choices,
+          multiSelect: this.content.multiSelect,
+          closedAt: this.content.closedAt,
+          resultsReleased: this.content.resultsReleased
+        }
+      };
+    }
+    if (this.type === 'saq') {
+      return {
+        id: this.id,
+        createdAt: this.createdAt,
+        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
+        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        type: this.type,
+        content: {
+          prompt: this.content.prompt,
+          closedAt: this.content.closedAt,
+          resultsReleased: this.content.resultsReleased
+        }
+      };
+    }
+    return this.filterSafe();
   }
 });
 
@@ -124,6 +189,18 @@ const MCQMessage = Message.discriminator('mcq',
       }],
       multiSelect: {
         type: Boolean
+      },
+      closedAt: {
+        type: Date,
+        default: null
+      },
+      results: [{
+        type: Schema.Types.ObjectId,
+        ref: 'QuizAnswer'
+      }],
+      resultsReleased: {
+        type: Boolean,
+        default: false
       }
     }
   }));
@@ -133,9 +210,22 @@ const SAQMessage = Message.discriminator('saq',
     content: {
       prompt: {
         type: String
+      },
+      closedAt: {
+        type: Date,
+        default: null
+      },
+      results: [{
+        type: Schema.Types.ObjectId,
+        ref: 'QuizAnswer'
+      }],
+      resultsReleased: {
+        type: Boolean,
+        default: false
       }
     }
   }));
+
 
 module.exports = {
   Message,

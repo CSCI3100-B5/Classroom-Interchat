@@ -43,7 +43,27 @@ export function RealtimeProvider({ children }) {
         data.messages = [];
       });
 
-      socket.on('new message', (payload) => {
+      // All these events do the same thing
+      [
+        'new message',
+        'new quiz',
+        'end quiz',
+        'update quiz'
+      ].forEach((event) => {
+        socket.on(event, (payload) => {
+          const idx = data.messages.findIndex(x => x.id === payload.id);
+          if (idx >= 0) {
+            const messages = [...data.messages];
+            messages[idx] = payload;
+            data.messages = messages;
+          } else {
+            data.messages = [...data.messages, payload];
+          }
+        });
+      });
+
+      socket.on('quiz digest', (payload) => {
+        if (payload.sender.id === data.user.id) return; // ignore digests if this user is the quiz sender
         const idx = data.messages.findIndex(x => x.id === payload.id);
         if (idx >= 0) {
           const messages = [...data.messages];
@@ -51,6 +71,18 @@ export function RealtimeProvider({ children }) {
           data.messages = messages;
         } else {
           data.messages = [...data.messages, payload];
+        }
+      });
+
+      socket.on('new quiz result', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.messageId);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx].content.results = messages[idx].content.results.filter(
+            x => (x.user.id ?? x.user) !== (payload.result.user.id ?? payload.result.user)
+          );
+          messages[idx].content.results.push(payload.result);
+          data.messages = messages;
         }
       });
 
@@ -140,9 +172,54 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function sendQuiz(cleanedValues) {
+    return new Promise((resolve, reject) => {
+      socket.emit('send quiz', cleanedValues, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function endQuiz(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('end quiz', { messageId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function releaseResults(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('release results', { messageId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   function resolveQuestion(messageId) {
     return new Promise((resolve, reject) => {
       socket.emit('resolve question', { messageId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function ansSAQuiz(content, messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('saq answer', { content, messageId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function ansMCQuiz(content, messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('mcq answer', { content, messageId }, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });
@@ -184,6 +261,11 @@ export function RealtimeProvider({ children }) {
       peekClassroom,
       leaveClassroom,
       sendMessage,
+      sendQuiz,
+      releaseResults,
+      endQuiz,
+      ansSAQuiz,
+      ansMCQuiz,
       resolveQuestion,
       requestPermission,
       cancelRequestPermission,

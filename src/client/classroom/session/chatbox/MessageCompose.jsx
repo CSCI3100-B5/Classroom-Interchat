@@ -10,7 +10,7 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 
 export default function MessageCompose({ onCreateQuiz }) {
   const { sendMessage } = useRealtime();
-  const { data } = useDataStore();
+  const { data, getSelfParticipant } = useDataStore();
 
   const messageData = useStates({
     message: '',
@@ -98,7 +98,9 @@ export default function MessageCompose({ onCreateQuiz }) {
             >
               Send as question
             </Button>
-            <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
+            {getSelfParticipant()?.permission === 'instructor' ? (
+              <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
+            ) : null}
           </InputGroup.Append>
         </InputGroup>
       )

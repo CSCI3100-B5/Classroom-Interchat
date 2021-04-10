@@ -177,7 +177,7 @@ export default function JoinClassroom() {
         ],
         correct: [0, 1, 2],
         multiSelect: true,
-        result: [
+        results: [
           {
             userId: 'defvfbrgfrvgdbr',
             content: [0, 1, 2],
@@ -214,7 +214,7 @@ export default function JoinClassroom() {
           'T', 't', 'True', 'f', 'F', 'false'
         ],
         multiSelect: true,
-        result: [
+        results: [
           {
             userId: 'defvfbrgfrvgdbr',
             content: [0, 1, 2],
@@ -263,7 +263,7 @@ export default function JoinClassroom() {
       type: 'saq',
       content: {
         prompt: 'Type some answer...',
-        result: [
+        results: [
           {
             userId: 'defvfbrgfrvgdbr',
             content: 'Answer by Michael',

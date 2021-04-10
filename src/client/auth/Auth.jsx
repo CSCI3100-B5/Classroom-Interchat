@@ -24,6 +24,7 @@ export default function Auth() {
           history.push('/account');
         } else {
           data.refreshToken = null;
+          data.accessToken = null;
           data.user = null;
         }
       }
