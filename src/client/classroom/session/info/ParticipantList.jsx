@@ -6,11 +6,13 @@ import copy from 'copy-text-to-clipboard';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import env from '../../../environment.js';
+import { useToast } from '../../../contexts/ToastProvider.jsx';
 
 
 function ParticipantList() {
   const { data, getSelfParticipant } = useDataStore();
   const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
+  const { toast } = useToast();
 
   const tooltipTarget = useRef(null);
   const [show, setShow] = useState(false);
@@ -19,7 +21,7 @@ function ParticipantList() {
     try {
       await requestPermission();
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when requsting for permission', ex.error);
     }
   };
 
@@ -27,7 +29,7 @@ function ParticipantList() {
     try {
       await cancelRequestPermission();
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when canceling request', ex.error);
     }
   };
 
@@ -35,7 +37,7 @@ function ParticipantList() {
     try {
       await promoteParticipant(userId);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when promoting a participant', ex.error);
     }
   };
 

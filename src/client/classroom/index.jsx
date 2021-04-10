@@ -11,6 +11,7 @@ import JoinClassroom from './JoinClassroom.jsx';
 import ClassroomSession from './session/ClassroomSession.jsx';
 import { SocketProvider } from '../contexts/SocketProvider.jsx';
 import { RealtimeProvider } from '../contexts/RealtimeProvider.jsx';
+import { ToastProvider } from '../contexts/ToastProvider.jsx';
 
 export default function ClassroomRoot() {
   const { path, url } = useRouteMatch();

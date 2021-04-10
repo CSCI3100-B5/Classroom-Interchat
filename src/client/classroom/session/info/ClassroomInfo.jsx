@@ -2,18 +2,19 @@ import React from 'react';
 import { Button, Card, Accordion } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../contexts/ToastProvider.jsx';
 import ParticipantList from './ParticipantList.jsx';
 
 function ClassroomInfo() {
   const { data } = useDataStore();
   const { leaveClassroom } = useRealtime();
+  const { toast } = useToast();
 
   const onLeave = async () => {
     try {
       await leaveClassroom();
     } catch (ex) {
-      // TODO: error UI
-      console.log(ex);
+      toast('error', 'Error when leaving classroom', ex.error);
     }
   };
 

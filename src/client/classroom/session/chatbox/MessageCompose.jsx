@@ -5,12 +5,14 @@ import {
 import { useStates, bindState } from 'use-states';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
+import { useToast } from '../../../contexts/ToastProvider.jsx';
 
 // TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
   const { sendMessage } = useRealtime();
   const { data, getSelfParticipant } = useDataStore();
+  const { toast } = useToast();
 
   const messageData = useStates({
     message: '',
@@ -19,11 +21,11 @@ export default function MessageCompose({ onCreateQuiz }) {
 
   const onSend = async () => {
     if (!messageData.message) return;
-    console.log('Message object: ', { message: messageData.message, information: messageData.information });
+    console.log('Send message object: ', { message: messageData.message, information: messageData.information });
     try {
       await sendMessage(messageData.message, messageData.information);
     } catch (ex) {
-      console.log('send message error: ', ex);
+      toast('error', 'Error when sending message', ex.error);
     }
     messageData.message = '';
     messageData.information = null;

@@ -3,20 +3,22 @@ import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import { useStates, bindState } from 'use-states';
 import MarkdownRender from '../MarkdownRender.jsx';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 
 export default function SAQPrompt({ message }) {
   const { ansSAQuiz } = useRealtime();
   const data = useStates({
     answer: ''
   });
+  const { toast } = useToast();
   const onSubmit = async () => {
     // TODO: send answer to server
     if (!data.answer) return;
-    console.log(data.answer);
+    console.log('SAQ answer object', data.answer);
     try {
       await ansSAQuiz(data.answer, message.id);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when answering SAQ', ex.error);
     }
   };
   return (

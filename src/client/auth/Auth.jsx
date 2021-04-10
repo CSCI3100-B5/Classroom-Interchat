@@ -19,7 +19,7 @@ export default function Auth() {
     (async () => {
       if (data.refreshToken && data.user) {
         const result = await getUserProfile(data.user.id);
-        console.log(result);
+        console.log('Get user profile successful, re-routing to /account', result);
         if (result.success) {
           history.push('/account');
         } else {

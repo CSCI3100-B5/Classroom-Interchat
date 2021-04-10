@@ -4,9 +4,11 @@ import {
   ButtonGroup, ToggleButton, Form, Button
 } from 'react-bootstrap';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 
 export default function MCQPrompt({ message }) {
   const { ansMCQuiz } = useRealtime();
+  const { toast } = useToast();
   const onSubmit = async (values) => {
     // convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {
@@ -15,11 +17,11 @@ export default function MCQPrompt({ message }) {
     const cleanedChoices = values.choices.map(
       x => message.content.choices.indexOf(x)
     ).sort((a, b) => a - b);
-    console.log(cleanedChoices);
+    console.log('MCQ answer object', cleanedChoices);
     try {
       await ansMCQuiz(cleanedChoices, message.id);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when answering MCQ', ex.error);
     }
   };
 
