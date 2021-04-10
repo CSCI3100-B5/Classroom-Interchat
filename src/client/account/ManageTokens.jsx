@@ -11,13 +11,18 @@ export default function ManageTokens() {
   const { getUserTokens, setTokenFalse } = useApi();
   const { data } = useDataStore();
 
-  useEffect(async () => {
+  useEffect(() => {
     // TODO: call API and populate token list
-    const result = await getUserTokens(data.user.id);
-    if (result.success) {
-      setSentTokens(result.body.created);
-      setReceivedTokens(result.body.received);
+    // defined a getTokens function here,
+    // because chrome suggested not to add async in the useEffect function?
+    async function getTokens() {
+      const result = await getUserTokens(data.user.id);
+      if (result.success) {
+        setSentTokens(result.body.created);
+        setReceivedTokens(result.body.received);
+      }
     }
+    getTokens();
   }, []);
 
   const invalidateToken = async (token) => {
