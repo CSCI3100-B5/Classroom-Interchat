@@ -6,7 +6,7 @@ import { BsFillQuestionCircleFill } from 'react-icons/bs';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../contexts/RealtimeProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
-
+import './QuestionMessage.scoped.css';
 
 export default function QuestionMessage({ message }) {
   const { resolveQuestion } = useRealtime();
@@ -30,34 +30,52 @@ export default function QuestionMessage({ message }) {
   };
 
   return (
-    <div>
-      <BsFillQuestionCircleFill />
-      <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
-      {resolveButton}
-      <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
-      {message.content.isResolved ? null : (
-        <Button onClick={() => { data.replyToMessageId = message.id; }}>
-          Reply
-        </Button>
-      )}
+    <div className="relativeBox">
+      <p className="timeRight">
+        {' '}
+        <p>
+          by sender at
+          {' '}
+          {message.createdAt.toString()}
+        </p>
+
+      </p>
+      <p className="iconRight"><BsFillQuestionCircleFill /></p>
+      <p className="senderRight">
+        <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
+      </p>
+      <p className="resolveButtonRight">
+        {resolveButton}
+      </p>
+      <div className="myMessageRight">
+        <MarkdownRender>{message.content.content}</MarkdownRender>
+      </div>
+      <div className="replybuttonRight">
+        {message.content.isResolved ? null : (
+          <Button onClick={() => { data.replyToMessageId = message.id; }}>
+            Reply
+          </Button>
+        )}
+      </div>
       {replies.length > 0
         ? (
-          <ButtonGroup toggle className="mb-2">
-            <ToggleButton
-              type="checkbox"
-              variant="info"
-              checked={data.messageFilter === message.id}
-              value="1"
-              onChange={() => {
-                if (data.messageFilter === message.id) data.messageFilter = null;
-                else data.messageFilter = message.id;
-              }}
-            >
-              {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
-            </ToggleButton>
+          <ButtonGroup className="replyNoRight">
+            <p>
+              <ToggleButton
+                type="checkbox"
+                variant="info"
+                checked={data.messageFilter === message.id}
+                value="1"
+                onChange={() => {
+                  if (data.messageFilter === message.id) data.messageFilter = null;
+                  else data.messageFilter = message.id;
+                }}
+              >
+                {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
+              </ToggleButton>
+            </p>
           </ButtonGroup>
-        )
-        : (<p className="text-muted">Send a reply</p>)}
+        ) : (<p className="replyRight">Send a reply</p>)}
     </div>
   );
 }

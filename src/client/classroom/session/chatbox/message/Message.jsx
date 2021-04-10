@@ -8,8 +8,8 @@ import ReplyMessage from './ReplyMessage.jsx';
 function Message({ message }) {
   return (
     <div>
+
       {message.sender ? (<p>{message.sender.name}</p>) : null}
-      <p>{message.createdAt.toString()}</p>
       {
         (() => {
           switch (message.type) {

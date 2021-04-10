@@ -1,18 +1,43 @@
-.myMessage {
-    background-color: #67cfe980;
-    margin-left: 60vw;
-    margin-right: 1vw;
-    width: 30vw;
+/*u send a message*/
+.relativeBox{
+    position: relative;
+    right: 5px;
+    width: 100%;
+    height: 100px;
+}
+.myMessageRight {
+    background-color: #acd6ee80;
+    position: absolute;
+    width: 300px;
+    right: 5px;
+    top: 20px;
+    font-size: 12px;
+    border-radius: 5px;
     word-wrap: break-word;
-    border-radius: 1vw;
-    border: 1px solid #000000;
   }
-.otherMessage {
-    background-color: #67cfe980;
-    margin-left: 1vw;
-    margin-right: 1vw;
-    width: 30vw;
+.senderRight{
+    position: absolute;
+    width: 300px;
+    right: 5px;
+    font-size: 12px;
     word-wrap: break-word;
-    border-radius: 1vw;
-    border: 1px solid #000000;
-  }
+}
+/**/
+.otherMessageLeft {
+    background-color: #acd6ee80;
+    position: absolute;
+    width: 300px;
+    left: 5px;
+    top: 20px;
+    font-size: 12px;
+    border-radius: 5px;
+    word-wrap: break-word;
+}
+
+.senderLeft{
+    position: absolute;
+    width: 300px;
+    left: 5px;
+    font-size: 12px;
+    word-wrap: break-word;
+}

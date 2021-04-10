@@ -2,6 +2,7 @@ import React from 'react';
 import { ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
+import './MessageList.scoped.css';
 
 export default function MessageList() {
   const { data, getSelfParticipant } = useDataStore();
