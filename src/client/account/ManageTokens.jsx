@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
+import { useApi } from '../contexts/ApiProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 
 export default function ManageTokens() {
   const [sentTokens, setSentTokens] = useState([]);
   const [receivedTokens, setReceivedTokens] = useState([]);
 
+  const { getUserTokens, setTokenFalse } = useApi();
+  const { data } = useDataStore();
 
-  useEffect(() => {
+  useEffect(async () => {
     // TODO: call API and populate token list
+    const result = await getUserTokens(data.user.id);
+    if (result.success) {
+      setSentTokens(result.body.created);
+      setReceivedTokens(result.body.received);
+    }
   }, []);
 
-  const invalidateToken = (token) => {
+  const invalidateToken = async (token) => {
     // TODO: call API to invalidate token
+    const result = await setTokenFalse(token.id);
+    if (result.success) {
+      token.isValid = false;
+    }
   };
 
   return (

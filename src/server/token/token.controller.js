@@ -37,58 +37,17 @@ function loadUser(req, res, next, id) {
 async function getUserTokens(req, res, next) {
   const { user } = req.user;
 
-  const created = [];
-  const received = [];
+  const createList = await Token.find({ receivedBy: user.id })
+    .populate('createdBy')
+    .populate('receivedBy')
+    .exec();
+  const created = createList.map(x => x.filterSafe());
 
-  await Token
-    .find({ createdBy: user.id })
-    .exec()
-    .than((Tokens) => {
-      Tokens.forEach((token) => {
-        const receiver = User.get(token.receivedBy);
-
-        created.push({
-          id: token.id,
-          createdBy: {
-            id: user.id,
-            name: user.name,
-            email: user.email
-          },
-          receivedBy: {
-            id: receiver.id,
-            name: receiver.name,
-            email: receiver.email
-          },
-          createdAt: token.createdAt,
-          isValid: token.isValid
-        });
-      });
-    });
-
-  await Token
-    .find({ receivedBy: user.id })
-    .exec()
-    .than((Tokens) => {
-      Tokens.forEach((token) => {
-        const creater = User.get(token.createdBy);
-
-        created.push({
-          id: token.id,
-          createdBy: {
-            id: creater.id,
-            name: creater.name,
-            email: creater.email
-          },
-          receivedBy: {
-            id: user.id,
-            name: user.name,
-            email: user.email
-          },
-          createdAt: token.createdAt,
-          isValid: token.isValid
-        });
-      });
-    });
+  const receivedList = await Token.find({ receivedBy: user.id })
+    .populate('createdBy')
+    .populate('receivedBy')
+    .exec();
+  const received = receivedList.map(x => x.filterSafe());
 
   return { created, received };
 }
