@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axiosStatic from 'axios';
+import { useStates } from 'use-states';
 import env from '../environment.js';
 import { useDataStore } from './DataStoreProvider.jsx';
 
@@ -14,13 +15,51 @@ export function AxiosProvider({ children }) {
     data,
     refreshTokenHeader,
   } = useDataStore();
-  const [axios] = useState(() => axiosStatic.create({
-    baseURL: env.apiBase
-  }));
-  useEffect(() => {
-    console.log(`Requesting to ${env.apiBase}`);
-    createAxiosResponseInterceptor(); // eslint-disable-line no-use-before-define
-  }, []);
+  const localData = useStates({
+    axios: () => {
+      const axios = axiosStatic.create({
+        baseURL: env.apiBase
+      });
+      axios.interceptors.response.use(
+        response => response,
+        async (error) => {
+          console.log('error interceptor', { ...error });
+          // Reject promise if usual error
+          if (error.response.status !== 401 || error.config.isRetry) {
+            return Promise.reject(error);
+          }
+
+          /*
+          * When response code is 401, try to refresh the token.
+          * Eject the interceptor so it doesn't loop in case
+          * token refresh causes the 401 response
+          */
+          console.log('Access token expired, auto-refreshing...');
+          return refreshAccessToken()
+            .then((result) => {
+              if (result.success) {
+                error.response.config.headers.Authorization = `Bearer ${result.response.data.accessToken}`;
+                return axios.request({ isRetry: true, ...error.config });
+              }
+
+              data.accessToken = null;
+              data.refreshToken = null;
+              data.user = null;
+              // TODO: should route to /login
+              return Promise.reject(error);
+            }).catch((e) => {
+              data.accessToken = null;
+              data.refreshToken = null;
+              data.user = null;
+              // TODO: should route to /login
+              return Promise.reject(e);
+            });
+        }
+      );
+      console.log(`Requesting to ${env.apiBase}`);
+      return axios;
+    }
+  });
 
   /**
    * Make a request and handle axios errors automatically
@@ -29,7 +68,7 @@ export function AxiosProvider({ children }) {
    */
   async function request(options) {
     try {
-      const response = await axios.request(options);
+      const response = await localData.axios.request(options);
       return { success: true, response };
     } catch (e) {
       if (e.response) return { success: false, response: e.response };
@@ -51,45 +90,6 @@ export function AxiosProvider({ children }) {
     });
     if (result.success) data.accessToken = result.response.data.accessToken;
     return result;
-  }
-
-  function createAxiosResponseInterceptor() {
-    const interceptor = axios.interceptors.response.use(
-      response => response,
-      async (error) => {
-        // Reject promise if usual error
-        if (error.response.status !== 401) {
-          return Promise.reject(error);
-        }
-
-        /*
-        * When response code is 401, try to refresh the token.
-        * Eject the interceptor so it doesn't loop in case
-        * token refresh causes the 401 response
-        */
-        axios.interceptors.response.eject(interceptor);
-
-        return refreshAccessToken()
-          .then((result) => {
-            if (result.success) {
-              error.response.config.headers.Authorization = `Bearer ${result.response.data.accessToken}`; // eslint-disable-line no-param-reassign
-              createAxiosResponseInterceptor();
-              return axios(error.response.config);
-            }
-
-            data.accessToken = null;
-            data.refreshToken = null;
-            // TODO: should route to /login
-            return Promise.reject(error);
-          }).catch((e) => {
-            data.accessToken = null;
-            data.refreshToken = null;
-            // TODO: should route to /login
-            return Promise.reject(e);
-          })
-          .finally(createAxiosResponseInterceptor);
-      }
-    );
   }
 
   return (

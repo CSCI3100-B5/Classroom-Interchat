@@ -6,7 +6,7 @@ const config = require('../config/config');
 const User = require('../models/user.model');
 
 function generateAccessToken(payload) {
-  return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '10m' });
+  return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '5s' });
 }
 
 /**

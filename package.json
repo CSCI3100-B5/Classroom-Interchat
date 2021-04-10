@@ -52,7 +52,7 @@
     "socket.io": "^4.0.1",
     "socket.io-client": "^4.0.0",
     "string-replace-middleware": "^1.0.2",
-    "use-states": "^0.0.2",
+    "use-states": "^0.0.3",
     "winston": "^3.3.3",
     "yup": "^0.32.9"
   },
