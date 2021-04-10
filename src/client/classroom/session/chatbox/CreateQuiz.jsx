@@ -84,12 +84,16 @@ export default function CreateQuiz({ onBack }) {
         cleanedValues.choices.push(values[`choice${i}`]);
         if (values[`choice${i}correct`]) cleanedValues.correct.push(i);
       }
+      if (cleanedValues.correct.length === 0) {
+        delete cleanedValues.correct;
+        cleanedValues.multiSelect = values.multiSelect;
+      }
     }
 
-    // TODO: submit quiz to server
     console.log(cleanedValues);
     try {
       await sendQuiz(cleanedValues);
+      onBack();
     } catch (ex) {
       console.log(ex);
     }
@@ -114,7 +118,8 @@ export default function CreateQuiz({ onBack }) {
           prompt: '',
           type: 'SAQ',
           choiceCount: 4,
-          ...choicesDefault
+          ...choicesDefault,
+          multiSelect: false
         }}
       >
         {({
@@ -227,6 +232,31 @@ export default function CreateQuiz({ onBack }) {
                   }
                   return choices;
                 })()}
+                <Form.Group controlId="multiSelect">
+                  <Form.Check
+                    required
+                    name="multiSelect"
+                    label="Allow choosing multiple answers"
+                    disabled={(() => {
+                      for (let i = 0; i < values.choiceCount; i++) {
+                        if (values[`choice${i}correct`]) return true;
+                      }
+                      return false;
+                    })()}
+                    checked={(() => {
+                      let cnt = 0;
+                      for (let i = 0; i < values.choiceCount; i++) {
+                        cnt += +values[`choice${i}correct`];
+                      }
+                      if (cnt === 0) return values.multiSelect;
+                      if (cnt === 1) return false;
+                      return true;
+                    })()}
+                    onChange={handleChange}
+                    isInvalid={!!errors.multiSelect}
+                    feedback={errors.multiSelect}
+                  />
+                </Form.Group>
               </>
             ) : null}
             <Button type="submit">Send Quiz</Button>

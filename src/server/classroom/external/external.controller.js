@@ -144,6 +144,7 @@ async function joinClassroom(packet, socket, io) {
   io.to(classroom.id).emit('participant changed', participant.filterSafe());
   callback({});
   classroom = await classroom.populate('host').populate('participants.user').populate('messages').execPopulate();
+  // TODO: emit different quiz to different participants
   return socket.emit('catch up', classroom.filterSafe());
 }
 

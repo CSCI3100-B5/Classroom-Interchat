@@ -65,6 +65,17 @@ export function RealtimeProvider({ children }) {
         }
       });
 
+      socket.on('end quiz', (payload) => {
+        const idx = data.messages.findIndex(x => x.id === payload.id);
+        if (idx >= 0) {
+          const messages = [...data.messages];
+          messages[idx] = payload;
+          data.messages = messages;
+        } else {
+          data.messages = [...data.messages, payload];
+        }
+      });
+
       socket.on('new saq answer', (payload) => {
         const idx = data.messages.findIndex(x => x.id === payload.id);
         if (idx >= 0) {
@@ -173,9 +184,19 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
+
   function sendQuiz(cleanedValues) {
     return new Promise((resolve, reject) => {
       socket.emit('send quiz', cleanedValues, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function endQuiz(messageId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('end quiz', messageId, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });
@@ -245,6 +266,7 @@ export function RealtimeProvider({ children }) {
       leaveClassroom,
       sendMessage,
       sendQuiz,
+      endQuiz,
       ansMCQuiz,
       ansSAQuiz,
       resolveQuestion,

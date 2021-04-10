@@ -48,6 +48,7 @@ export default function MCQPrompt({ message }) {
                         className="m-1"
                         variant="outline-primary"
                         required
+                        disabled={!!message.content.closedAt}
                         type="checkbox"
                         key={x}
                         name="choices"
@@ -64,6 +65,7 @@ export default function MCQPrompt({ message }) {
                   return (
                     <ToggleButton
                       required
+                      disabled={!!message.content.closedAt}
                       className="m-1"
                       variant="outline-primary"
                       type="radio"
@@ -81,7 +83,12 @@ export default function MCQPrompt({ message }) {
                 })}
               </ButtonGroup>
             </Form.Group>
-            <Button type="submit">Submit answer</Button>
+            <Button
+              type="submit"
+              disabled={!!message.content.closedAt}
+            >
+              Submit answer
+            </Button>
           </Form>
         )}
       </Formik>

@@ -1,13 +1,14 @@
 const Joi = require('joi');
 
 module.exports = {
-  cleanedValues: Joi.object({
+  sendQuiz: Joi.object({
     prompt: Joi.string().required(),
     type: Joi.string().valid('SAQ', 'MCQ').required(),
-    choice: Joi.array().items(Joi.string().required()),
+    choices: Joi.array().items(Joi.string().required()),
     correct: Joi.array().items(Joi.number().required()),
     multiSelect: Joi.boolean()
   }),
+  endQuiz: Joi.string().hex().required(),
   // MCQ
   /*   convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {

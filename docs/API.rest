@@ -70,12 +70,16 @@ Message object
   "content": "<string>"  // text content
   | {  // saq content
     "prompt": "<string>",
+    "closedAt": "<timestamp>",
+    "result": [ "<REF quiz answer>" ]
   }
   | {  // mcq content
     "prompt": "<string>",
     "choices": [ "<string>" ],
     "correct": [ number ],     // index of correct answer inside "choices"
-    "multiSelect": boolean
+    "multiSelect": boolean,
+    "closedAt": "<timestamp>",
+    "result": [ "<REF quiz answer>" ]
   }
   | { // question content
     "isResolved": boolean,

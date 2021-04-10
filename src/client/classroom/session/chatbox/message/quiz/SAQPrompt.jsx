@@ -28,10 +28,17 @@ export default function SAQPrompt({ message }) {
         <FormControl
           placeholder="Type your answer..."
           aria-label="Type your answer"
+          disabled={!!message.content.closedAt}
           {...bindState(data.$answer)}
         />
         <InputGroup.Append>
-          <Button variant="outline-secondary" onClick={onSubmit}>Send</Button>
+          <Button
+            variant="outline-secondary"
+            onClick={onSubmit}
+            disabled={!!message.content.closedAt}
+          >
+            Send
+          </Button>
         </InputGroup.Append>
       </InputGroup>
     </div>

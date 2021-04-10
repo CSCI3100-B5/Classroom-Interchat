@@ -5,9 +5,21 @@ import SAQResult from './SAQResult.jsx';
 import MCQPrompt from './MCQPrompt.jsx';
 import MCQResult from './MCQResult.jsx';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
+import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 
 export default function QuizMessage({ message }) {
   const { data } = useDataStore();
+
+  const { endQuiz } = useRealtime();
+
+  const onEndQuiz = async () => {
+    try {
+      await endQuiz(message.id);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
   let quiz;
   if (message.type === 'saq') {
     if (message.content.result) {
@@ -24,13 +36,14 @@ export default function QuizMessage({ message }) {
     <div>
       <Badge>QUIZ</Badge>
       {quiz}
-      {message.sender.id === data.user.id ? (
-        <>
-          <Button>End quiz</Button>
-          <Button>Release results</Button>
-        </>
-      ) : null
-      }
+      {(() => {
+        if ((message.sender.id ?? message.sender) === data.user.id) {
+          return message.content.closedAt
+            ? (<Button>Release results</Button>)
+            : (<Button onClick={onEndQuiz}>End quiz</Button>);
+        }
+        return null;
+      })()}
     </div>
   );
 }
