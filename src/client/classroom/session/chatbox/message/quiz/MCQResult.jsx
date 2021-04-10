@@ -55,7 +55,7 @@ export default function MCQResult({ message }) {
                     return (
                       <ToggleButton
                         className="m-1"
-                        disabled={message.sender.id !== data.user.id || message.content.correct}
+                        disabled={(message.sender.id ?? message.sender) !== data.user.id || message.content.correct}
                         variant={message.content.correct?.includes(idx) ? 'primary' : 'outline-primary'}
                         required
                         type="checkbox"
@@ -74,7 +74,7 @@ export default function MCQResult({ message }) {
                   return (
                     <ToggleButton
                       required
-                      disabled={message.sender.id !== data.user.id || message.content.correct}
+                      disabled={(message.sender.id ?? message.sender) !== data.user.id || message.content.correct}
                       className="m-1"
                       variant={message.content.correct?.includes(idx) ? 'primary' : 'outline-primary'}
                       type="radio"
@@ -92,7 +92,7 @@ export default function MCQResult({ message }) {
                 })}
               </ButtonGroup>
             </Form.Group>
-            {message.sender.id === data.user.id ? (<Button type="submit">Award Token</Button>) : null }
+            {(message.sender.id ?? message.sender) === data.user.id ? (<Button type="submit">Award Token</Button>) : null }
           </Form>
         )}
       </Formik>

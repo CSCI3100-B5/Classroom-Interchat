@@ -35,7 +35,6 @@ MessageSchema.method({
         content: {
           prompt: this.content.prompt,
           choices: this.content.choices,
-          correct: this.content.correct,
           multiSelect: this.content.multiSelect,
           closedAt: this.content.closedAt,
           results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
