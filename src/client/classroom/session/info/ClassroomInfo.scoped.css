@@ -50,6 +50,8 @@
 .participant-count {
   grid-area: bottomleft;
   margin-right: 8px;
+  color: white;
+  text-align: left;
 }
 
 .leave-button {
