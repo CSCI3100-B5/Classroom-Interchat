@@ -44,12 +44,14 @@ async function getUserTokens(req, res, next) {
   const createList = await Token.find({ createdBy: user.id })
     .populate('createdBy')
     .populate('receivedBy')
+    .populate('classroom')
     .exec();
   const created = createList.map(x => x.filterSafe());
 
   const receivedList = await Token.find({ receivedBy: user.id })
     .populate('createdBy')
     .populate('receivedBy')
+    .populate('classroom')
     .exec();
   const received = receivedList.map(x => x.filterSafe());
 
@@ -60,7 +62,12 @@ async function getUserTokens(req, res, next) {
  * Sets isValid of a token to false
  */
 async function setTokenFalse(req, res, next) {
-  const { token } = req;
+  let { token } = req;
+  if (!token.isValid) return next(new APIError('The token is already invalid', httpStatus.BAD_REQUEST, true));
+  token = await token
+    .populate('createdBy')
+    .populate('receivedBy')
+    .populate('classroom').execPopulate();
   token.isValid = false;
   await token.save();
   return res.json(token.filterSafe());

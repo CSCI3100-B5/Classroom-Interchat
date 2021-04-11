@@ -1,23 +1,27 @@
 import { Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ButtonGroup, ToggleButton, Form, Button, Badge
 } from 'react-bootstrap';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
-import TokenAwarder from './TokenAwarder.jsx';
+import TokenAwarder from '../../../TokenAwarder.jsx';
 
 export default function MCQResult({ message }) {
   const { data } = useDataStore();
+  const [showModal, setShowModal] = useState(false);
 
   const onSubmit = (values) => {
     // convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {
-      values.choices = [values.choices]; // eslint-disable-line no-param-reassign
+      values.choices = [values.choices];
     }
     // TODO: send the token awardees to server
     // note that server should only accept a list of user ids to award tokens to
     // it is the client's job to compute that list
-    console.log(values);
+    console.log('MCQ select token awardees ', values);
+    if (message.content.correct?.length > 0 || (values.choices && values.choices.length > 0)) {
+      setShowModal(true);
+    }
   };
 
   return (
@@ -107,6 +111,28 @@ export default function MCQResult({ message }) {
               ? (
                 <>
                   <Button type="submit">Award Token</Button>
+                  <TokenAwarder
+                    userIds={
+                    showModal
+                      ? (() => {
+                        let { correct } = message.content;
+                        if (!correct) {
+                          if (values.choices instanceof Array) {
+                            correct = values.choices.map(x => message.content.choices.indexOf(x));
+                          } else {
+                            correct = [message.content.choices.indexOf(values.choices)];
+                          }
+                        }
+                        const b = new Set(correct);
+                        return message.content.results.filter((x) => {
+                          const a = new Set(x.content);
+                          return a.size === b.size && [...a].every(value => b.has(value));
+                        }).map(x => x.user.id ?? x.user);
+                      })()
+                      : null
+                    }
+                    onClose={() => setShowModal(false)}
+                  />
                 </>
               )
               : null }

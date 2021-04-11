@@ -4,7 +4,7 @@ import {
 } from 'react-bootstrap';
 import { Formik } from 'formik';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
-import TokenAwarder from './TokenAwarder.jsx';
+import TokenAwarder from '../../../TokenAwarder.jsx';
 
 export default function SAQResult({ message }) {
   const [groupView, setGroupView] = useState(true);
@@ -35,7 +35,7 @@ export default function SAQResult({ message }) {
   }
 
   const onSubmit = (values) => {
-    console.log(values);
+    console.log('SAQ select token awardees ', values);
     if (values.choice) setShowModal(true);
   };
 
