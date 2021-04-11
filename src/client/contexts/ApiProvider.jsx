@@ -107,6 +107,25 @@ export function ApiProvider({ children }) {
   }
 
   /**
+   * Update user profile and change password
+   * @param {String} userId userId
+   * @param {Object} profile new profile data
+   * @returns response body
+   */
+  async function updateUserProfile(userId, profile) {
+    const result = await request({
+      method: 'PATCH',
+      url: `/user/${userId}`,
+      headers: accessTokenHeader(),
+      data: profile
+    });
+    if (result.success) {
+      data.user = result.response.data;
+    }
+    return result;
+  }
+
+  /**
    * Get all tokens of a given user id
    * @param {String} userId userId
    * @returns response body
@@ -141,6 +160,7 @@ export function ApiProvider({ children }) {
       signup,
       logout,
       getUserProfile,
+      updateUserProfile,
       getUserTokens,
       setTokenFalse
     }}

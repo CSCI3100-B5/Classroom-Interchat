@@ -68,7 +68,8 @@ UserSchema.method({
       name: this.name,
       email: this.email,
       isAdmin: this.isAdmin,
-      createdAt: this.createdAt
+      createdAt: this.createdAt,
+      emailVerified: this.isEmailVerified()
     };
   },
   isAuthTokenIdValid(authTokenId) {

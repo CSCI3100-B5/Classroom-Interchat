@@ -66,6 +66,13 @@ export function SocketProvider({ children }) {
     });
     newSocket.on('connect_error', async (error) => {
       console.log('Socket connection error ', error);
+      if (error.message === 'Email address not verified') {
+        data.classroomMeta = null;
+        data.participants = [];
+        data.messages = [];
+        toast('error', 'Connection failed', 'You need to verify your email address before joining or creating any classrooms');
+        return history.push('/account');
+      }
       if (error.message === 'jwt expired') {
         console.log('Refreshing jwt token for socket connection');
         const response = await refreshAccessToken();

@@ -60,7 +60,8 @@ async function create(req, res, next) {
 /**
  * Update existing user
  * @property {string} req.body.name - The name of user.
- * @property {string} req.body.password - The password of user.
+ * @property {string} req.body.oldPassword - The old password of user.
+ * @property {string} req.body.newPassword - The new password of user.
  * @property {string} req.body.email - The email of user.
  * @returns {User}
  */
@@ -74,8 +75,13 @@ async function update(req, res, next) {
     if (req.body.email) {
       user.email = req.body.email;
     }
-    if (req.body.password) await user.setPassword(req.body.password);
-    else await user.save();
+    if (req.body.newPassword) {
+      if (!req.body.oldPassword) return next(new APIError('You must also provide the old password', httpStatus.FORBIDDEN, true));
+      if (!await user.comparePassword(req.body.oldPassword)) {
+        return next(new APIError('Incorrect old password', httpStatus.FORBIDDEN, true));
+      }
+      await user.setPassword(req.body.password);
+    } else await user.save();
     cachegoose.clearCache(`UserById-${user.id}`);
     return res.json(user.filterSafe());
   } catch (e) {

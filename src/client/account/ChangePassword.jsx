@@ -5,6 +5,8 @@ import {
   Button, Form, Col, Row
 } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 
 const schema = yup.object().shape({
@@ -19,11 +21,20 @@ const schema = yup.object().shape({
 });
 
 export default function ChangePassword() {
-  // TODO: use the PATCH /user/:userId API
-  // const { signup, login } = useApi();
+  const { data } = useDataStore();
+  const { toast } = useToast();
+  const { updateUserProfile } = useApi();
 
   const onSubmit = async (values) => {
-    // TODO: send the API request
+    const result = await updateUserProfile(data.user.id, {
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword
+    });
+    if (result.success) {
+      toast('info', 'Change password', 'Password updated successfully');
+    } else {
+      toast('error', 'Error when changing password', result.response.data.message);
+    }
   };
 
   return (

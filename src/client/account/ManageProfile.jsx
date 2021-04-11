@@ -6,6 +6,7 @@ import {
 } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 const schema = yup.object().shape({
   profileName: yup.string().min(5).max(100).required()
@@ -15,19 +16,17 @@ const schema = yup.object().shape({
 
 export default function ManageProfile() {
   // TODO: use the PATCH/GET /user/:userID APIs
-  const { signup, login } = useApi();
+  const { updateUserProfile } = useApi();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // TODO: GET user profile and pre-fill the form
-    login();
-  }, []);
+  const { data } = useDataStore();
 
   const onSubmit = async (values) => {
-    // TODO: send the PATCH 
-    const result = await updateProfile(values.profileName, values.profileEmail);
+    const result = await updateUserProfile(data.user.id, {
+      name: values.profileName,
+      email: values.profileEmail
+    });
     if (result.success) {
-
+      toast('info', 'Update profile', 'Profile updated successfully');
     } else {
       toast('error', 'Error when updating profile', result.response.data.message);
     }
@@ -39,8 +38,8 @@ export default function ManageProfile() {
         validationSchema={schema}
         onSubmit={onSubmit}
         initialValues={{
-          profileName: '',
-          profileEmail: ''
+          profileName: data.user.name,
+          profileEmail: data.user.email
         }}
       >
         {({
