@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 const schema = yup.object().shape({
   email: yup.string().email().required().label('Email'),
@@ -15,35 +16,23 @@ const schema = yup.object().shape({
 
 
 export default function LoginBox() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   const history = useHistory();
 
   const { login } = useApi();
   const { data } = useDataStore();
+  const { toast } = useToast();
 
   const onSubmit = async (values) => {
     const result = await login(values.email, values.password);
     if (result.success) {
       history.push('/account');
     } else {
-      setAlertMessage(result.response.data.message);
-      setAlertVisibility(true);
+      toast('error', 'Log in failed', result.response.data.message);
     }
   };
 
   return (
     <div>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}

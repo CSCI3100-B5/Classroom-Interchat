@@ -13,7 +13,7 @@ export default function SAQResult({ message }) {
   const { data } = useDataStore();
   let answerDigest = [];
   if (groupView) {
-    message.content.result.forEach((x, id) => {
+    message.content.results.forEach((x, id) => {
       const d = answerDigest.find(y => y.content.trim() === x.content.trim());
       if (d) {
         d.users.push(x.userId);
@@ -29,14 +29,14 @@ export default function SAQResult({ message }) {
     });
     answerDigest.sort((a, b) => b.users.length - a.users.length);
   } else {
-    answerDigest = message.content.result
+    answerDigest = message.content.results
       .map((x, id) => ({ ...x, id }))
       .concat()
       .sort((a, b) => a.createdAt - b.createdAt);
   }
   return (
     <div>
-      <h5>Quiz Result</h5>
+      <h5>Quiz Results</h5>
       <ButtonGroup toggle className="mb-2">
         <ToggleButton
           type="checkbox"
@@ -68,14 +68,17 @@ export default function SAQResult({ message }) {
                   <ToggleButton
                     required
                     className="m-1"
-                    disabled={message.sender.id !== data.user.id}
+                    disabled={
+                      (message.sender.id ?? message.sender) !== data.user.id
+                      || !message.content.closedAt
+                    }
                     variant="outline-primary"
                     type="radio"
                     key={x.id}
                     name="choice"
                     value={x.id}
                     label={x.content}
-                    checked={+values.choice === x.id}
+                    checked={values.choice && +values.choice === x.id}
                     onChange={handleChange}
                     feedback={errors.choice}
                   >
@@ -90,19 +93,23 @@ export default function SAQResult({ message }) {
                 ))}
               </ButtonGroup>
             </Form.Group>
-            {message.sender.id === data.user.id ? (
-              <>
-                <Button type="submit">Award Token</Button>
-                <TokenAwarder
-                  userIds={
+            {
+            (message.sender.id ?? message.sender) === data.user.id && message.content.closedAt
+              ? (
+                <>
+                  <Button type="submit">Award Token</Button>
+                  <TokenAwarder
+                    userIds={
                     showModal
                       ? answerDigest.find(x => x.content === values.content).users
                       : null
                     }
-                  onClose={() => setShowModal(false)}
-                />
-              </>
-            ) : null }
+                    onClose={() => setShowModal(false)}
+                  />
+                </>
+              )
+              : null
+            }
           </Form>
         )}
       </Formik>

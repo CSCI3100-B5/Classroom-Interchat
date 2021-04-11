@@ -14,13 +14,15 @@ export default function MCQResult({ message }) {
     if (!(values.choices instanceof Array)) {
       values.choices = [values.choices]; // eslint-disable-line no-param-reassign
     }
-    // TODO: send the answer to server
+    // TODO: send the token awardees to server
+    // note that server should only accept a list of user ids to award tokens to
+    // it is the client's job to compute that list
     console.log(values);
   };
 
   return (
     <div>
-      <h5>Quiz Result</h5>
+      <h5>Quiz Results</h5>
       <p>{message.content.prompt}</p>
       {message.content.multiSelect ? <p className="text-muted">You may choose more than 1 answer</p> : null}
       <Formik
@@ -40,14 +42,14 @@ export default function MCQResult({ message }) {
             <Form.Group>
               <ButtonGroup toggle vertical className="mb-2 d-flex">
                 {message.content.choices.map((x, idx) => {
+                  const percentage = message.content.results.reduce(
+                    (prev, curr) => (prev + (curr.content.includes(idx) ? 1 : 0)),
+                    0
+                  ) / message.content.results.length * 100;
                   const btnContent = (
                     <>
                       <Badge>
-                        {(message.content.result.reduce(
-                          (prev, curr) => (prev + (curr.content.includes(idx) ? 1 : 0)),
-                          0
-                        ) / message.content.result.length * 100).toFixed(2)}
-                        %
+                        {Number.isNaN(percentage) ? null : `${percentage.toFixed(2)}%`}
                       </Badge>
                       {x}
                     </>
@@ -56,7 +58,11 @@ export default function MCQResult({ message }) {
                     return (
                       <ToggleButton
                         className="m-1"
-                        disabled={message.sender.id !== data.user.id || message.content.correct}
+                        disabled={
+                          (message.sender.id ?? message.sender) !== data.user.id
+                          || message.content.correct
+                          || !message.content.closedAt
+                        }
                         variant={message.content.correct?.includes(idx) ? 'primary' : 'outline-primary'}
                         required
                         type="checkbox"
@@ -75,7 +81,11 @@ export default function MCQResult({ message }) {
                   return (
                     <ToggleButton
                       required
-                      disabled={message.sender.id !== data.user.id || message.content.correct}
+                      disabled={
+                        (message.sender.id ?? message.sender) !== data.user.id
+                        || message.content.correct
+                        || !message.content.closedAt
+                      }
                       className="m-1"
                       variant={message.content.correct?.includes(idx) ? 'primary' : 'outline-primary'}
                       type="radio"
@@ -93,11 +103,13 @@ export default function MCQResult({ message }) {
                 })}
               </ButtonGroup>
             </Form.Group>
-            {message.sender.id === data.user.id ? (
-              <>
-                <Button type="submit">Award Token</Button>
-              </>
-            ) : null }
+            {(message.sender.id ?? message.sender) === data.user.id && message.content.closedAt
+              ? (
+                <>
+                  <Button type="submit">Award Token</Button>
+                </>
+              )
+              : null }
           </Form>
         )}
       </Formik>

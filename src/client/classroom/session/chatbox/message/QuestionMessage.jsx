@@ -4,16 +4,22 @@ import {
 } from 'react-bootstrap';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../../contexts/ToastProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
 
 
 export default function QuestionMessage({ message }) {
   const { resolveQuestion } = useRealtime();
   const { data } = useDataStore();
+  const { toast } = useToast();
   const replies = data.messages.filter(x => x.type === 'reply' && x.content.replyTo === message.id);
 
-  const onResolveQuestion = () => {
-    resolveQuestion(message.id);
+  const onResolveQuestion = async () => {
+    try {
+      resolveQuestion(message.id);
+    } catch (ex) {
+      toast('error', 'Error when resolving question', ex.error);
+    }
   };
 
   let resolveButton = null;

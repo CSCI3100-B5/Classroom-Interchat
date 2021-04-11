@@ -1,18 +1,27 @@
-import { Button, Badge } from 'react-bootstrap';
-import React from 'react';
+import {
+  Button, Badge, Overlay, Tooltip
+} from 'react-bootstrap';
+import React, { useRef, useState } from 'react';
+import copy from 'copy-text-to-clipboard';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
+import env from '../../../environment.js';
+import { useToast } from '../../../contexts/ToastProvider.jsx';
 
 
 function ParticipantList() {
   const { data, getSelfParticipant } = useDataStore();
   const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
+  const { toast } = useToast();
+
+  const tooltipTarget = useRef(null);
+  const [show, setShow] = useState(false);
 
   const onRequestPermission = async () => {
     try {
       await requestPermission();
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when requsting for permission', ex.error);
     }
   };
 
@@ -20,7 +29,7 @@ function ParticipantList() {
     try {
       await cancelRequestPermission();
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when canceling request', ex.error);
     }
   };
 
@@ -28,7 +37,7 @@ function ParticipantList() {
     try {
       await promoteParticipant(userId);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when promoting a participant', ex.error);
     }
   };
 
@@ -50,6 +59,23 @@ function ParticipantList() {
   return (
     <>
       {permissionButton}
+      <Button
+        ref={tooltipTarget}
+        onClick={() => {
+          copy(`${env.hostUrl}classroom/join?id=${data.classroomMeta.id}`);
+          setShow(true);
+          setTimeout(() => setShow(false), 2000);
+        }}
+      >
+        Copy invite link
+      </Button>
+      <Overlay target={tooltipTarget.current} show={show} placement="bottom">
+        {props => (
+          <Tooltip {...props}>
+            Link copied!
+          </Tooltip>
+        )}
+      </Overlay>
       <ul>
         {
         data.participants.map(x => (
