@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useSocket } from './SocketProvider.jsx';
 import { useDataStore } from './DataStoreProvider.jsx';
+import { useToast } from './ToastProvider.jsx';
 
 const RealtimeContext = React.createContext();
 
@@ -14,6 +15,7 @@ export function RealtimeProvider({ children }) {
     refreshTokenHeader,
   } = useDataStore();
   const socket = useSocket();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (socket) {
@@ -37,10 +39,10 @@ export function RealtimeProvider({ children }) {
 
       socket.on('kick', (payload) => {
         const { reason } = payload;
-        // TODO: a UI to show the reason
         data.classroomMeta = null;
         data.participants = [];
         data.messages = [];
+        toast('info', 'Left classroom', reason);
       });
 
       // All these events do the same thing
@@ -160,9 +162,6 @@ export function RealtimeProvider({ children }) {
     return new Promise((resolve, reject) => {
       socket.emit('leave classroom', {}, (response) => {
         if (response.error) reject(response);
-        data.classroomMeta = null;
-        data.messages = [];
-        data.participants = [];
         resolve(response);
       });
     });
@@ -240,7 +239,7 @@ export function RealtimeProvider({ children }) {
     });
   }
 
-  function cancelRequestPermission(messageId) {
+  function cancelRequestPermission() {
     return new Promise((resolve, reject) => {
       socket.emit('cancel request permission', {}, (response) => {
         if (response.error) reject(response);
@@ -266,7 +265,7 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
-  
+
   function demoteParticipant(userId) {
     return new Promise((resolve, reject) => {
       socket.emit('demote participant', { userId }, (response) => {
@@ -285,9 +284,18 @@ export function RealtimeProvider({ children }) {
     });
   }
 
-  function muteParticipant(userId) {
+  function toggleMuteParticipant(userId) {
     return new Promise((resolve, reject) => {
       socket.emit('mute participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function toggleGlobalMute() {
+    return new Promise((resolve, reject) => {
+      socket.emit('mute classroom', {}, (response) => {
         if (response.error) reject(response);
         resolve(response);
       });
@@ -314,7 +322,8 @@ export function RealtimeProvider({ children }) {
       awardToken,
       demoteParticipant,
       kickParticipant,
-      muteParticipant
+      toggleMuteParticipant,
+      toggleGlobalMute
     }}
     >
       {children}

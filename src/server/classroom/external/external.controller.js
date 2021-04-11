@@ -175,6 +175,8 @@ async function leaveClassroom(packet, socket, io) {
   if (!socket.data.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   let classroom = meta.invokerClassroom;
 
+  socket.emit('kick', { reason: 'Left classroom successfully' });
+
   socket.leave(classroom.id);
   socket.leave(`${meta.invoker.id}-${classroom.id}`);
   socket.data.invokerClassroom = null;
@@ -266,6 +268,17 @@ async function kickParticipant(packet, socket, io) {
       error: 'Targeted user is not in this classroom'
     });
   }
+  if (target.permission === 'instructor' && !classroom.host._id.equals(meta.invoker._id)) {
+    return callback({
+      error: 'You cannot kick an instructor'
+    });
+  }
+  if (classroom.host._id.equals(meta.invoker._id) && meta.invoker.id === target.user.id) {
+    return callback({
+      error: 'You cannot kick yourself. Leave the classroom instead'
+    });
+  }
+
 
   const room = io.to(`${target.user.id}-${classroom.id}`);
   room.emit('kick', {
@@ -289,16 +302,16 @@ async function kickParticipant(packet, socket, io) {
   const message = await Messages.Message.create({
     sender: null,
     type: 'text',
-    content: `${meta.invoker.name} kicked  ${target.user.name}`,
+    content: `${meta.invoker.name} kicked ${target.user.name}`,
     classroom: classroom.id
   });
   classroom.messages.push(message);
   io.to(classroom.id).emit('new message', message.filterSafe());
   await classroom.save();
+  io.to(classroom.id).emit('participant deleted', { userId: target.user.id });
 
-  classroom = await classroom.populate('host').populate('participants.user').execPopulate();
-  io.to(classroom.id).emit('participant kicked', { userId: meta.invoker.id });
-  io.to(target.user._id.toString()).emit('kick', { reason: `You are kicked by ${meta.invoker.name}` });
+
+  classroom = await classroom.populate('host').execPopulate();
 
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
   notifyClassroomMetaChanged(classroom, io);

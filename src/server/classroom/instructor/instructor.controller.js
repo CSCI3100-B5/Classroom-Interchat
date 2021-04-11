@@ -156,7 +156,7 @@ async function awardToken(packet, socket, io) {
       error: 'You are not in a classroom'
     });
   }
-  
+
   const requestor = meta.invokerClassroom.participants.find(
     x => x.user._id.equals(meta.invoker._id)
   );
@@ -187,7 +187,7 @@ async function awardToken(packet, socket, io) {
     classroom: meta.invokerClassroom.id,
     value: data.value ?? null
   })));
-    
+
   // TODO: update participant token counts
   return callback({});
 }
@@ -214,6 +214,7 @@ async function demoteParticipant(packet, socket, io) {
       error: 'You need to be the host to do this'
     });
   }
+
   const participant = meta.invokerClassroom.participants.find(
     x => x.user._id.toString() === data.userId
   );
@@ -222,11 +223,18 @@ async function demoteParticipant(packet, socket, io) {
       error: 'The specified user is not a participant of this classroom'
     });
   }
-  if (participant.permission !== 'instructor') {
+  if (participant.permission === 'student') {
     return callback({
-      error: 'The specified user is not an instructor'
+      error: 'A student cannot be demoted'
     });
   }
+  if (data.userId === classroom.host._id.toString()) {
+    return callback({
+      error: 'The host cannot be demoted'
+    });
+  }
+
+  const isRequesting = participant.permission === 'requesting';
 
   await Classroom.updateOne(
     { _id: classroom.id, 'participants._id': participant.id },
@@ -234,14 +242,16 @@ async function demoteParticipant(packet, socket, io) {
   ).exec();
   participant.permission = 'student';
 
-  const message = await Messages.Message.create({
-    sender: null,
-    type: 'text',
-    content: `${meta.invoker.name} demoted ${participant.user.name} to a student`,
-    classroom: classroom.id
-  });
-  classroom.messages.push(message);
-  io.to(classroom.id).emit('new message', message.filterSafe());
+  if (!isRequesting) {
+    const message = await Messages.Message.create({
+      sender: null,
+      type: 'text',
+      content: `${meta.invoker.name} demoted ${participant.user.name} to a student`,
+      classroom: classroom.id
+    });
+    classroom.messages.push(message);
+    io.to(classroom.id).emit('new message', message.filterSafe());
+  }
   await classroom.save();
 
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
@@ -273,7 +283,7 @@ async function muteParticipant(packet, socket, io) {
   );
   if (participant.permission !== 'instructor') {
     return callback({
-      error: 'Only instructors can mute participants'
+      error: 'Only instructors can toggle mute on participants'
     });
   }
   const target = meta.invokerClassroom.participants.find(
@@ -285,8 +295,59 @@ async function muteParticipant(packet, socket, io) {
     });
   }
 
+  const newValue = !target.isMuted;
+  await Classroom.updateOne(
+    { _id: classroom.id, 'participants._id': target.id },
+    { $set: { 'participants.$.isMuted': newValue } }
+  ).exec();
+  target.isMuted = newValue;
+
+  await classroom.save();
+
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
+
+  io.to(classroom.id).emit('participant changed', target.filterSafe());
+
   return callback({});
 }
+
+
+/**
+ * Mute the entire classroom
+ * @param {[*, *]} packet
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
+async function muteClassroom(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) {
+    return callback({
+      error: 'You are not in a classroom'
+    });
+  }
+
+  const classroom = await meta.invokerClassroom.populate('participants.user').populate('host').execPopulate();
+  const participant = meta.invokerClassroom.participants.find(
+    x => x.user._id.equals(meta.invoker._id)
+  );
+  if (participant.permission !== 'instructor') {
+    return callback({
+      error: 'Only instructors can toggle mute on the entire classroom'
+    });
+  }
+
+  classroom.isMuted = !classroom.isMuted;
+
+  await classroom.save();
+
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
+
+  io.to(classroom.id).emit('meta changed', classroom.filterMeta());
+
+  return callback({});
+}
+
 
 module.exports = {
   requestPermission,
@@ -294,5 +355,6 @@ module.exports = {
   promoteParticipant,
   awardToken,
   demoteParticipant,
-  muteParticipant
+  muteParticipant,
+  muteClassroom
 };

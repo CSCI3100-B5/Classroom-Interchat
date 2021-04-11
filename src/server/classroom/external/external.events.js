@@ -24,7 +24,7 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('reconnect', console.log);
 
-  events.on('kick participant', externalCtrl.kickParticipant);
+  events.on('kick participant', paramValidation.kickParticipant, externalCtrl.kickParticipant);
 
   events.register();
 };

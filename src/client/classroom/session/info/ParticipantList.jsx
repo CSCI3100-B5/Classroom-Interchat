@@ -18,7 +18,8 @@ function ParticipantList() {
     promoteParticipant,
     demoteParticipant,
     kickParticipant,
-    muteParticipant
+    toggleMuteParticipant,
+    toggleGlobalMute
   } = useRealtime();
   const { toast } = useToast();
   const [selectedUsers, setSelectedUsers] = useState(null);
@@ -54,9 +55,39 @@ function ParticipantList() {
     try {
       await demoteParticipant(userId);
     } catch (ex) {
-      console.log(ex);
+      toast('error', 'Error when demoting a participant', ex.error);
     }
   };
+
+  const onToggleMute = async (userId) => {
+    try {
+      await toggleMuteParticipant(userId);
+    } catch (ex) {
+      toast('error', 'Error when toggling mute on a participant', ex.error);
+    }
+  };
+
+  const onToggleGlobalMute = async () => {
+    try {
+      await toggleGlobalMute();
+    } catch (ex) {
+      toast('error', 'Error when toggling mute on the entire classroom', ex.error);
+    }
+  };
+
+  const onKick = async (userId) => {
+    try {
+      await kickParticipant(userId);
+    } catch (ex) {
+      toast('error', 'Error when kicking a participant', ex.error);
+    }
+  };
+
+  let isHost = false;
+  let isInstructor = false;
+  if (data.user.id === data.classroomMeta.host.id) {
+    isHost = true;
+  }
 
   let permissionButton = null;
   let perm = getSelfParticipant();
@@ -70,24 +101,10 @@ function ParticipantList() {
       permissionButton = (
         <Button onClick={onCancelRequest}>Cancel permission request</Button>
       );
+    } else {
+      isInstructor = true;
     }
   }
-
-  const onKick = async (userId) => {
-    try {
-      await kickParticipant(userId);
-    } catch (ex) {
-      console.log(ex);
-    }
-  };
-
-  const onMute = async (userId) => {
-    try {
-      await muteParticipant(userId);
-    } catch (ex) {
-      console.log(ex);
-    }
-  };
 
   return (
     <>
@@ -109,6 +126,7 @@ function ParticipantList() {
           </Tooltip>
         )}
       </Overlay>
+      <Button onClick={onToggleGlobalMute}>{data.classroomMeta.isMuted ? 'Unmute entire classroom' : 'Mute entire classroom'}</Button>
       <TokenAwarder userIds={selectedUsers} onClose={() => setSelectedUsers(null)} />
       <ul>
         {
@@ -122,11 +140,25 @@ function ParticipantList() {
               return null;
             })()}
             {x.isOnline ? null : (<Badge>OFFLINE</Badge>)}
-            <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
-            <Button variant="flat" onClick={() => onDemote(x.user.id)}>Deomote</Button>
-            <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
-            <Button variant="flat" onClick={() => onMute(x.user.id)}>{x.isMuted ? 'Unmute' : 'Mute'}</Button>
-            <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
+            {x.isMuted ? (<Badge>MUTED</Badge>) : null}
+
+            {isInstructor
+              ? (
+                <>
+                  {x.permission !== 'instructor'
+                    ? <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
+                    : null}
+                  {(isHost && x.user.id !== data.user.id) ? (
+                    <Button variant="flat" onClick={() => onDemote(x.user.id)}>Deomote</Button>
+                  ) : null}
+                  <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
+                  <Button variant="flat" onClick={() => onToggleMute(x.user.id)}>{x.isMuted ? 'Unmute' : 'Mute'}</Button>
+                  {(isHost && x.user.id !== data.user.id) || x.permission === 'student'
+                    ? <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
+                    : null}
+
+                </>
+              ) : null}
           </li>
         ))
       }

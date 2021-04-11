@@ -24,5 +24,7 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('mute participant', paramValidation.muteParticipant, instructorCtrl.muteParticipant);
 
+  events.on('mute classroom', paramValidation.muteClassroom, instructorCtrl.muteClassroom);
+
   events.register();
 };
