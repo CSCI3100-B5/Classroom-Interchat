@@ -39,7 +39,7 @@ export default function Account() {
     <div className="body">
       <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
         <Navbar.Brand>
-          <img src={AppImage} width="50" height="50" className="d-inline-block mr-2" alt="" />
+          <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
           <span className="navbar-brand text-white">
             <strong>Classroom Interchat</strong>
           </span>
@@ -55,22 +55,22 @@ export default function Account() {
             <Nav variant="tabs" className="flex-column mt-2 ml-2 sidebar">
               <Nav.Item>
                 <Nav.Link eventKey="launchApp">
-                  <a className="text-secondary font-weight-bold">Launch App</a>
+                  <span className="text-secondary font-weight-bold">Launch App</span>
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="manageProfile">
-                  <a className="text-secondary font-weight-bold">Manage Profile</a>
+                  <span className="text-secondary font-weight-bold">Manage Profile</span>
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="changePassword">
-                  <a className="text-secondary font-weight-bold">Change Password</a>
+                  <span className="text-secondary font-weight-bold">Change Password</span>
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="manageTokens">
-                  <a className="text-secondary font-weight-bold">Manage tokens</a>
+                  <span className="text-secondary font-weight-bold">Manage tokens</span>
                 </Nav.Link>
               </Nav.Item>
             </Nav>
