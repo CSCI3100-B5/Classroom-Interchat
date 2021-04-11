@@ -12,40 +12,45 @@ import NotFound from './not-found/NotFound.jsx';
 import { DataStoreProvider } from './contexts/DataStoreProvider.jsx';
 import { AxiosProvider } from './contexts/AxiosProvider.jsx';
 import { ApiProvider } from './contexts/ApiProvider.jsx';
+import ToastCenter from './ToastCenter.jsx';
+import { ToastProvider } from './contexts/ToastProvider.jsx';
 
 
 export default function App() {
   return (
     <React.StrictMode>
       <DataStoreProvider>
-        <AxiosProvider>
-          <ApiProvider>
-            <Router>
-              <div>
-                {/* A <Switch> looks through its children <Route>s and
+        <ToastProvider>
+          <AxiosProvider>
+            <ApiProvider>
+              <ToastCenter />
+              <Router>
+                <div>
+                  {/* A <Switch> looks through its children <Route>s and
                 renders the first one that matches the current URL. */}
-                <Switch>
-                  <Route path="/auth">
-                    <Auth />
-                  </Route>
-                  <Route path="/account">
-                    <Account />
-                  </Route>
-                  <Route path="/classroom">
-                    <ClassroomRoot />
-                  </Route>
-                  <Route exact path="/">
-                    <Landing />
-                  </Route>
-                  {/* This is the 404 route */}
-                  <Route>
-                    <NotFound />
-                  </Route>
-                </Switch>
-              </div>
-            </Router>
-          </ApiProvider>
-        </AxiosProvider>
+                  <Switch>
+                    <Route path="/auth">
+                      <Auth />
+                    </Route>
+                    <Route path="/account">
+                      <Account />
+                    </Route>
+                    <Route path="/classroom">
+                      <ClassroomRoot />
+                    </Route>
+                    <Route exact path="/">
+                      <Landing />
+                    </Route>
+                    {/* This is the 404 route */}
+                    <Route>
+                      <NotFound />
+                    </Route>
+                  </Switch>
+                </div>
+              </Router>
+            </ApiProvider>
+          </AxiosProvider>
+        </ToastProvider>
       </DataStoreProvider>
 
     </React.StrictMode>

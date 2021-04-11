@@ -18,5 +18,7 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('promote participant', paramValidation.promoteParticipant, instructorCtrl.promoteParticipant);
 
+  events.on('award token', paramValidation.awardToken, instructorCtrl.awardToken);
+
   events.register();
 };

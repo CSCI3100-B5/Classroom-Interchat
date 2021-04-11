@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Row, Col, Tab, Button, Navbar, Nav
 } from 'react-bootstrap';
@@ -8,19 +8,32 @@ import ManageProfile from './ManageProfile.jsx';
 import ChangePassword from './ChangePassword.jsx';
 import ManageTokens from './ManageTokens.jsx';
 import './account.css';
-import AppImage from './Icon@4x.png';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 // TODO: The UI is implemented as a tab control here, but a continuous
 // scrollable page is preferred
 
 export default function Account() {
+  const { data } = useDataStore();
+
   const history = useHistory();
 
   // Redirect to login after logout
   const logOut = async (values) => {
-    const result = await signout();
-    if (!result.success) history.push('/auth');
+    // TODO: log out implementation
+    // const result = await logout();
+    // if (!result.success) history.push('/auth');
   };
+
+  useEffect(() => {
+    (async () => {
+      if (!data.refreshToken || !data.user) {
+        history.push('/auth');
+      }
+    })();
+  }, []);
+
+  if (!data.refreshToken || !data.user) return (<p>Redirecting you to log in...</p>);
 
   return (
     <div className="body">

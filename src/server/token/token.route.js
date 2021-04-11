@@ -4,14 +4,12 @@ const paramValidation = require('./token.validation');
 const tokenCtrl = require('./token.controller');
 const { requireAccessToken } = require('./../helpers/requireAuth');
 
-// TODO: GUIDE: you may copy this file to make your xxx.route.js
-
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/:userId')
   /** GET /api/token/:userId - Get all tokens of a given user id
   */
-  .post(requireAccessToken, tokenCtrl.getUserTokens);
+  .get(requireAccessToken, validate(paramValidation.getTokens), tokenCtrl.getUserTokens);
 
 router.route('/:tokenId/invalidate')
   /** PATCH /api/token/:tokenId/invalidate - Sets isValid of a token to false

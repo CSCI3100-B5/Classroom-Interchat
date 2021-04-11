@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
+import { useStates } from 'use-states';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { useStates } from '../hooks/useStates.js';
 
 const DataStoreContext = React.createContext();
 
@@ -34,7 +34,9 @@ export function DataStoreProvider({ children }) {
     // a message id of a question to show that thread
     // 'unresolved' to show all unresolved questions
 
-    user: savedUser
+    user: savedUser,
+
+    toasts: []
   });
 
   // if accessToken/refreshToken/user changes, save them to localStorage

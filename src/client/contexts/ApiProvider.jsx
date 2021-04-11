@@ -120,7 +120,9 @@ export function ApiProvider({ children }) {
       refreshAccessToken,
       login,
       signup,
-      getUserProfile
+      getUserProfile,
+      getUserTokens,
+      setTokenFalse
     }}
     >
       {children}
