@@ -1,18 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
+import { useStates } from 'use-states';
+import { useApi } from '../contexts/ApiProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 
 export default function ManageTokens() {
-  const [sentTokens, setSentTokens] = useState([]);
-  const [receivedTokens, setReceivedTokens] = useState([]);
+  const localData = useStates({
+    sentTokens: [],
+    receivedTokens: []
+  });
 
+  const { getUserTokens, setTokenFalse } = useApi();
+  const { data } = useDataStore();
+  const { toast } = useToast();
 
   useEffect(() => {
     // TODO: call API and populate token list
+    (async () => {
+      const result = await getUserTokens(data.user.id);
+      if (result.success) {
+        localData.sentTokens = result.response.data.created;
+        localData.receivedTokens = result.response.data.received;
+      } else {
+        toast('error', 'Error when fetching tokens', result.response.data.message);
+      }
+    })();
   }, []);
 
-  const invalidateToken = (token) => {
-    // TODO: call API to invalidate token
+  const invalidateToken = async (token) => {
+    const result = await setTokenFalse(token.id);
+    if (result.success) {
+      const tokens = [...localData.sentTokens];
+      tokens[tokens.findIndex(x => x.id === result.response.data.id)] = result.response.data;
+      localData.sentTokens = tokens;
+      const tokens2 = [...localData.receivedTokens];
+      const idx = tokens2.findIndex(x => x.id === result.response.data.id);
+      if (idx >= 0) tokens2[idx] = result.response.data;
+      localData.receivedTokens = tokens2;
+      toast('info', 'Token invalidation', 'Token successfully invalidated');
+    } else {
+      toast('error', 'Error when invalidating tokens', result.response.data.message);
+    }
   };
 
   return (
@@ -30,14 +60,14 @@ export default function ManageTokens() {
           </tr>
         </thead>
         <tbody>
-          {sentTokens.map((token, idx) => (
+          {localData.sentTokens.map((token, idx) => (
             <tr key={token.id}>
               <td>{idx + 1}</td>
               <th>{token.id}</th>
               <th>{token.classroom.name}</th>
               <th>{token.value}</th>
               <th>{token.isValid ? 'Valid' : 'Invalid'}</th>
-              <th><Button variant="flat" onClick={invalidateToken(token)}>Invalidate</Button></th>
+              <th><Button variant="flat" onClick={() => invalidateToken(token)}>Invalidate</Button></th>
             </tr>
           ))}
         </tbody>
@@ -54,7 +84,7 @@ export default function ManageTokens() {
           </tr>
         </thead>
         <tbody>
-          {receivedTokens.map((token, idx) => (
+          {localData.receivedTokens.map((token, idx) => (
             <tr key={token.id}>
               <td>{idx + 1}</td>
               <th>{token.id}</th>

@@ -49,10 +49,6 @@ const UserSchema = new Schema({
     type: String,
     default: null
   },
-  tokens: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Token'
-  }]
 });
 
 /**

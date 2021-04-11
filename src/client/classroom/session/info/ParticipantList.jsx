@@ -7,12 +7,14 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import env from '../../../environment.js';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
+import TokenAwarder from '../TokenAwarder.jsx';
 
 
 function ParticipantList() {
   const { data, getSelfParticipant } = useDataStore();
   const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
   const { toast } = useToast();
+  const [selectedUsers, setSelectedUsers] = useState(null);
 
   const tooltipTarget = useRef(null);
   const [show, setShow] = useState(false);
@@ -76,6 +78,7 @@ function ParticipantList() {
           </Tooltip>
         )}
       </Overlay>
+      <TokenAwarder userIds={selectedUsers} onClose={() => setSelectedUsers(null)} />
       <ul>
         {
         data.participants.map(x => (
@@ -89,7 +92,7 @@ function ParticipantList() {
             })()}
             {x.isOnline ? null : (<Badge>OFFLINE</Badge>)}
             <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
-            <Button variant="flat">Token</Button>
+            <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
             <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
             <Button variant="danger">Kick</Button>
           </li>

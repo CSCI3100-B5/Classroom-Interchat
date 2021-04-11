@@ -4,21 +4,24 @@ import {
 } from 'react-bootstrap';
 import { Formik } from 'formik';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
+import TokenAwarder from '../../../TokenAwarder.jsx';
 
 export default function SAQResult({ message }) {
   const [groupView, setGroupView] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
   const { data } = useDataStore();
   let answerDigest = [];
   if (groupView) {
     message.content.results.forEach((x, id) => {
       const d = answerDigest.find(y => y.content.trim() === x.content.trim());
       if (d) {
-        d.users.push(x.userId);
+        d.users.push(x.user);
         d.createdAt = new Date(Math.min.apply(null, [d.createdAt, x.createdAt]));
       } else {
         answerDigest.push({
           id,
-          users: [x.userId],
+          users: [x.user],
           content: x.content.trim(),
           createdAt: x.createdAt
         });
@@ -27,10 +30,15 @@ export default function SAQResult({ message }) {
     answerDigest.sort((a, b) => b.users.length - a.users.length);
   } else {
     answerDigest = message.content.results
-      .map((x, id) => ({ ...x, id }))
-      .concat()
+      .map((x, id) => ({ ...x, id, users: [x.user] }))
       .sort((a, b) => a.createdAt - b.createdAt);
   }
+
+  const onSubmit = (values) => {
+    console.log('SAQ select token awardees ', values);
+    if (values.choice) setShowModal(true);
+  };
+
   return (
     <div>
       <h5>Quiz Results</h5>
@@ -46,7 +54,7 @@ export default function SAQResult({ message }) {
         </ToggleButton>
       </ButtonGroup>
       <Formik
-        onSubmit={console.log}
+        onSubmit={onSubmit}
         initialValues={{
           choice: null,
         }}
@@ -92,7 +100,19 @@ export default function SAQResult({ message }) {
             </Form.Group>
             {
             (message.sender.id ?? message.sender) === data.user.id && message.content.closedAt
-              ? (<Button type="submit">Award Token</Button>)
+              ? (
+                <>
+                  <Button type="submit">Award Token</Button>
+                  <TokenAwarder
+                    userIds={
+                    showModal
+                      ? answerDigest[values.choice]?.users
+                      : null
+                    }
+                    onClose={() => setShowModal(false)}
+                  />
+                </>
+              )
               : null
             }
           </Form>

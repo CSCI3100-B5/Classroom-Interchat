@@ -61,6 +61,9 @@ export function SocketProvider({ children }) {
     // TODO: show internet warning
     newSocket.io.on('reconnect_error', (...args) => console.log('io reconnect error', args));
     newSocket.on('disconnect', (...args) => console.log('Socket disconnect', args));
+    newSocket.on('error', (err) => {
+      toast('error', 'Error from server', err.message);
+    });
     newSocket.on('connect_error', async (error) => {
       console.log('Socket connection error ', error);
       if (error.message === 'jwt expired') {

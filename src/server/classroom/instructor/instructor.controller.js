@@ -1,7 +1,10 @@
 const httpStatus = require('http-status');
+const mongoose = require('mongoose');
 const cachegoose = require('cachegoose');
 const Classroom = require('../../models/classroom.model');
 const Messages = require('../../models/message.model');
+const User = require('../../models/user.model');
+const Token = require('../../models/token.model');
 const APIError = require('../../helpers/APIError');
 
 /**
@@ -139,8 +142,60 @@ async function promoteParticipant(packet, socket, io) {
   return callback({});
 }
 
+/**
+ * Award a token to all the given user ids
+ * @param {[*, *]} packet
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
+async function awardToken(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) {
+    return callback({
+      error: 'You are not in a classroom'
+    });
+  }
+
+  const requestor = meta.invokerClassroom.participants.find(
+    x => x.user._id.equals(meta.invoker._id)
+  );
+  if (requestor.permission !== 'instructor') {
+    return callback({
+      error: 'You need to be an instructor to do this'
+    });
+  }
+
+  let users;
+  try {
+    users = await User.find({
+      _id: {
+        $in: data.userIds.map(x => mongoose.Types.ObjectId(x))
+      }
+    }).exec();
+  } catch (ex) {
+    return callback({ error: ex });
+  }
+
+  if (!users || users.length === 0) {
+    return callback({ error: 'There are no user to be awarded a token to' });
+  }
+
+  await Token.insertMany(users.map(x => ({
+    createdBy: meta.invoker.id,
+    receivedBy: x.id,
+    classroom: meta.invokerClassroom.id,
+    value: data.value ?? null
+  })));
+
+  // TODO: update participant token counts
+
+  return callback({});
+}
+
 module.exports = {
   requestPermission,
   cancelRequestPermission,
-  promoteParticipant
+  promoteParticipant,
+  awardToken
 };
