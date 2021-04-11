@@ -115,6 +115,11 @@ export function RealtimeProvider({ children }) {
             data.replyToMessageId = null;
             console.log('cleared replyToMessageId because question is resolved');
           }
+          if (data.messageFilter === 'unresolved'
+          && data.messages.filter(x => x.type === 'question' && !x.content.isResolved).length === 0) {
+            data.messageFilter = null;
+            console.log('cleared message filter because there are no unresolved questions');
+          }
         } else {
           console.log('on question resolved: id not found: ', payload);
         }
