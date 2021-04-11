@@ -65,7 +65,7 @@ export default function ManageTokens() {
                     <span>{token.value}</span>
                   </Card.Title>
                 ) : null}
-                <Card.Text>
+                <Card.Text as="div">
                   <p>
                     <span className="text-muted font-weight-light text-small mr-2">CREATED BY </span>
                     {token.createdBy.name}
@@ -111,7 +111,7 @@ export default function ManageTokens() {
                     <span>{token.value}</span>
                   </Card.Title>
                 ) : null}
-                <Card.Text>
+                <Card.Text as="div">
                   <p>
                     <span className="text-muted font-weight-light text-small mr-2">RECEIVED BY </span>
                     {token.receivedBy.name}
