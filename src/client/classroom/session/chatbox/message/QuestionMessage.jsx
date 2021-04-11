@@ -2,11 +2,12 @@ import React from 'react';
 import {
   Badge, Button, ButtonGroup, ToggleButton
 } from 'react-bootstrap';
+import { BsFillQuestionCircleFill } from 'react-icons/bs';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../../contexts/ToastProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
-
+import './QuestionMessage.scoped.css';
 
 export default function QuestionMessage({ message }) {
   const { resolveQuestion } = useRealtime();
@@ -35,18 +36,28 @@ export default function QuestionMessage({ message }) {
   };
 
   return (
-    <div>
-      <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
-      {resolveButton}
-      <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
-      {message.content.isResolved ? null : (
-        <Button onClick={() => { data.replyToMessageId = message.id; }}>
-          Reply
-        </Button>
-      )}
+    <div className="relativeBox">
+      <p className="iconRight"><BsFillQuestionCircleFill /></p>
+      <p className="senderRight">
+        <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
+      </p>
+      <p className="resolveButtonRight">
+        {resolveButton}
+      </p>
+      <div className="myMessageRight">
+        <MarkdownRender>{message.content.content}</MarkdownRender>
+      </div>
+      <div className="replybuttonRight">
+        {message.content.isResolved ? null : (
+          <Button onClick={() => { data.replyToMessageId = message.id; }}>
+            Reply
+          </Button>
+        )}
+      </div>
       {replies.length > 0
         ? (
-          <ButtonGroup toggle className="mb-2">
+          <ButtonGroup toggle className="replyNoRight">
+
             <ToggleButton
               type="checkbox"
               variant="info"
@@ -60,8 +71,7 @@ export default function QuestionMessage({ message }) {
               {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
             </ToggleButton>
           </ButtonGroup>
-        )
-        : (<p className="text-muted">Send a reply</p>)}
+        ) : (<p className="replyRight">Send a reply</p>)}
     </div>
   );
 }
