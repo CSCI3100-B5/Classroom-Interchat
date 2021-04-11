@@ -64,10 +64,10 @@ export default function Account() {
         </Nav.Item>
       </Navbar>
 
-      <Tab.Container id="tabs" defaultActiveKey="launchApp">
-        <Row>
-          <Col sm={3}>
-            <Nav variant="tabs" className="flex-column mt-2 ml-2 sidebar">
+      <Tab.Container defaultActiveKey="launchApp">
+        <Row className="h-full sm-overflow-y-auto">
+          <Col sm={3} className="sm-h-full">
+            <Nav variant="tabs" className="flex-column sidebar">
               <Nav.Item>
                 <Nav.Link eventKey="launchApp">
                   <span className="text-secondary font-weight-bold">Launch App</span>
@@ -90,23 +90,31 @@ export default function Account() {
               </Nav.Item>
             </Nav>
           </Col>
-          <Col sm={9}>
-            <Tab.Content className="mt-3">
-              <Tab.Pane eventKey="launchApp">
-                <h2>Launch App</h2>
-                <LaunchApp />
+          <Col sm={9} className="sm-h-full">
+            <Tab.Content className="account-content">
+              <Tab.Pane eventKey="launchApp" className="h-full">
+                <div className="h-full account-content-pane">
+                  <h2>Launch App</h2>
+                  <LaunchApp />
+                </div>
               </Tab.Pane>
-              <Tab.Pane eventKey="manageProfile">
-                <h2>Manage Profile</h2>
-                <ManageProfile />
+              <Tab.Pane eventKey="manageProfile" className="h-full">
+                <div className="h-full account-content-pane">
+                  <h2>Manage Profile</h2>
+                  <ManageProfile />
+                </div>
               </Tab.Pane>
-              <Tab.Pane eventKey="changePassword">
-                <h2>Change Password</h2>
-                <ChangePassword />
+              <Tab.Pane eventKey="changePassword" className="h-full">
+                <div className="h-full account-content-pane">
+                  <h2>Change Password</h2>
+                  <ChangePassword />
+                </div>
               </Tab.Pane>
-              <Tab.Pane eventKey="manageTokens">
-                <h2>Manage Tokens</h2>
-                <ManageTokens />
+              <Tab.Pane eventKey="manageTokens" className="h-full">
+                <div className="h-full account-content-pane">
+                  <h2>Manage Tokens</h2>
+                  <ManageTokens />
+                </div>
               </Tab.Pane>
             </Tab.Content>
           </Col>

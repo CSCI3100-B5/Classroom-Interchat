@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Col } from 'react-bootstrap';
+import {
+  Button, Tabs, Tab, Card, Badge
+} from 'react-bootstrap';
 import { useStates } from 'use-states';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
+import './ManageTokens.scoped.css';
 
 
 export default function ManageTokens() {
@@ -46,62 +49,104 @@ export default function ManageTokens() {
   };
 
   return (
-    <div className="mt-4">
-      <h4>Tokens Sent</h4>
-      <Col sm={11}>
-        <Table striped bordered hover variant="light">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>ID</th>
-              <th>Classroom</th>
-              <th>Value</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {localData.sentTokens.map((token, idx) => (
-              <tr key={token.id}>
-                <td>{idx + 1}</td>
-                <th>{token.id}</th>
-                <th>{token.classroom.name}</th>
-                <th>{token.value}</th>
-                <th>{token.isValid ? 'Valid' : 'Invalid'}</th>
-                <th><Button variant="flat" onClick={() => invalidateToken(token)}>Invalidate</Button></th>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Col>
-      <div className="mt-4">
-        <h4>Tokens Received</h4>
-      </div>
-      <Col sm={9}>
-        <Table striped bordered hover variant="light">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th className="text-center">ID</th>
-              <th className="text-center">Classroom</th>
-              <th className="text-center">Value</th>
-              <th className="text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {localData.receivedTokens.map((token, idx) => (
-              <tr key={token.id}>
-                <td>{idx + 1}</td>
-                <th>{token.id}</th>
-                <th>{token.classroom.name}</th>
-                <th>{token.value}</th>
-                <th>{token.isValid ? 'Valid' : 'Invalid'}</th>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Col>
-      <Col />
+    <div className="mt-4 token-tabs">
+      <Tabs justify variant="pills" defaultActiveKey="tokensReceived">
+        <Tab eventKey="tokensReceived" title="Tokens Received" className="token-card-container">
+          {localData.receivedTokens.sort((a, b) => {
+            if (+a.isValid - +b.isValid !== 0) return +b.isValid - +a.isValid;
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }).map(token => (
+            <Card key={token.id} className="token-card border-0 shadow-sm">
+              <Card.Header>
+                <span className="text-muted">{token.id}</span>
+              </Card.Header>
+              <Card.Body>
+                {token.value && token.value.length > 0 ? (
+                  <Card.Title>
+                    <span>{token.value}</span>
+                  </Card.Title>
+                ) : null}
+                <Card.Text>
+                  <p>
+                    <span className="text-muted font-weight-light text-small mr-2">CREATED BY </span>
+                    {token.createdBy.name}
+                    <span className="text-muted text-small">
+                      {' '}
+                      (
+                      {token.createdBy.email}
+                      )
+                    </span>
+                  </p>
+                  <p>
+                    <span className="text-muted font-weight-light text-small mr-2">CLASSROOM </span>
+                    {token.classroom.name}
+                  </p>
+                  <p>
+                    <span className="text-muted font-weight-light text-small mr-2">CREATION DATE </span>
+                    {new Date(token.createdAt).toLocaleString()}
+                  </p>
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer>
+                {token.isValid ? (
+                  <Badge variant="success" className="badge-large">VALID</Badge>
+                ) : (
+                  <Badge variant="secondary" className="badge-large">INVALID</Badge>
+                )}
+              </Card.Footer>
+            </Card>
+          ))}
+        </Tab>
+        <Tab eventKey="tokensSent" title="Tokens Sent" className="token-card-container">
+          {localData.sentTokens.sort((a, b) => {
+            if (+a.isValid - +b.isValid !== 0) return +b.isValid - +a.isValid;
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }).map(token => (
+            <Card key={token.id} className="token-card border-0 shadow-sm">
+              <Card.Header>
+                <span className="text-muted">{token.id}</span>
+              </Card.Header>
+              <Card.Body>
+                {token.value && token.value.length > 0 ? (
+                  <Card.Title>
+                    <span>{token.value}</span>
+                  </Card.Title>
+                ) : null}
+                <Card.Text>
+                  <p>
+                    <span className="text-muted font-weight-light text-small mr-2">RECEIVED BY </span>
+                    {token.receivedBy.name}
+                    <span className="text-muted text-small">
+                      {' '}
+                      (
+                      {token.receivedBy.email}
+                      )
+                    </span>
+                  </p>
+                  <p>
+                    <span className="text-muted font-weight-light text-small mr-2">CLASSROOM </span>
+                    {token.classroom.name}
+                  </p>
+                  <p>
+                    <span className="text-muted font-weight-light text-small mr-2">CREATION DATE </span>
+                    {new Date(token.createdAt).toLocaleString()}
+                  </p>
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer className="d-flex justify-content-between align-items-center">
+                {token.isValid ? (
+                  <>
+                    <Badge variant="success" className="badge-large">VALID</Badge>
+                    <Button variant="flat" onClick={() => invalidateToken(token)}>Invalidate</Button>
+                  </>
+                ) : (
+                  <Badge variant="secondary" className="badge-large">INVALID</Badge>
+                )}
+              </Card.Footer>
+            </Card>
+          ))}
+        </Tab>
+      </Tabs>
     </div>
 
   );

@@ -1,0 +1,21 @@
+.token-tabs {
+  display: grid;
+  grid-template-rows: min-content minmax(0, 1fr);
+}
+
+.token-card-container {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.token-card {
+  margin: 8px;
+}
+
+.text-small {
+  font-size: 0.8rem;
+}
+
+.badge-large {
+  font-size: 1rem;
+}
