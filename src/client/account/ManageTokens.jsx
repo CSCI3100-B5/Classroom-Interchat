@@ -13,16 +13,14 @@ export default function ManageTokens() {
 
   useEffect(() => {
     // TODO: call API and populate token list
-    // defined a getTokens function here,
-    // because chrome suggested not to add async in the useEffect function?
-    async function getTokens() {
+    (async () => {
       const result = await getUserTokens(data.user.id);
       if (result.success) {
-        setSentTokens(result.body.created);
-        setReceivedTokens(result.body.received);
+        setSentTokens(result.response.data.created);
+        setReceivedTokens(result.response.data.received);
       }
-    }
-    getTokens();
+      // TODO: toast if failed
+    })();
   }, []);
 
   const invalidateToken = async (token) => {
@@ -31,6 +29,7 @@ export default function ManageTokens() {
     if (result.success) {
       token.isValid = false;
     }
+    // TODO: toast if failed
   };
 
   return (

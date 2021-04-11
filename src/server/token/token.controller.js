@@ -35,9 +35,13 @@ function loadUser(req, res, next, id) {
  * Get all tokens of a given user id
  */
 async function getUserTokens(req, res, next) {
-  const { user } = req.user;
+  const { user } = req;
 
-  const createList = await Token.find({ receivedBy: user.id })
+  if (req.invoker.id !== user.id && !req.invoker.isAdmin) {
+    return next(new APIError("Cannot view other's tokens", httpStatus.FORBIDDEN, true));
+  }
+
+  const createList = await Token.find({ createdBy: user.id })
     .populate('createdBy')
     .populate('receivedBy')
     .exec();
@@ -49,17 +53,17 @@ async function getUserTokens(req, res, next) {
     .exec();
   const received = receivedList.map(x => x.filterSafe());
 
-  return { created, received };
+  return res.json({ created, received });
 }
 
 /**
  * Sets isValid of a token to false
  */
-function setTokenFalse(req, res, next) {
+async function setTokenFalse(req, res, next) {
   const { token } = req;
   token.isValid = false;
-  token.save();
-  return res.json({});
+  await token.save();
+  return res.json(token.filterSafe());
 }
 
 module.exports = {
