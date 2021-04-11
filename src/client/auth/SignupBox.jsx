@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
-import { Button, Form, Alert } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 
 const schema = yup.object().shape({
@@ -19,10 +20,8 @@ const schema = yup.object().shape({
 });
 
 export default function SignupBox() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   const history = useHistory();
+  const { toast } = useToast();
 
   const { signup, login } = useApi();
 
@@ -35,26 +34,15 @@ export default function SignupBox() {
       if (loginResult.success) {
         history.push('/account');
       } else {
-        setAlertMessage(loginResult.response.data.message);
-        setAlertVisibility(true);
+        toast('error', 'Log in failed', loginResult.response.data.message);
       }
     } else {
-      setAlertMessage(result.response.data.message);
-      setAlertVisibility(true);
+      toast('error', 'Sign up failed', result.response.data.message);
     }
   };
 
   return (
     <div>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
@@ -72,7 +60,7 @@ export default function SignupBox() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit} noValidate>
+          <Form className="mt-4 mx-1" onSubmit={handleSubmit} noValidate>
             <Form.Group controlId="signupName">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -129,7 +117,7 @@ export default function SignupBox() {
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>
-            <Button type="submit">Sign up</Button>
+            <Button className="btn btn-primary btn-block" type="submit"><strong>Sign up</strong></Button>
           </Form>
         )}
       </Formik>

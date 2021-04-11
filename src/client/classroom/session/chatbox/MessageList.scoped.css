@@ -1,1 +1,7 @@
+
+.message-list {
+  height: 100%;
+  grid-area: messagelist;
+  overflow-y: auto;
+}
 ul {list-style-type:none;}

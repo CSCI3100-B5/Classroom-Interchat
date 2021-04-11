@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import ClassroomInfo from './info/ClassroomInfo.jsx';
 import ChatBox from './chatbox/ChatBox.jsx';
 import { useDataStore } from '../../contexts/DataStoreProvider.jsx';
+import './ClassroomSession.scoped.css';
 
 export default function ClassroomSession() {
   const history = useHistory();
@@ -17,9 +18,9 @@ export default function ClassroomSession() {
 
   if (!data.classroomMeta) return (<p>No session detected...</p>);
   return (
-    <div>
-      <ClassroomInfo />
-      <ChatBox />
+    <div className="session-container">
+      <ClassroomInfo className="classroom-info" />
+      <ChatBox className="chat-box" />
     </div>
   );
 }

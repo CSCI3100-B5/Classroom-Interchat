@@ -1,2 +1,9 @@
-/*background-color: #acd6ee80;
-this is by Jack YIPKAHO*/
+
+/* Feel free to choose another one, this one comes from https://fonts.google.com/ */
+* {
+  font-family: "Ubuntu", sans-serif;
+}
+
+:root {
+  --lightlightgray: #eeeeee;
+}

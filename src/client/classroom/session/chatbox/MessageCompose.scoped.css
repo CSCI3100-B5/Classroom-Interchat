@@ -1,0 +1,74 @@
+.message-compose {
+  grid-area: compose;
+  padding: 8px;
+  padding-top: 0px;
+}
+
+.reply-box {
+  display: grid;
+  grid-template-columns: min-content minmax(0, 1fr) min-content;
+}
+
+.reply-text {
+  display: inline-block;
+  height: 100%;
+  border: 0px solid white;
+  background-color: var(--lightlightgray);
+  border-radius: 5px 0px 0px 0px;
+  margin-right: -0.5px;
+  margin-bottom: -0.5px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default !important;
+}
+
+.reply-content {
+  display: inline-block;
+  height: 100%;
+  border: 0px solid white;
+  background-color: var(--lightlightgray);
+  border-radius: 0px 0px 0px 0px;
+  margin-right: -0.5px;
+  margin-bottom: -0.5px;
+  text-align: left;
+  color: gray;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default !important;
+}
+
+.reply-button {
+  border-radius: 0px 5px 0px 0px;
+  border: 0px solid white;
+  background-color: var(--lightlightgray);
+  white-space: nowrap;
+  margin-bottom: -0.5px;
+}
+
+.compose-box {
+  min-height: 50px;
+  border: 0px solid white;
+}
+
+.reply-compose {
+  border-radius: 0px 0px 0px 5px;
+}
+
+.reply-send {
+  border-radius: 0px 0px 5px 0px;
+  border: 0px solid white;
+}
+
+.button-icon {
+  font-size: 1.5rem;
+}
+
+.compose-button {
+  border: 0px solid white;
+}
+
+.compose-shadow {
+  box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}

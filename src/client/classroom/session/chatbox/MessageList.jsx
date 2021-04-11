@@ -33,7 +33,7 @@ export default function MessageList() {
   const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
 
   return (
-    <div>
+    <div className="message-list">
       {getSelfParticipant()
       && getSelfParticipant().permission !== 'student'
       && requestingParticipants.length ? (

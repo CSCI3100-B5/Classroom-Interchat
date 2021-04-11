@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
-  Button, Form, Alert, ButtonGroup, ToggleButton, InputGroup
+  Button, Form, ButtonGroup, ToggleButton, InputGroup
 } from 'react-bootstrap';
+import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../contexts/ToastProvider.jsx';
 
 const choicesSchema = {};
 const choicesDefault = {};
@@ -64,9 +66,8 @@ const schema = yup.object().shape({
 });
 
 export default function CreateQuiz({ onBack }) {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
+  const { sendQuiz } = useRealtime();
+  const { toast } = useToast();
   const onSubmit = async (values) => {
     // clean the values object before submitting to server
     let cleanedValues = {
@@ -77,30 +78,29 @@ export default function CreateQuiz({ onBack }) {
       cleanedValues = {
         ...cleanedValues,
         choices: [],
-        correct: []
+        correct: [],
+        multiSelect: values.multiSelect
       };
       for (let i = 0; i < values.choiceCount; i++) {
         cleanedValues.choices.push(values[`choice${i}`]);
         if (values[`choice${i}correct`]) cleanedValues.correct.push(i);
       }
+      if (cleanedValues.correct.length === 0) {
+        delete cleanedValues.correct;
+      }
     }
 
-    // TODO: submit quiz to server
-    console.log(cleanedValues);
+    try {
+      await sendQuiz(cleanedValues);
+      onBack();
+    } catch (ex) {
+      toast('error', 'Error when creating quiz', ex.error);
+    }
   };
 
   return (
     <div>
       <Button variant="flat" onClick={onBack}>Back</Button>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
@@ -108,7 +108,8 @@ export default function CreateQuiz({ onBack }) {
           prompt: '',
           type: 'SAQ',
           choiceCount: 4,
-          ...choicesDefault
+          ...choicesDefault,
+          multiSelect: false
         }}
       >
         {({
@@ -221,6 +222,17 @@ export default function CreateQuiz({ onBack }) {
                   }
                   return choices;
                 })()}
+                <Form.Group controlId="multiSelect">
+                  <Form.Check
+                    required
+                    name="multiSelect"
+                    label="Allow choosing multiple answers"
+                    checked={values.multiSelect}
+                    onChange={handleChange}
+                    isInvalid={!!errors.multiSelect}
+                    feedback={errors.multiSelect}
+                  />
+                </Form.Group>
               </>
             ) : null}
             <Button type="submit">Send Quiz</Button>

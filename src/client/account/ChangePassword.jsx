@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert } from 'react-bootstrap';
+import {
+  Button, Form, Col, Row
+} from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 
 const schema = yup.object().shape({
@@ -17,40 +21,25 @@ const schema = yup.object().shape({
 });
 
 export default function ChangePassword() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
-  // TODO: use the PATCH /user/:userId API
-  // const { signup, login } = useApi();
+  const { data } = useDataStore();
+  const { toast } = useToast();
+  const { updateUserProfile } = useApi();
 
   const onSubmit = async (values) => {
-    // TODO: send the API request
-    // const result = await signup(values.signupName, values.signupEmail, values.signupPassword);
-    // if (result.success) {
-    //   const loginResult = await login(values.signupEmail, values.signupPassword);
-    //   if (loginResult.success) {
-    //     history.push('/classroom');
-    //   } else {
-    //     setAlertMessage(loginResult.response.data.message);
-    //     setAlertVisibility(true);
-    //   }
-    // } else {
-    //   setAlertMessage(result.response.data.message);
-    //   setAlertVisibility(true);
-    // }
+    const result = await updateUserProfile(data.user.id, {
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword
+    });
+    if (result.success) {
+      data.user = result.response.data;
+      toast('info', 'Change password', 'Password updated successfully');
+    } else {
+      toast('error', 'Error when changing password', result.response.data.message);
+    }
   };
 
   return (
     <div>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
@@ -67,50 +56,63 @@ export default function ChangePassword() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit} noValidate>
-            <Form.Group controlId="oldPassword">
-              <Form.Label>Old Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="oldPassword"
-                value={values.oldPassword}
-                onChange={handleChange}
-                isValid={touched.oldPassword && !errors.oldPassword}
-                isInvalid={touched.oldPassword && errors.oldPassword}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.oldPassword}
-              </Form.Control.Feedback>
+          <Form className="mt-4" onSubmit={handleSubmit}>
+            <Form.Group as={Row} controlId="oldPassword">
+              <Form.Label column sm={2}>Old Password</Form.Label>
+              <Col sm={8}>
+                <Form.Control
+                  type="password"
+                  name="oldPassword"
+                  value={values.oldPassword}
+                  onChange={handleChange}
+                  isValid={touched.oldPassword && !errors.oldPassword}
+                  isInvalid={touched.oldPassword && errors.oldPassword}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.oldPassword}
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
-            <Form.Group controlId="newPassword">
-              <Form.Label>New Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="newPassword"
-                value={values.newPassword}
-                onChange={handleChange}
-                isValid={touched.newPassword && !errors.newPassword}
-                isInvalid={touched.newPassword && errors.newPassword}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.newPassword}
-              </Form.Control.Feedback>
+
+            <Form.Group as={Row} controlId="newPassword">
+              <Form.Label column sm={2}>New Password</Form.Label>
+              <Col sm={8}>
+                <Form.Control
+                  type="password"
+                  name="newPassword"
+                  value={values.newPassword}
+                  onChange={handleChange}
+                  isValid={touched.newPassword && !errors.newPassword}
+                  isInvalid={touched.newPassword && errors.newPassword}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword}
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
-            <Form.Group controlId="confirmPassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="confirmPassword"
-                value={values.confirmPassword}
-                onChange={handleChange}
-                isValid={touched.confirmPassword && !errors.confirmPassword}
-                isInvalid={touched.confirmPassword && errors.confirmPassword}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.confirmPassword}
-              </Form.Control.Feedback>
+
+            <Form.Group as={Row} controlId="confirmPassword">
+              <Form.Label column sm={2}>Confirm Password</Form.Label>
+              <Col sm={8}>
+                <Form.Control
+                  type="password"
+                  name="confirmPassword"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  isValid={touched.confirmPassword && !errors.confirmPassword}
+                  isInvalid={touched.confirmPassword && errors.confirmPassword}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword}
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
-            <Button type="submit">Change password</Button>
+
+            <Col sm={2} />
+            <Col sm={10}>
+              <Button className="btn btn-secondary shadow-sm float-right mr-n1" type="submit">Save changes</Button>
+            </Col>
+
           </Form>
         )}
       </Formik>

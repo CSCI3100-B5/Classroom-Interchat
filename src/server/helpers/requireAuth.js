@@ -27,7 +27,7 @@ const requireAccessToken = compose([
 const requireEmailVerified = compose([
   requireAccessToken,
   function checkEmail(req, res, next) {
-    if (req.invoker.isEmailVerified()) return next(new APIError('You need to verify your email address first', httpStatus.FORBIDDEN, true));
+    if (!req.invoker.isEmailVerified()) return next(new APIError('Email address not verified', httpStatus.FORBIDDEN, true));
     return next();
   }
 ]);

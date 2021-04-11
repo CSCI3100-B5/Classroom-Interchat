@@ -49,10 +49,6 @@ const UserSchema = new Schema({
     type: String,
     default: null
   },
-  tokens: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Token'
-  }]
 });
 
 /**
@@ -72,7 +68,8 @@ UserSchema.method({
       name: this.name,
       email: this.email,
       isAdmin: this.isAdmin,
-      createdAt: this.createdAt
+      createdAt: this.createdAt,
+      emailVerified: this.isEmailVerified()
     };
   },
   isAuthTokenIdValid(authTokenId) {
@@ -120,6 +117,10 @@ UserSchema.statics = {
         }
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 
@@ -138,6 +139,10 @@ UserSchema.statics = {
         }
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 
@@ -153,6 +158,10 @@ UserSchema.statics = {
         if (user) {
           return user;
         }
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      })
+      .catch(() => {
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
