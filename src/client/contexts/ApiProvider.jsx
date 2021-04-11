@@ -55,6 +55,25 @@ export function ApiProvider({ children }) {
   }
 
   /**
+   * Logout
+   * @returns response body
+   */
+  async function logout() {
+    const result = await request({
+      method: 'DELETE',
+      url: '/auth/logout',
+      headers: refreshTokenHeader()
+    });
+    if (result.success) {
+      data.rememberMe = true;
+      data.accessToken = null;
+      data.refreshToken = null;
+      data.user = null;
+    }
+    return result;
+  }
+
+  /**
    * Sign up with name, email and password
    * @param {String} name user's name
    * @param {String} email email
@@ -120,6 +139,7 @@ export function ApiProvider({ children }) {
       refreshAccessToken,
       login,
       signup,
+      logout,
       getUserProfile,
       getUserTokens,
       setTokenFalse

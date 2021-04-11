@@ -1,0 +1,21 @@
+.body {
+  background-color: #d8dfec;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+.sidebar {
+  position: fixed;
+  width: 20vw;
+}
+
+#button-style {
+  border: 0px solid white;
+}
+
+.text-center {
+  text-align: center;
+}

@@ -60,7 +60,7 @@ export default function SignupBox() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit} noValidate>
+          <Form className="mt-4 mx-1" onSubmit={handleSubmit} noValidate>
             <Form.Group controlId="signupName">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -117,7 +117,7 @@ export default function SignupBox() {
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>
-            <Button type="submit">Sign up</Button>
+            <Button className="btn btn-primary btn-block" type="submit"><strong>Sign up</strong></Button>
           </Form>
         )}
       </Formik>

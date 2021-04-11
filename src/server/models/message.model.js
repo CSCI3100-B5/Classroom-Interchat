@@ -120,6 +120,10 @@ MessageSchema.statics = {
         }
         const err = new APIError('No such message exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such message exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 
