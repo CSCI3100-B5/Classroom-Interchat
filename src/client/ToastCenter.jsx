@@ -32,7 +32,7 @@ export default function ToastCenter() {
                 {icon}
               </div>
               <strong className="mr-2">{x.title}</strong>
-              <small>{x.timestamp.toLocaleTimeString()}</small>
+              <small className="mr-auto">{x.timestamp.toLocaleTimeString()}</small>
             </Toast.Header>
             <Toast.Body>{x.body}</Toast.Body>
           </Toast>

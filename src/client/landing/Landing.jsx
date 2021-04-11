@@ -9,7 +9,10 @@ export default function App() {
       <h1 className="title">Classroom Interchat</h1>
       <p>Enjoy an innovative real-time interactive classroom experience!</p>
       <LinkContainer to="/auth">
-        <Button>Login</Button>
+        <Button>Log in</Button>
+      </LinkContainer>
+      <LinkContainer to="/auth#signup">
+        <Button>Sign up</Button>
       </LinkContainer>
       <img src="/favicon.svg" alt="Classroom Interchat icon" />
     </div>
