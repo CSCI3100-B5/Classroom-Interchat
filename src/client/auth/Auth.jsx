@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Container, Row, Col, Tab, Tabs, Card, Navbar
 } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import LoginBox from './LoginBox.jsx';
 import SignupBox from './SignupBox.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
@@ -36,10 +36,12 @@ export default function Auth() {
     <div className="body">
       <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
         <Navbar.Brand>
-          <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
-          <span className="navbar-brand text-white">
-            <strong>Classroom Interchat</strong>
-          </span>
+          <Link to="/">
+            <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
+            <span className="navbar-brand text-white">
+              <strong>Classroom Interchat</strong>
+            </span>
+          </Link>
         </Navbar.Brand>
       </Navbar>
       <Container>
