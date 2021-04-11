@@ -176,6 +176,15 @@ export function RealtimeProvider({ children }) {
     });
   }
 
+  function awardToken(userIds, value) {
+    return new Promise((resolve, reject) => {
+      socket.emit('award token', { userIds, value }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
   return (
     <RealtimeContext.Provider value={{
       // TODO: GUIDE: export functions to send socket messages to server
@@ -187,7 +196,8 @@ export function RealtimeProvider({ children }) {
       resolveQuestion,
       requestPermission,
       cancelRequestPermission,
-      promoteParticipant
+      promoteParticipant,
+      awardToken
     }}
     >
       {children}

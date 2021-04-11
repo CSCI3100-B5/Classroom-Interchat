@@ -4,6 +4,7 @@ import {
   ButtonGroup, ToggleButton, Form, Button, Badge
 } from 'react-bootstrap';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
+import TokenAwarder from './TokenAwarder.jsx';
 
 export default function MCQResult({ message }) {
   const { data } = useDataStore();
@@ -92,7 +93,11 @@ export default function MCQResult({ message }) {
                 })}
               </ButtonGroup>
             </Form.Group>
-            {message.sender.id === data.user.id ? (<Button type="submit">Award Token</Button>) : null }
+            {message.sender.id === data.user.id ? (
+              <>
+                <Button type="submit">Award Token</Button>
+              </>
+            ) : null }
           </Form>
         )}
       </Formik>

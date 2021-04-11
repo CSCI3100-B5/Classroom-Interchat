@@ -4,9 +4,12 @@ import {
 } from 'react-bootstrap';
 import { Formik } from 'formik';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
+import TokenAwarder from './TokenAwarder.jsx';
 
 export default function SAQResult({ message }) {
   const [groupView, setGroupView] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
   const { data } = useDataStore();
   let answerDigest = [];
   if (groupView) {
@@ -46,7 +49,7 @@ export default function SAQResult({ message }) {
         </ToggleButton>
       </ButtonGroup>
       <Formik
-        onSubmit={console.log}
+        onSubmit={() => setShowModal(true)}
         initialValues={{
           choice: null,
         }}
@@ -87,7 +90,19 @@ export default function SAQResult({ message }) {
                 ))}
               </ButtonGroup>
             </Form.Group>
-            {message.sender.id === data.user.id ? (<Button type="submit">Award Token</Button>) : null }
+            {message.sender.id === data.user.id ? (
+              <>
+                <Button type="submit">Award Token</Button>
+                <TokenAwarder
+                  userIds={
+                    showModal
+                      ? answerDigest.find(x => x.content === values.content).users
+                      : null
+                    }
+                  onClose={() => setShowModal(false)}
+                />
+              </>
+            ) : null }
           </Form>
         )}
       </Formik>
