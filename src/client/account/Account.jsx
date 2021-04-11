@@ -39,7 +39,7 @@ export default function Account() {
     }
     history.push('/auth');
   };
-  
+
   useEffect(() => {
     (async () => {
       if (!data.refreshToken || !data.user) {
