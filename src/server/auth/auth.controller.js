@@ -17,8 +17,7 @@ async function login(req, res, next) {
   try {
     user = await User.getByEmail(req.body.email);
   } catch (e) {
-    // TODO: return a more helpful error message
-    return next(e);
+    return next(new APIError('Email not found', httpStatus.UNAUTHORIZED, true));
   }
   if (!await user.comparePassword(req.body.password)) {
     const err = new APIError('Incorrect password', httpStatus.UNAUTHORIZED, true);

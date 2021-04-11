@@ -9,6 +9,8 @@ import ChangePassword from './ChangePassword.jsx';
 import ManageTokens from './ManageTokens.jsx';
 import './account.css';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
+import { useApi } from '../contexts/ApiProvider.jsx';
 
 // TODO: The UI is implemented as a tab control here, but a continuous
 // scrollable page is preferred
@@ -18,11 +20,24 @@ export default function Account() {
 
   const history = useHistory();
 
-  // Redirect to login after logout
-  const logOut = async (values) => {
-    // TODO: log out implementation
-    // const result = await logout();
-    // if (!result.success) history.push('/auth');
+  const { toast } = useToast();
+
+  const { logout } = useApi();
+
+  // Redirect to /auth after logout
+  const onLogOut = async () => {
+    const result = await logout();
+    if (!result.success) {
+      toast('error', 'Error when logging out', result.response.data.message);
+      // Still delete credentials on the client-side when there's an error
+      data.rememberMe = true;
+      data.refreshToken = null;
+      data.accessToken = null;
+      data.user = null;
+    } else {
+      toast('info', 'Log out', 'You have been logged out');
+    }
+    history.push('/auth');
   };
 
   useEffect(() => {
@@ -45,7 +60,7 @@ export default function Account() {
           </span>
         </Navbar.Brand>
         <Nav.Item className="ml-auto">
-          <Button variant="outline-info">Log out</Button>
+          <Button variant="outline-info" onClick={onLogOut}>Log out</Button>
         </Nav.Item>
       </Navbar>
 

@@ -21,7 +21,7 @@ export default function ToastCenter() {
         return (
           <Toast
             key={x.id}
-            className="toast"
+            className="toast glass-card"
             onClose={() => removeToast(x.id)}
             show={data.toasts.some(y => y.id === x.id)}
             delay={3000}

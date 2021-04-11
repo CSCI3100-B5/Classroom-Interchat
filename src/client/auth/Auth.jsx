@@ -48,7 +48,7 @@ export default function Auth() {
           <Col sm="6">
             <Card className="mt-2 shadow-sm rounded">
               <Card.Body>
-                <Tabs defaultActiveKey="login" id="auth">
+                <Tabs justify variant="pills" defaultActiveKey="login" id="auth">
                   <Tab eventKey="login" title="Log in">
                     <LoginBox />
                   </Tab>

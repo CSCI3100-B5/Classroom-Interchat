@@ -77,6 +77,10 @@ TokenSchema.statics = {
         }
         const err = new APIError('No such token exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such token exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 

@@ -117,7 +117,7 @@ export default function SignupBox() {
                 {errors.confirmPassword}
               </Form.Control.Feedback>
             </Form.Group>
-            <Button className="btn btn-secondary btn-block" type="submit"><strong>Log in</strong></Button>
+            <Button className="btn btn-primary btn-block" type="submit"><strong>Sign up</strong></Button>
           </Form>
         )}
       </Formik>

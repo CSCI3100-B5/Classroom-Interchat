@@ -62,7 +62,11 @@ QuizAnswerSchema.statics = {
         if (quizanswer) {
           return quizanswer;
         }
-        const err = new APIError('No such quizanswer exists!', httpStatus.NOT_FOUND);
+        const err = new APIError('No such quiz answer exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such quiz answer exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
   },
