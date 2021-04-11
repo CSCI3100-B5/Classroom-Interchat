@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert, Col, Row } from 'react-bootstrap';
+import {
+  Button, Form, Alert, Col, Row
+} from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
 
@@ -67,11 +69,11 @@ export default function ChangePassword() {
           touched,
           errors,
         }) => (
-          <Form className="mt-4">
+          <Form className="mt-4" onSubmit={handleSubmit}>
             <Form.Group as={Row} controlId="oldPassword">
               <Form.Label column sm={2}>Old Password</Form.Label>
               <Col sm={8}>
-                <Form.Control 
+                <Form.Control
                   type="password"
                   name="oldPassword"
                   value={values.oldPassword}
@@ -88,7 +90,7 @@ export default function ChangePassword() {
             <Form.Group as={Row} controlId="newPassword">
               <Form.Label column sm={2}>New Password</Form.Label>
               <Col sm={8}>
-                <Form.Control 
+                <Form.Control
                   type="password"
                   name="newPassword"
                   value={values.newPassword}
@@ -98,14 +100,14 @@ export default function ChangePassword() {
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.confirmPassword}
-                </Form.Control.Feedback> 
-              </Col>  
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="confirmPassword">
               <Form.Label column sm={2}>Confirm Password</Form.Label>
               <Col sm={8}>
-                <Form.Control 
+                <Form.Control
                   type="password"
                   name="confirmPassword"
                   value={values.confirmPassword}
@@ -116,14 +118,14 @@ export default function ChangePassword() {
                 <Form.Control.Feedback type="invalid">
                   {errors.confirmPassword}
                 </Form.Control.Feedback>
-              </Col>  
+              </Col>
             </Form.Group>
 
-            <Col sm={2}></Col>
+            <Col sm={2} />
             <Col sm={10}>
               <Button className="btn btn-secondary shadow-sm float-right mr-n1" type="submit">Save changes</Button>
             </Col>
-            
+
           </Form>
         )}
       </Formik>

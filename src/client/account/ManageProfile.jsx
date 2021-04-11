@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert, Col, Row } from 'react-bootstrap';
+import {
+  Button, Form, Alert, Col, Row
+} from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
 const schema = yup.object().shape({
@@ -20,13 +22,12 @@ export default function ManageProfile() {
   useEffect(() => {
     // TODO: GET user profile and pre-fill the form
     login();
-
   }, []);
 
   const [user, setUser] = useState({
-    //profileName: 
+    // profileName:
     profileEmail: login.email,
-  })
+  });
 
   const onSubmit = async (values) => {
     // TODO: send the PATCH request
@@ -71,12 +72,12 @@ export default function ManageProfile() {
           touched,
           errors,
         }) => (
-          <Form className="mt-4">
+          <Form className="mt-4" onSubmit={handleSubmit} noValidate>
             <Form.Group as={Row} controlId="profileName">
               <Form.Label column sm={2}>Name</Form.Label>
               <Col sm={8}>
-                <Form.Control 
-                  type="text" 
+                <Form.Control
+                  type="text"
                   name="profileName"
                   value={values.profileName}
                   onChange={handleChange}
@@ -85,20 +86,20 @@ export default function ManageProfile() {
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.profileName}
-              </Form.Control.Feedback>
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="profileEmail">
               <Form.Label column sm={2}>Email</Form.Label>
               <Col sm={8}>
-                <Form.Control 
-                  type="email" 
+                <Form.Control
+                  type="email"
                   name="profileEmail"
                   value={values.profileEmail}
                   onChange={handleChange}
                   isValid={touched.profileEmail && !errors.profileEmail}
-                  isInvalid={touched.profileEmail && errors.profileEmail} 
+                  isInvalid={touched.profileEmail && errors.profileEmail}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.profileEmail}
@@ -106,11 +107,11 @@ export default function ManageProfile() {
               </Col>
             </Form.Group>
 
-            <Col sm={2}></Col>
+            <Col sm={2} />
             <Col sm={10}>
               <Button className="btn btn-secondary shadow-sm float-right mr-n1" type="submit">Save changes</Button>
             </Col>
-            
+
           </Form>
         )}
       </Formik>

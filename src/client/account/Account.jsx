@@ -14,24 +14,22 @@ import AppImage from './Icon@4x.png';
 // scrollable page is preferred
 
 export default function Account() {
-  
   const history = useHistory();
 
   // Redirect to login after logout
   const logOut = async (values) => {
     const result = await signout();
-    if(!result.success)
-      history.push("/auth");
+    if (!result.success) history.push('/auth');
   };
 
   return (
     <div className="body">
       <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
         <Navbar.Brand>
-          <img src={AppImage} width="50" height="50" class="d-inline-block mr-2" alt=""/>
-          <a class="navbar-brand text-white">
+          <img src={AppImage} width="50" height="50" className="d-inline-block mr-2" alt="" />
+          <span className="navbar-brand text-white">
             <strong>Classroom Interchat</strong>
-          </a>
+          </span>
         </Navbar.Brand>
         <Nav.Item className="ml-auto">
           <Button variant="outline-info">Log out</Button>
@@ -44,22 +42,22 @@ export default function Account() {
             <Nav variant="tabs" className="flex-column mt-2 ml-2 sidebar">
               <Nav.Item>
                 <Nav.Link eventKey="launchApp">
-                  <a class="text-secondary font-weight-bold">Launch App</a>
+                  <a className="text-secondary font-weight-bold">Launch App</a>
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="manageProfile">
-                <a class="text-secondary font-weight-bold">Manage Profile</a>
-                  </Nav.Link>
+                  <a className="text-secondary font-weight-bold">Manage Profile</a>
+                </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="changePassword">
-                <a class="text-secondary font-weight-bold">Change Password</a>
+                  <a className="text-secondary font-weight-bold">Change Password</a>
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="manageTokens">
-                <a class="text-secondary font-weight-bold">Manage tokens</a>
+                  <a className="text-secondary font-weight-bold">Manage tokens</a>
                 </Nav.Link>
               </Nav.Item>
             </Nav>
@@ -85,7 +83,7 @@ export default function Account() {
             </Tab.Content>
           </Col>
         </Row>
-    </Tab.Container>
+      </Tab.Container>
     </div>
   );
 }

@@ -16,7 +16,7 @@ router.route('/:userId')
 router.route('/:tokenId/invalidate')
   /** PATCH /api/token/:tokenId/invalidate - Sets isValid of a token to false
   */
-  .PATCH(requireAccessToken, validate(paramValidation.invalidateToken), tokenCtrl.setTokenFalse);
+  .patch(requireAccessToken, validate(paramValidation.invalidateToken), tokenCtrl.setTokenFalse);
 
 /** Load user when API with userId route parameter is hit */
 router.param('userId', tokenCtrl.loadUser);
