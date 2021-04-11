@@ -11,15 +11,6 @@ export default function ReplyMessage({ message }) {
   return (
     <div className="relativeBox">
       <p className="iconRight"><BsFillReplyFill /></p>
-      <p className="timeRight">
-        {' '}
-        <p>
-          by sender at
-          {' '}
-          {message.createdAt.toString()}
-        </p>
-
-      </p>
 
       <p className="senderRight">
         reply:

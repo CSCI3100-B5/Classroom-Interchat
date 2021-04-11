@@ -8,6 +8,11 @@ import ReplyMessage from './ReplyMessage.jsx';
 function Message({ message }) {
   return (
     <div>
+      <p>
+        by sender at
+        {' '}
+        {message.createdAt.toString()}
+      </p>
 
       {message.sender ? (<p>{message.sender.name}</p>) : null}
       {

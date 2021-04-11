@@ -5,14 +5,6 @@ import './TextMessage.scoped.css';
 export default function TextMessage({ message }) {
   return (
     <div className="relativeBox">
-      <p className="senderRight">
-
-        <p>
-          by sender at
-          {' '}
-          {message.createdAt.toString()}
-        </p>
-      </p>
       <p className="myMessageRight">{message.sender.name}</p>
       <div className="myMessageRight">
         <div><MarkdownRender>{message.content}</MarkdownRender></div>

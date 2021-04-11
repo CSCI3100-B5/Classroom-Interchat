@@ -31,15 +31,6 @@ export default function QuestionMessage({ message }) {
 
   return (
     <div className="relativeBox">
-      <p className="timeRight">
-        {' '}
-        <p>
-          by sender at
-          {' '}
-          {message.createdAt.toString()}
-        </p>
-
-      </p>
       <p className="iconRight"><BsFillQuestionCircleFill /></p>
       <p className="senderRight">
         <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
