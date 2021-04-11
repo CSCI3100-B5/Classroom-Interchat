@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react';
 import {
-  InputGroup, FormControl, Button, Form
+  InputGroup, FormControl, Button, Form, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
+import { BsX, BsReplyFill } from 'react-icons/bs';
+import { IoSend, IoCreate } from 'react-icons/io5';
+import { RiQuestionnaireFill } from 'react-icons/ri';
 import { useStates, bindState } from 'use-states';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
+import './MessageCompose.scoped.css';
 
 // TODO: reply to question
 
@@ -46,66 +50,128 @@ export default function MessageCompose({ onCreateQuiz }) {
     : null;
 
   return (
-    replyToMessage !== null
-      ? (
-        <div>
-
+    <div className="message-compose">
+      {replyToMessage !== null
+        ? (
           <div>
-            Replying to
-            {' '}
-            {data.participants.find(x => x.user.id === replyToMessage.sender).user.name}
-            {'\'s Question'}
-            <Button variant="outline-danger" onClick={() => { data.replyToMessageId = null; }}>Cancel reply</Button>
-          </div>
 
+            <div className="reply-box">
+              <span className="reply-text btn">
+                Replying to
+                {' '}
+                {data.participants.find(x => x.user.id === replyToMessage.sender).user.name}
+                {'\'s Question'}
+              </span>
+              <span className="reply-content btn">
+                {replyToMessage.content.content}
+              </span>
+              <OverlayTrigger
+                placement="top"
+                overlay={(
+                  <Tooltip id="tooltip-cancel-reply">
+                    Cancel reply
+                  </Tooltip>
+                  )}
+              >
+                <Button
+                  variant="outline-danger"
+                  onClick={() => { data.replyToMessageId = null; }}
+                  className="reply-button"
+                >
+                  <BsX />
+                </Button>
+              </OverlayTrigger>
+            </div>
+
+            <InputGroup>
+              <FormControl
+                as="textarea"
+                placeholder="Type your reply..."
+                aria-label="Type your reply"
+                className="reply-compose compose-box"
+                {...bindState(messageData.$message)}
+              />
+              <InputGroup.Append>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(
+                    <Tooltip id="tooltip-reply">
+                      Send reply
+                    </Tooltip>
+                  )}
+                >
+                  <Button
+                    variant="outline-secondary"
+                    className="reply-send"
+                    onClick={() => { messageData.information = { type: 'reply', qMessageId: data.replyToMessageId }; onSend(); }}
+                    disabled={!messageData.message}
+                  >
+                    <BsReplyFill className="button-icon" />
+                  </Button>
+                </OverlayTrigger>
+              </InputGroup.Append>
+            </InputGroup>
+          </div>
+        )
+        : (
           <InputGroup>
             <FormControl
               as="textarea"
-              placeholder="Type your reply..."
-              aria-label="Type your reply"
+              className="compose-box"
+              placeholder="Type your message..."
+              aria-label="Type your message"
               {...bindState(messageData.$message)}
             />
             <InputGroup.Append>
-              <Button
-                variant="outline-secondary"
-                onClick={() => { messageData.information = { type: 'reply', qMessageId: data.replyToMessageId }; onSend(); }}
-                disabled={!messageData.message}
+              <OverlayTrigger
+                placement="top"
+                overlay={(
+                  <Tooltip id="tooltip-send">
+                    Send
+                  </Tooltip>
+                  )}
               >
-                Send reply
-              </Button>
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
+                  disabled={!messageData.message}
+                >
+                  <IoSend className="button-icon" />
+                </Button>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                overlay={(
+                  <Tooltip id="tooltip-send-as-question">
+                    Send as question
+                  </Tooltip>
+                  )}
+              >
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
+                  disabled={!messageData.message}
+                >
+                  <RiQuestionnaireFill className="button-icon" />
+                </Button>
+              </OverlayTrigger>
+              {getSelfParticipant()?.permission === 'instructor' ? (
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(
+                    <Tooltip id="tooltip-create-quiz">
+                      Create quiz
+                    </Tooltip>
+                  )}
+                >
+                  <Button variant="outline-secondary" onClick={onCreateQuiz}>
+                    <IoCreate className="button-icon" />
+                  </Button>
+                </OverlayTrigger>
+            ) : null}
             </InputGroup.Append>
           </InputGroup>
-        </div>
-      )
-      : (
-        <InputGroup>
-          <FormControl
-            as="textarea"
-            placeholder="Type your message..."
-            aria-label="Type your message"
-            {...bindState(messageData.$message)}
-          />
-          <InputGroup.Append>
-            <Button
-              variant="outline-secondary"
-              onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
-              disabled={!messageData.message}
-            >
-              Send
-            </Button>
-            <Button
-              variant="outline-secondary"
-              onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
-              disabled={!messageData.message}
-            >
-              Send as question
-            </Button>
-            {getSelfParticipant()?.permission === 'instructor' ? (
-              <Button variant="outline-secondary" onClick={onCreateQuiz}>Create quiz</Button>
-            ) : null}
-          </InputGroup.Append>
-        </InputGroup>
-      )
-
+        )}
+    </div>
   );
 }

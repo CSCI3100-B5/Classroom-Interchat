@@ -1,0 +1,12 @@
+.session-container {
+  display: grid;
+  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-areas:
+    "top"
+    "bottom";
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
