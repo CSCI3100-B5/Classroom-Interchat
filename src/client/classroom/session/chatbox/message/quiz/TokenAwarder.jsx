@@ -4,7 +4,7 @@ import { bindState } from 'use-states';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 
 export default function TokenAwarder({ userIds, onClose }) {
-  const [note, setNote] = useState(null);
+  const [note, setNote] = useState('');
   const { awardToken } = useRealtime();
   const onAwardToken = async () => {
     try {
@@ -23,7 +23,7 @@ export default function TokenAwarder({ userIds, onClose }) {
         <p>
           You are awarding a token to
           {' '}
-          {userIds.length}
+          {userIds?.length}
           {' '}
           participants
         </p>

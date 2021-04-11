@@ -196,5 +196,6 @@ async function awardToken(packet, socket, io) {
 module.exports = {
   requestPermission,
   cancelRequestPermission,
-  promoteParticipant
+  promoteParticipant,
+  awardToken
 };

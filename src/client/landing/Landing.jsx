@@ -2,7 +2,6 @@ import React from 'react';
 import './Landing.scoped.css';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import AppImage from './Icon@4x.png';
 
 export default function App() {
   return (
@@ -12,7 +11,7 @@ export default function App() {
       <LinkContainer to="/auth">
         <Button>Login</Button>
       </LinkContainer>
-      <img src={AppImage} alt="Classroom Interchat icon" />
+      <img src="/favicon.svg" alt="Classroom Interchat icon" />
     </div>
   );
 }
