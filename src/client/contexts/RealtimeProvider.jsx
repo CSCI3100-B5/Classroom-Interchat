@@ -266,6 +266,33 @@ export function RealtimeProvider({ children }) {
       });
     });
   }
+  
+  function demoteParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('demote participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function kickParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('kick participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
+
+  function muteParticipant(userId) {
+    return new Promise((resolve, reject) => {
+      socket.emit('mute participant', { userId }, (response) => {
+        if (response.error) reject(response);
+        resolve(response);
+      });
+    });
+  }
 
   return (
     <RealtimeContext.Provider value={{
@@ -284,7 +311,10 @@ export function RealtimeProvider({ children }) {
       requestPermission,
       cancelRequestPermission,
       promoteParticipant,
-      awardToken
+      awardToken,
+      demoteParticipant,
+      kickParticipant,
+      muteParticipant
     }}
     >
       {children}

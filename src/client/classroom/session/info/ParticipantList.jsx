@@ -12,7 +12,14 @@ import TokenAwarder from '../TokenAwarder.jsx';
 
 function ParticipantList() {
   const { data, getSelfParticipant } = useDataStore();
-  const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
+  const {
+    requestPermission,
+    cancelRequestPermission,
+    promoteParticipant,
+    demoteParticipant,
+    kickParticipant,
+    muteParticipant
+  } = useRealtime();
   const { toast } = useToast();
   const [selectedUsers, setSelectedUsers] = useState(null);
 
@@ -43,6 +50,14 @@ function ParticipantList() {
     }
   };
 
+  const onDemote = async (userId) => {
+    try {
+      await demoteParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
   let permissionButton = null;
   let perm = getSelfParticipant();
   if (perm) {
@@ -57,6 +72,22 @@ function ParticipantList() {
       );
     }
   }
+
+  const onKick = async (userId) => {
+    try {
+      await kickParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  const onMute = async (userId) => {
+    try {
+      await muteParticipant(userId);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
 
   return (
     <>
@@ -92,9 +123,10 @@ function ParticipantList() {
             })()}
             {x.isOnline ? null : (<Badge>OFFLINE</Badge>)}
             <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
+            <Button variant="flat" onClick={() => onDemote(x.user.id)}>Deomote</Button>
             <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
-            <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
-            <Button variant="danger">Kick</Button>
+            <Button variant="flat" onClick={() => onMute(x.user.id)}>{x.isMuted ? 'Unmute' : 'Mute'}</Button>
+            <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
           </li>
         ))
       }

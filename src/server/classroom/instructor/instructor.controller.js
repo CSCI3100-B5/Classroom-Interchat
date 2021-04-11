@@ -156,7 +156,7 @@ async function awardToken(packet, socket, io) {
       error: 'You are not in a classroom'
     });
   }
-
+  
   const requestor = meta.invokerClassroom.participants.find(
     x => x.user._id.equals(meta.invoker._id)
   );
@@ -187,8 +187,103 @@ async function awardToken(packet, socket, io) {
     classroom: meta.invokerClassroom.id,
     value: data.value ?? null
   })));
-
+    
   // TODO: update participant token counts
+  return callback({});
+}
+
+
+/**
+ * Mark a participant's permission as student
+ * @param {[*, *]} packet
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
+async function demoteParticipant(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) {
+    return callback({
+      error: 'You are not in a classroom'
+    });
+  }
+
+  const classroom = await meta.invokerClassroom.populate('participants.user').execPopulate();
+  if (!classroom.host._id.equals(meta.invoker._id)) {
+    return callback({
+      error: 'You need to be the host to do this'
+    });
+  }
+  const participant = meta.invokerClassroom.participants.find(
+    x => x.user._id.toString() === data.userId
+  );
+  if (!participant) {
+    return callback({
+      error: 'The specified user is not a participant of this classroom'
+    });
+  }
+  if (participant.permission !== 'instructor') {
+    return callback({
+      error: 'The specified user is not an instructor'
+    });
+  }
+
+  await Classroom.updateOne(
+    { _id: classroom.id, 'participants._id': participant.id },
+    { $set: { 'participants.$.permission': 'student' } }
+  ).exec();
+  participant.permission = 'student';
+
+  const message = await Messages.Message.create({
+    sender: null,
+    type: 'text',
+    content: `${meta.invoker.name} demoted ${participant.user.name} to a student`,
+    classroom: classroom.id
+  });
+  classroom.messages.push(message);
+  io.to(classroom.id).emit('new message', message.filterSafe());
+  await classroom.save();
+
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
+
+  io.to(classroom.id).emit('participant changed', participant.filterSafe());
+
+  return callback({});
+}
+
+
+/**
+ * Mute a participant in the classroom
+ * @param {[*, *]} packet
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
+async function muteParticipant(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) {
+    return callback({
+      error: 'You are not in a classroom'
+    });
+  }
+
+  const classroom = await meta.invokerClassroom.populate('participants.user').execPopulate();
+  const participant = meta.invokerClassroom.participants.find(
+    x => x.user._id.equals(meta.invoker._id)
+  );
+  if (participant.permission !== 'instructor') {
+    return callback({
+      error: 'Only instructors can mute participants'
+    });
+  }
+  const target = meta.invokerClassroom.participants.find(
+    x => x.user.id === data.userId
+  );
+  if (!target) {
+    return callback({
+      error: 'Targeted user is not in this classroom'
+    });
+  }
 
   return callback({});
 }
@@ -197,5 +292,7 @@ module.exports = {
   requestPermission,
   cancelRequestPermission,
   promoteParticipant,
-  awardToken
+  awardToken,
+  demoteParticipant,
+  muteParticipant
 };
