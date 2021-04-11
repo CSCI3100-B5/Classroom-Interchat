@@ -55,6 +55,25 @@ export function ApiProvider({ children }) {
   }
 
   /**
+   * Logout
+   * @returns response body
+   */
+  async function logout() {
+    const result = await request({
+      method: 'DELETE',
+      url: '/auth/logout',
+      headers: refreshTokenHeader()
+    });
+    if (result.success) {
+      data.rememberMe = true;
+      data.accessToken = null;
+      data.refreshToken = null;
+      data.user = null;
+    }
+    return result;
+  }
+
+  /**
    * Sign up with name, email and password
    * @param {String} name user's name
    * @param {String} email email
@@ -87,12 +106,63 @@ export function ApiProvider({ children }) {
     return result;
   }
 
+  /**
+   * Update user profile and change password
+   * @param {String} userId userId
+   * @param {Object} profile new profile data
+   * @returns response body
+   */
+  async function updateUserProfile(userId, profile) {
+    const result = await request({
+      method: 'PATCH',
+      url: `/user/${userId}`,
+      headers: accessTokenHeader(),
+      data: profile
+    });
+    if (result.success) {
+      data.user = result.response.data;
+    }
+    return result;
+  }
+
+  /**
+   * Get all tokens of a given user id
+   * @param {String} userId userId
+   * @returns response body
+   */
+  async function getUserTokens(userId) {
+    const result = await request({
+      method: 'GET',
+      url: `/token/${userId}`,
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
+  /**
+   * Sets isValid of a token to false
+   * @param {String} tokenId tokenId
+   * @returns response
+   */
+  async function setTokenFalse(tokenId) {
+    const result = await request({
+      method: 'PATCH',
+      url: `/token/${tokenId}/invalidate`,
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
   return (
     <ApiContext.Provider value={{
       refreshAccessToken,
       login,
       signup,
-      getUserProfile
+      logout,
+      getUserProfile,
+      updateUserProfile,
+      getUserTokens,
+      setTokenFalse
     }}
     >
       {children}

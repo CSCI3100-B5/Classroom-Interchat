@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert } from 'react-bootstrap';
+import {
+  Button, Form, Col, Row
+} from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
+import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 
 const schema = yup.object().shape({
   profileName: yup.string().min(5).max(100).required()
@@ -11,50 +15,32 @@ const schema = yup.object().shape({
 });
 
 export default function ManageProfile() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   // TODO: use the PATCH/GET /user/:userID APIs
-  // const { signup, login } = useApi();
-
-  useEffect(() => {
-    // TODO: GET user profile and pre-fill the form
-  }, []);
+  const { updateUserProfile } = useApi();
+  const { toast } = useToast();
+  const { data } = useDataStore();
 
   const onSubmit = async (values) => {
-    // TODO: send the PATCH request
-    // const result = await signup(values.signupName, values.signupEmail, values.signupPassword);
-    // if (result.success) {
-    //   const loginResult = await login(values.signupEmail, values.signupPassword);
-    //   if (loginResult.success) {
-    //     history.push('/account');
-    //   } else {
-    //     setAlertMessage(loginResult.response.data.message);
-    //     setAlertVisibility(true);
-    //   }
-    // } else {
-    //   setAlertMessage(result.response.data.message);
-    //   setAlertVisibility(true);
-    // }
+    const result = await updateUserProfile(data.user.id, {
+      name: values.profileName,
+      email: values.profileEmail
+    });
+    if (result.success) {
+      data.user = result.response.data;
+      toast('info', 'Update profile', 'Profile updated successfully');
+    } else {
+      toast('error', 'Error when updating profile', result.response.data.message);
+    }
   };
 
   return (
     <div>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
         initialValues={{
-          profileName: '',
-          profileEmail: ''
+          profileName: data.user.name,
+          profileEmail: data.user.email
         }}
       >
         {({
@@ -64,36 +50,46 @@ export default function ManageProfile() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" onSubmit={handleSubmit} noValidate>
-            <Form.Group controlId="profileName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="profileName"
-                value={values.profileName}
-                onChange={handleChange}
-                isValid={touched.profileName && !errors.profileName}
-                isInvalid={touched.profileName && errors.profileName}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.profileName}
-              </Form.Control.Feedback>
+          <Form className="mt-4" onSubmit={handleSubmit} noValidate>
+            <Form.Group as={Row} controlId="profileName">
+              <Form.Label column sm={2}>Name</Form.Label>
+              <Col sm={8}>
+                <Form.Control
+                  type="text"
+                  name="profileName"
+                  value={values.profileName}
+                  onChange={handleChange}
+                  isValid={touched.profileName && !errors.profileName}
+                  isInvalid={touched.profileName && errors.profileName}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.profileName}
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
-            <Form.Group controlId="profileEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="profileEmail"
-                value={values.profileEmail}
-                onChange={handleChange}
-                isValid={touched.profileEmail && !errors.profileEmail}
-                isInvalid={touched.profileEmail && errors.profileEmail}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.profileEmail}
-              </Form.Control.Feedback>
+
+            <Form.Group as={Row} controlId="profileEmail">
+              <Form.Label column sm={2}>Email</Form.Label>
+              <Col sm={8}>
+                <Form.Control
+                  type="email"
+                  name="profileEmail"
+                  value={values.profileEmail}
+                  onChange={handleChange}
+                  isValid={touched.profileEmail && !errors.profileEmail}
+                  isInvalid={touched.profileEmail && errors.profileEmail}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.profileEmail}
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
-            <Button type="submit">Save changes</Button>
+
+            <Col sm={2} />
+            <Col sm={10}>
+              <Button className="btn btn-secondary shadow-sm float-right mr-n1" type="submit">Save changes</Button>
+            </Col>
+
           </Form>
         )}
       </Formik>

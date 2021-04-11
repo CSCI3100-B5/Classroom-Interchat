@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../contexts/RealtimeProvider.jsx';
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 
 const schema = yup.object().shape({
@@ -14,14 +15,13 @@ const schema = yup.object().shape({
 
 
 export default function CreateClassroom() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   const history = useHistory();
 
   const { createClassroom } = useRealtime();
 
   const { data } = useDataStore();
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
@@ -31,23 +31,13 @@ export default function CreateClassroom() {
     try {
       await createClassroom(values.classroomName);
     } catch (ex) {
-      setAlertMessage(ex.error);
-      setAlertVisibility(true);
+      toast('error', 'Failed to create classroom', ex.error);
     }
   };
 
   return (
     <div>
       <h3>Create Classroom</h3>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}

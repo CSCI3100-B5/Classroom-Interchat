@@ -29,12 +29,15 @@ module.exports = class SocketValidatedEvents {
 
   register() {
     this.socket.use((packet, next) => {
-      const [event, data] = packet;
+      const [event, data, callback] = packet;
       const entry = this.events.find(x => x.event === event);
       if (!entry) return next();
       if (!entry.validation) return next();
       const { error, value } = entry.validation.validate(data);
-      if (error) return next(new APIError(error, httpStatus.BAD_REQUEST, true));
+      if (error) {
+        if (callback) return callback({ error: error.details[0].message });
+        return next(new APIError(error, httpStatus.BAD_REQUEST, true));
+      }
       packet[1] = value;
       return next();
     });

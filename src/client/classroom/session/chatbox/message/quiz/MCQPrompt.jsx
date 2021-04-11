@@ -3,21 +3,31 @@ import React from 'react';
 import {
   ButtonGroup, ToggleButton, Form, Button
 } from 'react-bootstrap';
-import MarkdownRender from '../MarkdownRender.jsx';
+import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
+import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 
 export default function MCQPrompt({ message }) {
-  const onSubmit = (values) => {
+  const { ansMCQuiz } = useRealtime();
+  const { toast } = useToast();
+  const onSubmit = async (values) => {
     // convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {
       values.choices = [values.choices]; // eslint-disable-line no-param-reassign
     }
-    // TODO: send the answer to server
-    console.log(values);
+    const cleanedChoices = values.choices.map(
+      x => message.content.choices.indexOf(x)
+    ).sort((a, b) => a - b);
+    console.log('MCQ answer object', cleanedChoices);
+    try {
+      await ansMCQuiz(cleanedChoices, message.id);
+    } catch (ex) {
+      toast('error', 'Error when answering MCQ', ex.error);
+    }
   };
 
   return (
     <div>
-      <div><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
+      <p>{message.content.prompt}</p>
       {message.content.multiSelect ? <p className="text-muted">You may choose more than 1 answer</p> : null}
       <Formik
         onSubmit={onSubmit}
@@ -42,6 +52,7 @@ export default function MCQPrompt({ message }) {
                         className="m-1"
                         variant="outline-primary"
                         required
+                        disabled={!!message.content.closedAt}
                         type="checkbox"
                         key={x}
                         name="choices"
@@ -58,6 +69,7 @@ export default function MCQPrompt({ message }) {
                   return (
                     <ToggleButton
                       required
+                      disabled={!!message.content.closedAt}
                       className="m-1"
                       variant="outline-primary"
                       type="radio"
@@ -75,7 +87,12 @@ export default function MCQPrompt({ message }) {
                 })}
               </ButtonGroup>
             </Form.Group>
-            <Button type="submit">Submit answer</Button>
+            <Button
+              type="submit"
+              disabled={!!message.content.closedAt}
+            >
+              Submit answer
+            </Button>
           </Form>
         )}
       </Formik>

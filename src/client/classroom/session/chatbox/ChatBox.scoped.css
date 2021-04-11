@@ -1,0 +1,13 @@
+.chat-box {
+  grid-area: bottom;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) min-content;
+  grid-template-areas:
+    "messagelist"
+    "compose";
+}
+
+.create-quiz-container {
+  overflow-y: auto;
+}

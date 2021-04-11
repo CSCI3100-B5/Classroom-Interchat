@@ -2,6 +2,7 @@ import React from 'react';
 import { ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
+import './MessageList.scoped.css';
 
 export default function MessageList() {
   const { data, getSelfParticipant } = useDataStore();
@@ -32,7 +33,7 @@ export default function MessageList() {
   const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
 
   return (
-    <div>
+    <div className="message-list">
       {getSelfParticipant()
       && getSelfParticipant().permission !== 'student'
       && requestingParticipants.length ? (

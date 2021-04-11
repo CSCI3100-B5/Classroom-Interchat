@@ -138,6 +138,10 @@ ClassroomSchema.statics = {
         }
         const err = new APIError('No such classroom exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such classroom exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 
@@ -154,6 +158,10 @@ ClassroomSchema.statics = {
         if (classroom) {
           return classroom;
         }
+        const err = new APIError('No such classroom exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      })
+      .catch(() => {
         const err = new APIError('No such classroom exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });

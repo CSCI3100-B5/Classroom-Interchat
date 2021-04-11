@@ -1,0 +1,49 @@
+.body {
+  background-color: #d8dfec;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: grid;
+  grid-template-rows: min-content minmax(0, 1fr);
+}
+
+.sidebar {
+  margin: 0.5rem;
+  height: calc(100% - 1rem);
+}
+
+.account-content {
+  margin-top: 0.5rem;
+  height: calc(100% - 0.5rem);
+}
+
+.account-content-pane {
+  display: grid;
+  grid-template-rows: min-content minmax(0, 1fr);
+}
+
+#button-style {
+  border: 0px solid white;
+}
+
+.h-full {
+  height: 100%;
+}
+
+@media (max-width: 576px) {
+  .sm-overflow-y-auto {
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 576px) {
+  .sm-h-full {
+    height: 100%;
+  }
+}
+
+.text-center {
+  text-align: center;
+}

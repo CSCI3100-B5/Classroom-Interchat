@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = require('./user/user.route');
 const authRoutes = require('./auth/auth.route');
+const tokenRoutes = require('./token/token.route');
 
 const router = express.Router();
 
@@ -14,5 +15,8 @@ router.use('/user', userRoutes);
 
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
+
+// mount token routes at /token
+router.use('/token', tokenRoutes);
 
 module.exports = router;
