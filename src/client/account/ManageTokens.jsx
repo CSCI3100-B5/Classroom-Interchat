@@ -20,7 +20,6 @@ export default function ManageTokens() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // TODO: call API and populate token list
     (async () => {
       const result = await getUserTokens(data.user.id);
       if (result.success) {
@@ -30,7 +29,7 @@ export default function ManageTokens() {
         toast('error', 'Error when fetching tokens', result.response.data.message);
       }
     })();
-  }, []);
+  }, [data.user]);
 
   const invalidateToken = async (token) => {
     const result = await setTokenFalse(token.id);

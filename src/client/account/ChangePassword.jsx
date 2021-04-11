@@ -31,6 +31,7 @@ export default function ChangePassword() {
       newPassword: values.newPassword
     });
     if (result.success) {
+      data.user = result.response.data;
       toast('info', 'Change password', 'Password updated successfully');
     } else {
       toast('error', 'Error when changing password', result.response.data.message);

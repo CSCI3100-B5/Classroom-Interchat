@@ -26,6 +26,7 @@ export default function ManageProfile() {
       email: values.profileEmail
     });
     if (result.success) {
+      data.user = result.response.data;
       toast('info', 'Update profile', 'Profile updated successfully');
     } else {
       toast('error', 'Error when updating profile', result.response.data.message);

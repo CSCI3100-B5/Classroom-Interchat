@@ -80,7 +80,7 @@ async function update(req, res, next) {
       if (!await user.comparePassword(req.body.oldPassword)) {
         return next(new APIError('Incorrect old password', httpStatus.FORBIDDEN, true));
       }
-      await user.setPassword(req.body.password);
+      await user.setPassword(req.body.newPassword);
     } else await user.save();
     cachegoose.clearCache(`UserById-${user.id}`);
     return res.json(user.filterSafe());
