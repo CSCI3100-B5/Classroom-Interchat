@@ -53,8 +53,7 @@ export default function MessageCompose({ onCreateQuiz }) {
     <div className="message-compose">
       {replyToMessage !== null
         ? (
-          <div>
-
+          <div className="compose-shadow">
             <div className="reply-box">
               <span className="reply-text btn">
                 Replying to
@@ -114,7 +113,7 @@ export default function MessageCompose({ onCreateQuiz }) {
           </div>
         )
         : (
-          <InputGroup>
+          <InputGroup className="compose-shadow">
             <FormControl
               as="textarea"
               className="compose-box"
@@ -133,6 +132,7 @@ export default function MessageCompose({ onCreateQuiz }) {
               >
                 <Button
                   variant="outline-secondary"
+                  className="compose-button"
                   onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
                   disabled={!messageData.message}
                 >
@@ -149,6 +149,7 @@ export default function MessageCompose({ onCreateQuiz }) {
               >
                 <Button
                   variant="outline-secondary"
+                  className="compose-button"
                   onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
                   disabled={!messageData.message}
                 >
@@ -164,7 +165,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                     </Tooltip>
                   )}
                 >
-                  <Button variant="outline-secondary" onClick={onCreateQuiz}>
+                  <Button
+                    variant="outline-secondary"
+                    onClick={onCreateQuiz}
+                    className="compose-button"
+                  >
                     <IoCreate className="button-icon" />
                   </Button>
                 </OverlayTrigger>
