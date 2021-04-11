@@ -50,21 +50,20 @@ export default function QuestionMessage({ message }) {
       </div>
       {replies.length > 0
         ? (
-          <ButtonGroup className="replyNoRight">
-            <p>
-              <ToggleButton
-                type="checkbox"
-                variant="info"
-                checked={data.messageFilter === message.id}
-                value="1"
-                onChange={() => {
-                  if (data.messageFilter === message.id) data.messageFilter = null;
-                  else data.messageFilter = message.id;
-                }}
-              >
-                {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
-              </ToggleButton>
-            </p>
+          <ButtonGroup toggle className="replyNoRight">
+
+            <ToggleButton
+              type="checkbox"
+              variant="info"
+              checked={data.messageFilter === message.id}
+              value="1"
+              onChange={() => {
+                if (data.messageFilter === message.id) data.messageFilter = null;
+                else data.messageFilter = message.id;
+              }}
+            >
+              {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
+            </ToggleButton>
           </ButtonGroup>
         ) : (<p className="replyRight">Send a reply</p>)}
     </div>
