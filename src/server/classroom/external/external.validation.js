@@ -9,5 +9,8 @@ module.exports = {
   }),
   joinClassroom: Joi.object({
     classroomId: Joi.string().hex().length(24).required()
+  }),
+  kickParticipant: Joi.object({
+    userId: Joi.string().hex().length(24).required()
   })
 };

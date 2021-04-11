@@ -175,6 +175,8 @@ async function leaveClassroom(packet, socket, io) {
   if (!socket.data.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   let classroom = meta.invokerClassroom;
 
+  socket.emit('kick', { reason: 'Left classroom successfully' });
+
   socket.leave(classroom.id);
   socket.leave(`${meta.invoker.id}-${classroom.id}`);
   socket.data.invokerClassroom = null;
@@ -234,11 +236,93 @@ async function leaveClassroom(packet, socket, io) {
   return callback({});
 }
 
+/**
+ * kick a participant in the classroom
+ * @param {[*, *]} packet
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
+async function kickParticipant(packet, socket, io) {
+  const [data, callback, meta] = packet;
+
+  if (!meta.invokerClassroom) {
+    return callback({
+      error: 'You are not in a classroom'
+    });
+  }
+
+  let classroom = await meta.invokerClassroom.populate('participants.user').execPopulate();
+  const participant = meta.invokerClassroom.participants.find(
+    x => x.user._id.equals(meta.invoker._id)
+  );
+  if (participant.permission !== 'instructor') {
+    return callback({
+      error: 'Only instructors can kick participants'
+    });
+  }
+  const target = meta.invokerClassroom.participants.find(
+    x => x.user.id === data.userId
+  );
+  if (!target) {
+    return callback({
+      error: 'Targeted user is not in this classroom'
+    });
+  }
+  if (target.permission === 'instructor' && !classroom.host._id.equals(meta.invoker._id)) {
+    return callback({
+      error: 'You cannot kick an instructor'
+    });
+  }
+  if (classroom.host._id.equals(meta.invoker._id) && meta.invoker.id === target.user.id) {
+    return callback({
+      error: 'You cannot kick yourself. Leave the classroom instead'
+    });
+  }
+
+
+  const room = io.to(`${target.user.id}-${classroom.id}`);
+  room.emit('kick', {
+    reason: `You are kicked by ${meta.invoker.name}`
+  });
+  const socketIds = io.sockets.adapter.rooms.get(`${target.user.id}-${classroom.id}`);
+  if (socketIds) {
+    io.sockets.sockets.forEach((s) => {
+      if (socketIds.has(s.id)) {
+        s.data.invokerClassroom = null;
+        s.leave(classroom.id);
+        s.leave(`${target.user.id}-${classroom.id}`);
+      }
+    });
+  }
+
+  const idx = classroom.participants.findIndex(
+    x => x.user._id.equals(target.user._id)
+  );
+  classroom.participants.splice(idx, 1);
+  const message = await Messages.Message.create({
+    sender: null,
+    type: 'text',
+    content: `${meta.invoker.name} kicked ${target.user.name}`,
+    classroom: classroom.id
+  });
+  classroom.messages.push(message);
+  io.to(classroom.id).emit('new message', message.filterSafe());
+  await classroom.save();
+  io.to(classroom.id).emit('participant deleted', { userId: target.user.id });
+
+
+  classroom = await classroom.populate('host').execPopulate();
+
+  cachegoose.clearCache(`ClassroomById-${classroom.id}`);
+  notifyClassroomMetaChanged(classroom, io);
+  return callback({});
+}
 
 module.exports = {
   createClassroom,
   peekClassroom,
   joinClassroom,
   lostConnection,
-  leaveClassroom
+  leaveClassroom,
+  kickParticipant
 };

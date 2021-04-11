@@ -49,6 +49,18 @@ export default function MessageCompose({ onCreateQuiz }) {
     ? data.messages.find(x => x.id === data.replyToMessageId)
     : null;
 
+  if (data.classroomMeta.isMuted || getSelfParticipant()?.isMuted) {
+    return (
+      <div className="message-compose">
+        <div className="compose-shadow d-flex justify-content-center align-items-center h-50px">
+          <span className="text-muted text-center font-weight-light">
+            {data.classroomMeta.isMuted ? 'The entire classroom is muted' : 'You are muted'}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="message-compose">
       {replyToMessage !== null
