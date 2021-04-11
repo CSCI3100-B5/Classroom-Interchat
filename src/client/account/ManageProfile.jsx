@@ -24,7 +24,7 @@ export default function ManageProfile() {
   }, []);
 
   const onSubmit = async (values) => {
-    // TODO: send the PATCH request
+    // TODO: send the PATCH 
     const result = await updateProfile(values.profileName, values.profileEmail);
     if (result.success) {
 
