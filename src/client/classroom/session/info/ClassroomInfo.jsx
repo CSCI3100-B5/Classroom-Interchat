@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
-import { BsPeopleCircle, BsPeopleFill } from 'react-icons/bs';
+import { BsFillMicMuteFill, BsPeopleCircle, BsPeopleFill } from 'react-icons/bs';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
@@ -29,7 +29,10 @@ function ClassroomInfo({ onShowParticipantList }) {
         <Card.Body>
           <Card.Title>
             <div className="classroom-card-title">
-              <div className="classroom-name">{data.classroomMeta.name}</div>
+              <div className="classroom-name d-flex align-items-center">
+                <span className="mr-2">{data.classroomMeta.name}</span>
+                {data.classroomMeta.isMuted ? <BsFillMicMuteFill /> : null}
+              </div>
               <div className="account-name">
                 <BsPeopleCircle className="mr-2" />
                 <span>{data.user.name}</span>

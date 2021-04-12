@@ -3,8 +3,11 @@ import {
 } from 'react-bootstrap';
 import React, { useRef, useState } from 'react';
 import copy from 'copy-text-to-clipboard';
-import { BsChevronCompactUp } from 'react-icons/bs';
-import { RiSendPlane2Line, RiWifiOffLine } from 'react-icons/ri';
+import {
+  BsChevronCompactUp, BsFillMicMuteFill, BsFillMicFill, BsArrowUp, BsArrowDown
+} from 'react-icons/bs';
+import { FaAward, FaBan } from 'react-icons/fa';
+import { RiWifiOffLine } from 'react-icons/ri';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import env from '../../../environment.js';
@@ -111,7 +114,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
   return (
 
     <div className="d-flex flex-column justify-content-between">
-      <Container className="mb-4">
+      <Container className="mb-2">
         <Row className="justify-content-center">
           {permissionButton ? (
             <Col sm={6}>
@@ -140,46 +143,94 @@ export default function ParticipantList({ onCloseParticipantList }) {
           </Col>
           {isInstructor ? (
             <Col sm={6}>
-              <Button onClick={onToggleGlobalMute}>{data.classroomMeta.isMuted ? 'Unmute entire classroom' : 'Mute entire classroom'}</Button>
+              <Button
+                className="w-full-btn"
+                onClick={onToggleGlobalMute}
+              >
+                {data.classroomMeta.isMuted ? 'Unmute entire classroom' : 'Mute entire classroom'}
+              </Button>
             </Col>
           ) : null}
         </Row>
       </Container>
       <TokenAwarder userIds={selectedUsers} onClose={() => setSelectedUsers(null)} />
       <div className="flex-grow-1 p-2 participant-container">
-        {
-        data.participants.map(x => (
-          <div key={x.user.id} className="participant-box d-flex justify-content-between align-items-center">
-            <span>{x.user.name}</span>
-            {(() => {
-              if (x.user.id === data.classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
-              if (x.permission === 'instructor') return (<Badge variant="success">INSTRUCTOR</Badge>);
-              if (x.permission === 'requesting') return (<Badge variant="secondary">REQUESTING</Badge>);
-              return null;
-            })()}
-            {x.isOnline ? null : (<RiWifiOffLine />)}
-            {x.isMuted ? (<Badge>MUTED</Badge>) : null}
-            <div className="flex-grow-1" />
-            {isInstructor
-              ? (
-                <>
-                  {x.permission !== 'instructor'
-                    ? <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
-                    : null}
-                  {(isHost && x.user.id !== data.user.id) ? (
-                    <Button variant="flat" onClick={() => onDemote(x.user.id)}>Deomote</Button>
+        <Container>
+          {
+            data.participants.map(x => (
+              <div key={x.user.id} className="participant-box d-flex justify-content-end align-items-center flex-wrap ">
+                <span className={!x.isOnline || x.isMuted ? 'text-muted' : null}>{x.user.name}</span>
+                {(() => {
+                  if (x.user.id === data.classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
+                  if (x.permission === 'instructor') return (<Badge variant="success">INSTRUCTOR</Badge>);
+                  if (x.permission === 'requesting') return (<Badge variant="secondary">REQUESTING</Badge>);
+                  return null;
+                })()}
+                {x.isOnline ? null : (<RiWifiOffLine />)}
+                {x.isMuted ? (<BsFillMicMuteFill className="text-danger" />) : null}
+                {(() => {
+                  const unresolved = data.messages.filter(m => (m.sender?.id ?? m.sender) === (x.user.id ?? x.user)
+                    && m.type === 'question'
+                    && !m.content.isResolved);
+                  if (unresolved.length > 0) {
+                    return (
+                      <Badge variant="primary">
+                        QUESTION x
+                        {unresolved.length}
+                      </Badge>
+                    );
+                  }
+                  return null;
+                })()}
+                <div className="flex-grow-1" />
+                {isInstructor
+                  ? (
+                    <>
+                      {x.permission !== 'instructor'
+                        ? (
+                          <Button variant="flat" className="participant-ctrl-btn" onClick={() => onPromote(x.user.id)}>
+                            <BsArrowUp className="mr-1" />
+                            <span className="d-none d-md-inline">Promote</span>
+                          </Button>
+                        )
+                        : null}
+                      {(isHost && x.user.id !== data.user.id) ? (
+                        <Button variant="flat" className="participant-ctrl-btn" onClick={() => onDemote(x.user.id)}>
+                          <BsArrowDown className="mr-1" />
+                          <span className="d-none d-md-inline">Deomote</span>
+                        </Button>
+                      ) : null}
+                      <Button variant="flat" className="participant-ctrl-btn" onClick={() => setSelectedUsers([x.user.id])}>
+                        <FaAward className="mr-1" />
+                        <span className="d-none d-md-inline">Token</span>
+                      </Button>
+                      <Button variant="flat" className="participant-ctrl-btn" onClick={() => onToggleMute(x.user.id)}>
+                        {x.isMuted ? (
+                          <>
+                            <BsFillMicFill className="mr-1" />
+                            <span className="d-none d-md-inline">Unmute</span>
+                          </>
+                        ) : (
+                          <>
+                            <BsFillMicMuteFill className="mr-1" />
+                            <span className="d-none d-md-inline">Mute</span>
+                          </>
+                        )}
+                      </Button>
+                      {(isHost && x.user.id !== data.user.id) || x.permission === 'student'
+                        ? (
+                          <Button variant="danger" className="participant-ctrl-btn" onClick={() => onKick(x.user.id)}>
+                            <FaBan className="mr-1" />
+                            <span className="d-none d-md-inline">Kick</span>
+                          </Button>
+                        )
+                        : null}
+                    </>
                   ) : null}
-                  <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
-                  <Button variant="flat" onClick={() => onToggleMute(x.user.id)}>{x.isMuted ? 'Unmute' : 'Mute'}</Button>
-                  {(isHost && x.user.id !== data.user.id) || x.permission === 'student'
-                    ? <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
-                    : null}
-
-                </>
-              ) : null}
-          </div>
-        ))
-      }
+              </div>
+            ))
+          }
+        </Container>
       </div>
       <Button className="close-list" variant="flat" onClick={onCloseParticipantList}><BsChevronCompactUp /></Button>
     </div>
