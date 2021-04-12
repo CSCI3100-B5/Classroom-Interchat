@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Navbar, Nav, Row, Col } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
@@ -37,7 +37,23 @@ export default function CreateClassroom() {
 
   return (
     <div>
-      <h3>Create Classroom</h3>
+      <Navbar bg="primary" variant="dark" sticky="top" className="shadow-sm">
+        <Navbar.Brand href="/classroom/create">
+          <span  className="text-white font-weight-bold align-middle ml-2">
+            Classroom Interchat
+          </span>
+        </Navbar.Brand>
+        <Nav className="mt-1">
+          <Nav.Link href="/account">Home</Nav.Link>
+        </Nav>
+        <Nav.Item className="ml-auto">
+          <Button variant="outline-light" onClick={onLogOut}>Log out</Button>
+        </Nav.Item>
+      </Navbar>
+
+      <Row className="mx-3 mt-4">
+        <Col sm={10}>
+      <h3 className="text-dark">Create Classroom</h3>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
@@ -67,16 +83,18 @@ export default function CreateClassroom() {
                 {errors.classroomName}
               </Form.Control.Feedback>
             </Form.Group>
-            <Button type="submit">Create Classroom</Button>
+            <Button type="submit" className="mt-2 mb-3 shadow-sm">Create Classroom</Button>
           </Form>
         )}
       </Formik>
-      <div>
+      <div className="m-4">
         <p>Want to join a classroom instead?</p>
         <LinkContainer to="/classroom/join">
-          <Button>Join Classroom</Button>
+          <Button className="shadow-sm">Join Classroom</Button>
         </LinkContainer>
       </div>
+      </Col>
+      </Row>
     </div>
   );
 }

@@ -52,12 +52,13 @@ export default function Account() {
 
   return (
     <div className="body">
-      <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
+      <Navbar bg="primary" sticky="top" className="shadow-sm">
         <Navbar.Brand>
-          <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
-          <span className="navbar-brand text-white">
-            <strong>Classroom Interchat</strong>
-          </span>
+          <Link to="/">
+            <span  className="text-white font-weight-bold align-middle ml-2">
+              Classroom Interchat
+            </span>
+          </Link>
         </Navbar.Brand>
         <Nav.Item className="ml-auto">
           <Button variant="outline-info" onClick={onLogOut}>Log out</Button>
