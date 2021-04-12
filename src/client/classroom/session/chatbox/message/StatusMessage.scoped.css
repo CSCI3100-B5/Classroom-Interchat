@@ -10,9 +10,10 @@
     position: absolute;
     width: 300px;
     right: 5px;
-    top: 20px;
+    top: 50px;
+    padding: 5px;
     font-size: 1rem;
-    
+    border-radius: 5px; 
     word-wrap: break-word;
   }
 .senderRight{
@@ -30,6 +31,7 @@
     left: 5px;
     top: 24px;
     font-size: 1rem;
+    padding: 5px; 
     border-radius: 5px; 
     word-wrap: break-word;
 }

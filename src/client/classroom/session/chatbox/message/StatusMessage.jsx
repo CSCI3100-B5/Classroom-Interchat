@@ -3,7 +3,7 @@ import './StatusMessage.scoped.css';
 
 export default function StatusMessage({ message }) {
   return (
-    <div className="relativeBox">
+    <div>
       <p className="myMessageRight">
         {message.content}
       </p>

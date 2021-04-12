@@ -9,7 +9,7 @@ import './ReplyMessage.scoped.css';
 export default function ReplyMessage({ message }) {
   const { data } = useDataStore();
   return (
-    <div className="relativeBox">
+    <div>
       <p className="iconRight"><BsFillReplyFill /></p>
 
       <p className="senderRight">

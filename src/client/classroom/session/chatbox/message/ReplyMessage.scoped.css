@@ -7,7 +7,7 @@
 }
 .iconRight{
   position: absolute;
-  top:21px;
+  top:51px;
   right: 312px;
 }
 .timeRight{
@@ -21,7 +21,7 @@
 .senderRight{
   position: absolute;
   width: 300px;
-  top:24px;
+  top:54px;
   right: 5px;
   font-size: 1rem;
   word-wrap: break-word;
@@ -29,9 +29,10 @@
 .MessageRight {
   background-color: #acd6ee80;
   position: absolute;
+  padding: 5px; 
   width: 300px;
   right: 5px;
-  top: 48px;
+  top: 78px;
   font-size: 1rem;
   border-radius: 5px; 
   word-wrap: break-word;
@@ -40,8 +41,9 @@
   background-color: #acd6ee80;
   position: absolute;
   width: 300px;
+  padding: 5px; 
   right: 5px;
-  top: 120px;
+  top: 150px;
   font-size: 1rem;
   border-radius: 5px; 
   word-wrap: break-word;
@@ -63,7 +65,7 @@
 .senderLeft{
   position: absolute;
   width: 300px;
-  top:24px;
+  top:54px;
   left: 5px;
   font-size: 1rem;
   word-wrap: break-word;
@@ -71,9 +73,10 @@
 .MessageLeft {
   background-color: #acd6ee80;
   position: absolute;
+  padding: 5px; 
   width: 300px;
   left: 5px;
-  top: 48px;
+  top: 78px;
   font-size: 1rem;
   border-radius: 5px; 
   word-wrap: break-word;
@@ -83,7 +86,8 @@
   position: absolute;
   width: 300px;
   left: 5px;
-  top: 170px;
+  padding: 5px; 
+  top: 200px;
   font-size: 1rem;
   border-radius: 5px; 
   word-wrap: break-word;

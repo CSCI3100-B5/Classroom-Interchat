@@ -37,7 +37,7 @@ export default function QuestionMessage({ message }) {
 
   return (
 
-    <div className="relativeBox">
+    <div>
       <p className="iconRight"><BsFillQuestionCircleFill /></p>
       <p className="senderRight">
         <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>

@@ -6,10 +6,9 @@ import { BsTextCenter } from 'react-icons/bs';
 
 export default function TextMessage({ message }) {
   return (
-    <div className="relativeBox">
+    <div>
       <p className="iconRight"><BsTextCenter /></p>
-      <p className="MessageRight">{message.sender.name}</p>
-      <div className="MessageRight">
+      <div>
         <div className="MessageRight"><MarkdownRender>{message.content}</MarkdownRender></div>
       </div>
     </div>
@@ -18,3 +17,4 @@ export default function TextMessage({ message }) {
 /* <div>
 <div><MarkdownRender>{message.content}</MarkdownRender></div>
 </div> */
+/* <p className="MessageRight">{message.sender.name}</p> */

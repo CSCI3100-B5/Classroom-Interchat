@@ -7,12 +7,12 @@
   }
   .iconRight{
     position: absolute;
-    top:18px;
+    top:48px;
     right: 310px;
   }
   .resolveButtonRight{
     position: absolute;
-    top:18px;
+    top:48px;
     right: 5px;
   }
   .timeRight{
@@ -26,7 +26,7 @@
   .senderRight{
     position: absolute;
     width: 300px;
-    top:24px;
+    top:54px;
     right: 5px;
     font-size: 1rem;
     word-wrap: break-word;
@@ -35,9 +35,10 @@
     background-color: #acd6ee80;
     position: absolute;
     border-radius: 5px; 
+    padding: 5px; 
     width: 300px;
     right: 5px;
-    top: 72px;
+    top: 102px;
     font-size: 1rem;
     word-wrap: break-word;
   }
@@ -52,7 +53,7 @@
   .replyNoRight {
     position: absolute;
     right: 5px;
-    top: 218px;
+    top: 248px;
     font-size: 1rem;
     word-wrap: break-word;
   }
@@ -60,7 +61,7 @@
     position: absolute;
     width: 150px;
     right: 5px;
-    top: 135.6px;
+    top: 165.6px;
     font-size: 1rem;
     word-wrap: break-word;
   }
@@ -68,12 +69,12 @@
 
   .iconLeft{
     position: absolute;
-    top:15px;
+    top:45px;
     left: -10px;
   }
   .resolveButtonLeft{
     position: absolute;
-    top:18px;
+    top:48px;
     left: 152px;
   }
   .timeLeft{
@@ -87,7 +88,7 @@
   .senderLeft{
     position: absolute;
     width: 300px;
-    top: 24px;
+    top: 54px;
     left: 5px;
     font-size: 1rem;
     word-wrap: break-word;
@@ -96,9 +97,10 @@
     background-color: #acd6ee80;
     position: absolute;
     border-radius: 5px; 
+    padding: 5px; 
     width: 300px;
     left: 5px;
-    top: 72px;
+    top: 102px;
     font-size: 1rem;
     word-wrap: break-word;
   }
@@ -106,14 +108,14 @@
     
     position: absolute;
     left: 5px;
-    top: 170px;
+    top: 200px;
     font-size: 1rem;
     word-wrap: break-word;
   }
   .replyNoLeft {
     position: absolute;
     left: 5px;
-    top: 218px;
+    top: 248px;
     font-size: 1rem;
     word-wrap: break-word;
   }
@@ -121,7 +123,7 @@
     position: absolute;
     width: 150px;
     left: 5px;
-    top: 135.6px;
+    top: 165.6px;
     font-size: 1rem;
     word-wrap: break-word;
   }
