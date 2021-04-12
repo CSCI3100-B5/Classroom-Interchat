@@ -16,6 +16,9 @@ async function sendQuiz(packet, socket, io) {
 
   if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
   const classroom = meta.invokerClassroom;
+  const participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
+  if (classroom.isMuted) return callback({ error: 'The entire classroom is muted' });
+  if (participant.isMuted) return callback({ error: 'You are muted' });
   let message;
 
   switch (data.type) {

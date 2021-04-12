@@ -14,7 +14,15 @@ import './ParticipantList.scoped.css';
 
 export default function ParticipantList({ onCloseParticipantList }) {
   const { data, getSelfParticipant } = useDataStore();
-  const { requestPermission, cancelRequestPermission, promoteParticipant } = useRealtime();
+  const {
+    requestPermission,
+    cancelRequestPermission,
+    promoteParticipant,
+    demoteParticipant,
+    kickParticipant,
+    toggleMuteParticipant,
+    toggleGlobalMute
+  } = useRealtime();
   const { toast } = useToast();
   const [selectedUsers, setSelectedUsers] = useState(null);
 
@@ -45,6 +53,44 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  const onDemote = async (userId) => {
+    try {
+      await demoteParticipant(userId);
+    } catch (ex) {
+      toast('error', 'Error when demoting a participant', ex.error);
+    }
+  };
+
+  const onToggleMute = async (userId) => {
+    try {
+      await toggleMuteParticipant(userId);
+    } catch (ex) {
+      toast('error', 'Error when toggling mute on a participant', ex.error);
+    }
+  };
+
+  const onToggleGlobalMute = async () => {
+    try {
+      await toggleGlobalMute();
+    } catch (ex) {
+      toast('error', 'Error when toggling mute on the entire classroom', ex.error);
+    }
+  };
+
+  const onKick = async (userId) => {
+    try {
+      await kickParticipant(userId);
+    } catch (ex) {
+      toast('error', 'Error when kicking a participant', ex.error);
+    }
+  };
+
+  let isHost = false;
+  let isInstructor = false;
+  if (data.user.id === data.classroomMeta.host.id) {
+    isHost = true;
+  }
+
   let permissionButton = null;
   let perm = getSelfParticipant();
   if (perm) {
@@ -57,10 +103,13 @@ export default function ParticipantList({ onCloseParticipantList }) {
       permissionButton = (
         <Button variant="secondary" className="w-full-btn" onClick={onCancelRequest}>Cancel permission request</Button>
       );
+    } else {
+      isInstructor = true;
     }
   }
 
   return (
+
     <div className="d-flex flex-column justify-content-between">
       <Container className="mb-4">
         <Row className="justify-content-center">
@@ -89,6 +138,11 @@ export default function ParticipantList({ onCloseParticipantList }) {
               )}
             </Overlay>
           </Col>
+          {isInstructor ? (
+            <Col sm={6}>
+              <Button onClick={onToggleGlobalMute}>{data.classroomMeta.isMuted ? 'Unmute entire classroom' : 'Mute entire classroom'}</Button>
+            </Col>
+          ) : null}
         </Row>
       </Container>
       <TokenAwarder userIds={selectedUsers} onClose={() => setSelectedUsers(null)} />
@@ -104,12 +158,25 @@ export default function ParticipantList({ onCloseParticipantList }) {
               return null;
             })()}
             {x.isOnline ? null : (<RiWifiOffLine />)}
-            <RiWifiOffLine />
+            {x.isMuted ? (<Badge>MUTED</Badge>) : null}
             <div className="flex-grow-1" />
-            <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
-            <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
-            <Button variant="flat">{x.isMuted ? 'Unmute' : 'Mute'}</Button>
-            <Button variant="danger">Kick</Button>
+            {isInstructor
+              ? (
+                <>
+                  {x.permission !== 'instructor'
+                    ? <Button variant="flat" onClick={() => onPromote(x.user.id)}>Promote</Button>
+                    : null}
+                  {(isHost && x.user.id !== data.user.id) ? (
+                    <Button variant="flat" onClick={() => onDemote(x.user.id)}>Deomote</Button>
+                  ) : null}
+                  <Button variant="flat" onClick={() => setSelectedUsers([x.user.id])}>Token</Button>
+                  <Button variant="flat" onClick={() => onToggleMute(x.user.id)}>{x.isMuted ? 'Unmute' : 'Mute'}</Button>
+                  {(isHost && x.user.id !== data.user.id) || x.permission === 'student'
+                    ? <Button variant="danger" onClick={() => onKick(x.user.id)}>Kick</Button>
+                    : null}
+
+                </>
+              ) : null}
           </div>
         ))
       }

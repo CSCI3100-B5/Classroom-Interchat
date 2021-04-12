@@ -20,5 +20,11 @@ module.exports = function externalEvents(socket, io) {
 
   events.on('award token', paramValidation.awardToken, instructorCtrl.awardToken);
 
+  events.on('demote participant', paramValidation.demoteParticipant, instructorCtrl.demoteParticipant);
+
+  events.on('mute participant', paramValidation.muteParticipant, instructorCtrl.muteParticipant);
+
+  events.on('mute classroom', paramValidation.muteClassroom, instructorCtrl.muteClassroom);
+
   events.register();
 };
