@@ -1,6 +1,7 @@
 # [Classroom Interchat](https://classroom-interchat.herokuapp.com/)
 
 [![Node.js CI](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml)
+[![DeepScan grade](https://deepscan.io/api/teams/13654/projects/16668/branches/361969/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=13654&pid=16668&bid=361969)
 
 Boilerplate code credits:
 
