@@ -14,11 +14,7 @@ const server = require('../index');
 describe('Classroom.External', () => {
   let classroom;
   let user;
-  let port;
-
-  before(() => {
-    ({ port } = server.server.address());
-  });
+  let clientSocket;
 
   beforeEach(async () => { // Before each test we empty the database
     await User.remove({}).exec();
@@ -27,70 +23,44 @@ describe('Classroom.External', () => {
       name: 'test user',
       email: 'test@default.com',
       isAdmin: false,
-      password: 'none'
+      password: 'none',
+      lastVerifiedEmail: 'test@default.com'
     });
     await user.setPassword('password');
     classroom = await Classroom.create({
       name: 'Test classroom',
       host: user.id,
     });
-  });
-
-  it('connect without credentials', async () => {
-    const clientSocket = new Client(`http://localhost:${port}`);
-    return (new Promise((resolve, reject) => {
-      clientSocket.once('connect', resolve);
-      clientSocket.once('connect_error', reject);
-    })).should.be.rejected;
-  });
-
-  it('connect with wrong credentials', async () => {
-    const clientSocket = new Client(`http://localhost:${port}`, {
-      extraHeaders: {
-        Authorization: 'Bearer invalidaccesstoken'
-      }
-    });
-    return (new Promise((resolve, reject) => {
-      clientSocket.once('connect', resolve);
-      clientSocket.once('connect_error', reject);
-    })).should.be.rejected;
-  });
-
-  it('connect with correct credentials but unverified email', async () => {
     const res = await chai.request(server.app)
       .post('/api/auth/login')
       .set('content-type', 'application/json')
       .send({ email: 'test@default.com', password: 'password' });
-    res.should.have.status(200);
-    res.body.should.have.property('accessToken');
-    const clientSocket = new Client(`http://localhost:${port}`, {
+    clientSocket = new Client(`http://localhost:${server.server.address().port}`, {
       extraHeaders: {
         Authorization: `Bearer ${res.body.accessToken}`
       }
     });
-    return (new Promise((resolve, reject) => {
-      clientSocket.once('connect', resolve);
-      clientSocket.once('connect_error', reject);
-    })).should.be.rejected;
   });
 
-  it('connect with correct credentials and verified email', async () => {
-    user.lastVerifiedEmail = user.email;
-    await user.save();
-    const res = await chai.request(server.app)
-      .post('/api/auth/login')
-      .set('content-type', 'application/json')
-      .send({ email: 'test@default.com', password: 'password' });
-    res.should.have.status(200);
-    res.body.should.have.property('accessToken');
-    const clientSocket = new Client(`http://localhost:${port}`, {
-      extraHeaders: {
-        Authorization: `Bearer ${res.body.accessToken}`
-      }
+  describe('create classroom', () => {
+    it('create without a name', (done) => {
+      clientSocket.emit('create classroom', {}, (data) => {
+        data.should.have.property('error');
+        done();
+      });
     });
-    return (new Promise((resolve, reject) => {
-      clientSocket.once('connect', resolve);
-      clientSocket.once('connect_error', reject);
-    })).should.be.fulfilled;
+
+    it('create with a name', (done) => {
+      clientSocket.once('catch up', (data) => {
+        data.should.have.property('id');
+        data.should.have.property('name', 'New Classroom');
+        data.should.have.property('host');
+        data.host.should.have.property('name', 'test user');
+        done();
+      });
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        data.should.eql({});
+      });
+    });
   });
 });
