@@ -8,7 +8,6 @@ import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
-import { assert } from 'joi';
 import JoinClassroom from '../classroom/JoinClassroom.jsx';
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';

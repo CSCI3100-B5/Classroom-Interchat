@@ -8,11 +8,11 @@ import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
-import ReactRouter from 'react-router';
 import LoginBox from '../auth/LoginBox.jsx';
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as ApiContext from '../contexts/ApiProvider.jsx';
+import { renderWithRouter } from './test-utils.js';
 
 describe('LoginBox Component', function () {
   beforeEach(function () {
@@ -27,14 +27,11 @@ describe('LoginBox Component', function () {
       });
     });
     const fakeToast = sinon.spy();
-    const fakeHistoryPush = sinon.spy();
     this.currentTest.fakeLogin = fakeLogin;
     this.currentTest.fakeToast = fakeToast;
-    this.currentTest.fakeHistoryPush = fakeHistoryPush;
     sinon.replace(ApiContext, 'useApi', () => ({ login: fakeLogin }));
     sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
     sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: { rememberMe: true } }));
-    sinon.replace(ReactRouter, 'useHistory', () => ({ push: fakeHistoryPush }));
   });
 
   afterEach(function () {
@@ -48,7 +45,7 @@ describe('LoginBox Component', function () {
   });
 
   it('Log in with valid form input', async function () {
-    render(<LoginBox />);
+    renderWithRouter(<LoginBox />, { route: '/auth' });
 
     userEvent.type(screen.getByLabelText(/email/i), 'abc@gmail.com');
     userEvent.type(screen.getByLabelText(/password/i), 'password');
@@ -56,10 +53,9 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    expect(this.test.fakeLogin.callCount).to.be.equal(1);
-    expect(this.test.fakeLogin.lastCall.args).to.eql(['abc@gmail.com', 'password']);
-    expect(this.test.fakeHistoryPush.callCount).to.be.equal(1);
-    expect(this.test.fakeHistoryPush.lastCall.args).to.include('/account');
+    sinon.assert.calledOnce(this.test.fakeLogin);
+    sinon.assert.calledWith(this.test.fakeLogin, 'abc@gmail.com', 'password');
+    expect(window.location.pathname).to.be.equal('/account');
   });
 
   it('Log in with invalid email', async function () {
@@ -71,7 +67,7 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    expect(this.test.fakeLogin.callCount).to.be.equal(0);
+    sinon.assert.notCalled(this.test.fakeLogin);
   });
 
   it('Log in with short password', async function () {
@@ -83,6 +79,6 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    expect(this.test.fakeLogin.callCount).to.be.equal(0);
+    sinon.assert.notCalled(this.test.fakeLogin);
   });
 });
