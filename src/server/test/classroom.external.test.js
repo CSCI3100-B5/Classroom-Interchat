@@ -17,7 +17,7 @@ describe('Classroom.External', () => {
   let port;
 
   before(() => {
-    port = server.server.address().port;
+    ({ port } = server.server.address());
   });
 
   beforeEach(async () => { // Before each test we empty the database
