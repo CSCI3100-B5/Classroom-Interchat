@@ -15,8 +15,11 @@ import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
 import { renderWithRouter } from './test-utils.js';
 
 describe('JoinClassroom Component', function () {
+  let fakeToast;
+  let fakePeekClassroom;
+  let fakeJoinClassroom;
   beforeEach(function () {
-    const fakePeekClassroom = sinon.fake((classroomId) => {
+    fakePeekClassroom = sinon.fake((classroomId) => {
       if (classroomId === '606eaf55a406552de05d996a') {
         return new Promise((resolve) => {
           resolve({
@@ -28,7 +31,7 @@ describe('JoinClassroom Component', function () {
         reject({ error: 'test error' });
       });
     });
-    const fakeJoinClassroom = sinon.fake((classroomId) => {
+    fakeJoinClassroom = sinon.fake((classroomId) => {
       if (classroomId === '606eaf55a406552de05d996a') {
         return new Promise(resolve => resolve());
       }
@@ -36,10 +39,7 @@ describe('JoinClassroom Component', function () {
         reject({ error: 'test error' });
       });
     });
-    const fakeToast = sinon.spy();
-    this.currentTest.fakePeekClassroom = fakePeekClassroom;
-    this.currentTest.fakeJoinClassroom = fakeJoinClassroom;
-    this.currentTest.fakeToast = fakeToast;
+    fakeToast = sinon.spy();
     sinon.replace(RealtimeContext, 'useRealtime', () => ({
       peekClassroom: fakePeekClassroom,
       joinClassroom: fakeJoinClassroom
@@ -66,7 +66,7 @@ describe('JoinClassroom Component', function () {
     userEvent.click(screen.getByRole('button', { name: /join classroom/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    sinon.assert.calledOnce(this.test.fakeJoinClassroom);
+    sinon.assert.calledOnce(fakeJoinClassroom);
   });
 
   it('Join classroom through invalid invite link', async function () {
@@ -77,8 +77,8 @@ describe('JoinClassroom Component', function () {
     userEvent.click(screen.getByRole('button', { name: /join classroom/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    sinon.assert.calledOnce(this.test.fakeJoinClassroom);
-    sinon.assert.calledOnce(this.test.fakeToast);
-    sinon.assert.calledWith(this.test.fakeToast, 'error');
+    sinon.assert.calledOnce(fakeJoinClassroom);
+    sinon.assert.calledOnce(fakeToast);
+    sinon.assert.calledWith(fakeToast, 'error');
   });
 });

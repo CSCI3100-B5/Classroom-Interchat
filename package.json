@@ -9,8 +9,8 @@
     "client": "webpack serve --mode development --devtool inline-source-map --hot",
     "server": "nodemon --trace-warnings src/server/index.js",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
-    "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.js?'",
-    "test:server": "mocha 'src/server/**/*.test.js?'"
+    "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
+    "test:server": "cross-env NODE_ENV=test nyc mocha --exit 'src/server/**/*.test.js'"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
@@ -73,8 +73,11 @@
     "babel-loader": "^8.0.0",
     "babel-plugin-react-scoped-css": "^1.1.0",
     "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.3.0",
     "clean-webpack-plugin": "^1.0.0",
     "concurrently": "^4.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^2.0.0",
     "eslint": "^5.0.0",
     "eslint-config-airbnb": "^17.0.0",

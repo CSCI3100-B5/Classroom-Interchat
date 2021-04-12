@@ -15,8 +15,11 @@ import * as ApiContext from '../contexts/ApiProvider.jsx';
 import { renderWithRouter } from './test-utils.js';
 
 describe('LoginBox Component', function () {
+  let fakeLogin;
+  let fakeToast;
+
   beforeEach(function () {
-    const fakeLogin = sinon.fake((email, password) => {
+    fakeLogin = sinon.fake((email, password) => {
       if (email === 'abc@gmail.com' && password === 'password') {
         return new Promise((resolve) => {
           resolve({ success: true, response: { } });
@@ -26,9 +29,7 @@ describe('LoginBox Component', function () {
         resolve({ success: false, response: { data: { message: 'Fake fail' } } });
       });
     });
-    const fakeToast = sinon.spy();
-    this.currentTest.fakeLogin = fakeLogin;
-    this.currentTest.fakeToast = fakeToast;
+    fakeToast = sinon.spy();
     sinon.replace(ApiContext, 'useApi', () => ({ login: fakeLogin }));
     sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
     sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: { rememberMe: true } }));
@@ -53,8 +54,8 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    sinon.assert.calledOnce(this.test.fakeLogin);
-    sinon.assert.calledWith(this.test.fakeLogin, 'abc@gmail.com', 'password');
+    sinon.assert.calledOnce(fakeLogin);
+    sinon.assert.calledWith(fakeLogin, 'abc@gmail.com', 'password');
     expect(window.location.pathname).to.be.equal('/account');
   });
 
@@ -67,7 +68,7 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    sinon.assert.notCalled(this.test.fakeLogin);
+    sinon.assert.notCalled(fakeLogin);
   });
 
   it('Log in with short password', async function () {
@@ -79,6 +80,6 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
-    sinon.assert.notCalled(this.test.fakeLogin);
+    sinon.assert.notCalled(fakeLogin);
   });
 });
