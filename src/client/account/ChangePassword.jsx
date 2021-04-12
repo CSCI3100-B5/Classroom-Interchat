@@ -110,7 +110,7 @@ export default function ChangePassword() {
 
             <Col sm={2} />
             <Col sm={10}>
-              <Button className="btn btn-secondary shadow-sm float-right mr-n1" type="submit">Save changes</Button>
+              <Button className="btn shadow-sm float-right mr-n1" type="submit">Save changes</Button>
             </Col>
 
           </Form>

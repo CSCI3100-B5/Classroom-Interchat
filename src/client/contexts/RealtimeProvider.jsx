@@ -162,6 +162,9 @@ export function RealtimeProvider({ children }) {
     return new Promise((resolve, reject) => {
       socket.emit('leave classroom', {}, (response) => {
         if (response.error) reject(response);
+        data.classroomMeta = null;
+        data.messages = [];
+        data.participants = [];
         resolve(response);
       });
     });

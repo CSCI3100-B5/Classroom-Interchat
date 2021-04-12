@@ -67,7 +67,7 @@ export default function Account() {
       <Tab.Container defaultActiveKey="launchApp">
         <Row className="h-full sm-overflow-y-auto">
           <Col sm={3} className="sm-h-full">
-            <Nav variant="tabs" className="flex-column sidebar">
+            <Nav variant="pills" className="flex-column sidebar">
               <Nav.Item>
                 <Nav.Link eventKey="launchApp">
                   <span className="text-secondary font-weight-bold">Launch App</span>
