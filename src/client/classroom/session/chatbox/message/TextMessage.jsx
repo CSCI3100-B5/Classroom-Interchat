@@ -4,7 +4,7 @@ import MarkdownRender from './MarkdownRender.jsx';
 export default function TextMessage({ message }) {
   return (
     <div>
-      <div><MarkdownRender>{message.content}</MarkdownRender></div>
+      <div className="markdown-content"><MarkdownRender>{message.content}</MarkdownRender></div>
     </div>
   );
 }
