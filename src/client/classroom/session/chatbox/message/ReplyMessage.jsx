@@ -15,7 +15,7 @@ export default function ReplyMessage({ message }) {
       <p className="senderRight">
         reply:
       </p>
-      <div className="myMessageRight">
+      <div className="MessageRight">
         <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
       </div>
       <p className="replyingToRight">

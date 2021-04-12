@@ -36,6 +36,7 @@ export default function QuestionMessage({ message }) {
   };
 
   return (
+
     <div className="relativeBox">
       <p className="iconRight"><BsFillQuestionCircleFill /></p>
       <p className="senderRight">
@@ -71,7 +72,7 @@ export default function QuestionMessage({ message }) {
               {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
             </ToggleButton>
           </ButtonGroup>
-        ) : (<p className="replyRight">Send a reply</p>)}
+        ) : (<p className="replyRight" />)}
     </div>
   );
 }
