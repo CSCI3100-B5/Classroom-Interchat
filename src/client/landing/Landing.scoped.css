@@ -1,3 +1,49 @@
 img {
   width: 400px;
 }
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.heading {
+  font-size: 4rem;
+  margin: 10px;
+  text-shadow: 0px 0px 3px rgba(173, 173, 173, 1);
+}
+
+.heading-desc {
+  margin: 10px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.landing-bg {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100vh;
+  z-index: -100;
+  background: linear-gradient(-45deg, #6d8fff, #627aff, #6099ee, #0082fc);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+.white-space-nowrap {
+  white-space: nowrap;
+}
+
+.large-icon {
+  font-size: 4rem;
+  margin: 10px;
+}
