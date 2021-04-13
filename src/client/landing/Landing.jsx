@@ -48,12 +48,12 @@ export default function Landing() {
               <Col sm={4} className="d-flex flex-column align-items-center">
                 <BiCloudLightning className="large-icon" />
                 <p><strong>Reliable</strong></p>
-                <p className="text-center">Bad Internet? Never worry about missed messages</p>
+                <p className="text-center">Bad Internet? Need to switch device? Never worry about missed messages</p>
               </Col>
               <Col sm={4} className="d-flex flex-column align-items-center">
                 <BiEditAlt className="large-icon" />
                 <p><strong>Flexible</strong></p>
-                <p className="text-center">Send text, code, equations, tables, quizzes, questions...</p>
+                <p className="text-center">Send text, code, equations, tables, quizzes, questions and more</p>
               </Col>
             </Row>
           </Card.Body>
