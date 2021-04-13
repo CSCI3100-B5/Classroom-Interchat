@@ -70,7 +70,7 @@ export default function MessageCompose({ onCreateQuiz }) {
               <span className="reply-text btn">
                 Replying to
                 {' '}
-                {data.participants.find(x => x.user.id === replyToMessage.sender).user.name}
+                {data.participants.find(x => x.user.id === (replyToMessage.sender.id ?? replyToMessage.sender)).user.name}
                 {'\'s Question'}
               </span>
               <span className="reply-content btn">
