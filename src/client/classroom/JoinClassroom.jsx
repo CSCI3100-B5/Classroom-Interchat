@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import qs from 'qs';
 import * as yup from 'yup';
@@ -12,9 +12,10 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../contexts/RealtimeProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
+import './JoinClassroom.scoped.css';
 
 const schema = yup.object().shape({
-  classroomId: yup.string().matches(/^[0-9a-f]{24}$/si, 'The classroom ID is invalid').label('Classroom ID'),
+  classroomId: yup.string().required().matches(/^[0-9a-f]{24}$/si, 'The classroom ID is invalid').label('Classroom ID'),
 });
 
 
@@ -31,6 +32,8 @@ export default function JoinClassroom() {
 
   const { logout } = useApi();
 
+  const [peekClassroomId, setPeekClassroomId] = useState(null);
+
   const localData = useStates({
     initialClassroomId: () => qs.parse(location.search, { ignoreQueryPrefix: true }).id ?? ''
   });
@@ -38,6 +41,14 @@ export default function JoinClassroom() {
   useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
   }, [data.classroomMeta]);
+
+  useEffect(() => {
+    if (!data.peekClassroomMeta) return;
+    if (data.peekClassroomMeta.error) return;
+    if (data.peekClassroomMeta.value.id !== peekClassroomId) {
+      data.peekClassroomMeta = null;
+    }
+  }, [data.peekClassroomMeta]);
 
   const onSubmit = async (values) => {
     try {
@@ -49,6 +60,7 @@ export default function JoinClassroom() {
 
   const onChange = async (event) => {
     const classroomId = event.currentTarget.value;
+    setPeekClassroomId(classroomId);
     if (!await schema.isValid({ classroomId })) {
       data.peekClassroomMeta = null;
       return;
@@ -128,46 +140,57 @@ export default function JoinClassroom() {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <Card style={{ height: '5rem' }}>
+                <Card className="peek-card">
                   {(() => {
-                    if (!data.peekClassroomMeta) return (<p className="ml-2 mt-1 text-secondary">Enter classroom ID to see a preview</p>);
-                    if (data.peekClassroomMeta.error) return (<p>{data.peekClassroomMeta.error}</p>);
+                    if (!data.peekClassroomMeta) {
+                      return (
+                        <p className="text-secondary">Enter classroom ID to see a preview</p>
+                      );
+                    }
+                    if (data.peekClassroomMeta.error) {
+                      return (
+                        <p>{data.peekClassroomMeta.error}</p>
+                      );
+                    }
                     let closedAt = null;
                     if (data.peekClassroomMeta.value.closedAt) {
                       closedAt = (
-                        <p>
-                          <b>
-                            Closed at
-                            {' '}
-                            {data.peekClassroomMeta.value.closedAt.toString()}
-                          </b>
-                        </p>
+                        <>
+                          <p>
+                            <b>
+                              <span className="text-muted font-weight-light text-small mx-2">CLOSED AT</span>
+                              {(new Date(data.peekClassroomMeta.value.closedAt)).toLocaleString()}
+                            </b>
+                          </p>
+                          <p>
+                            This classroom is closed, but you may still view its read-only message history.
+                          </p>
+                        </>
                       );
                     }
                     return (
                       <>
-                        <p><b>{data.peekClassroomMeta.value.name}</b></p>
-                        <span>
-                          {data.peekClassroomMeta.value.participantCount}
-                          {' '}
-                          participants
-                        </span>
-                        <span>
-                          Hosted by
-                          {' '}
-                          {data.peekClassroomMeta.value.host.name}
-                        </span>
+                        <p className="text-large"><b>{data.peekClassroomMeta.value.name}</b></p>
                         <p>
-                          Started at
-                          {' '}
-                          {data.peekClassroomMeta.value.createdAt.toString()}
+                          <span className="text-muted font-weight-light text-small mx-2">PARTICIPANTS</span>
+                          {data.peekClassroomMeta.value.participantCount}
+                        </p>
+                        <p>
+                          <span className="text-muted font-weight-light text-small mx-2">HOSTED BY</span>
+                          {data.peekClassroomMeta.value.host.name}
+                        </p>
+                        <p>
+                          <span className="text-muted font-weight-light text-small mx-2">STARTED AT</span>
+                          {(new Date(data.peekClassroomMeta.value.createdAt)).toLocaleString()}
                         </p>
                         {closedAt}
                       </>
                     );
                   })()}
                 </Card>
-                <Button type="submit" className="mt-4 mb-3 shadow-sm">Join Classroom</Button>
+                <Button type="submit" className="mt-4 mb-3 shadow-sm">
+                  {data.peekClassroomMeta?.value?.closedAt ? 'View History' : 'Join Classroom'}
+                </Button>
               </Form>
             )}
           </Formik>

@@ -18,7 +18,7 @@ async function requestPermission(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
@@ -55,7 +55,7 @@ async function cancelRequestPermission(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
@@ -92,7 +92,7 @@ async function promoteParticipant(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
@@ -153,7 +153,7 @@ async function awardToken(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
@@ -204,7 +204,7 @@ async function demoteParticipant(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
@@ -273,7 +273,7 @@ async function muteParticipant(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
@@ -323,7 +323,7 @@ async function muteClassroom(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 
