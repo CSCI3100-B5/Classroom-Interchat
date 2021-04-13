@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Badge, Button, Card } from 'react-bootstrap';
 import { BsFillMicMuteFill, BsPeopleCircle, BsPeopleFill } from 'react-icons/bs';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
@@ -32,6 +32,7 @@ function ClassroomInfo({ onShowParticipantList }) {
               <div className="classroom-name d-flex align-items-center">
                 <span className="mr-2">{data.classroomMeta.name}</span>
                 {data.classroomMeta.isMuted ? <BsFillMicMuteFill /> : null}
+                {data.classroomMeta.closedAt ? <Badge variant="light">HISTORY VIEW</Badge> : null}
               </div>
               <div className="account-name">
                 <BsPeopleCircle className="mr-2" />

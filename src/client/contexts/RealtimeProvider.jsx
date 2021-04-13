@@ -161,7 +161,9 @@ export function RealtimeProvider({ children }) {
   function leaveClassroom() {
     return new Promise((resolve, reject) => {
       socket.emit('leave classroom', {}, (response) => {
-        if (response.error) reject(response);
+        if (response.error && !data.classroomMeta.closedAt) {
+          reject(response);
+        }
         data.classroomMeta = null;
         data.messages = [];
         data.participants = [];

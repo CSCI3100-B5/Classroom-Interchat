@@ -14,7 +14,7 @@ const APIError = require('../../helpers/APIError');
 async function sendQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   const participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
   if (classroom.isMuted) return callback({ error: 'The entire classroom is muted' });
@@ -93,7 +93,7 @@ async function sendQuiz(packet, socket, io) {
 async function endQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -130,7 +130,7 @@ async function endQuiz(packet, socket, io) {
 async function releaseResults(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -161,7 +161,7 @@ async function releaseResults(packet, socket, io) {
 async function ansSAQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -204,7 +204,7 @@ async function ansSAQuiz(packet, socket, io) {
 async function ansMCQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {

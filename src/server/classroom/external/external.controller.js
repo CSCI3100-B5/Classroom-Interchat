@@ -96,7 +96,14 @@ async function joinClassroom(packet, socket, io) {
   } catch (ex) {
     return callback({ error: ex.message });
   }
-  if (classroom.closedAt) return callback({ error: 'This classroom is already closed' });
+
+  // joining a closed classroom
+  // send classroom history for viewing
+  if (classroom.closedAt) {
+    callback({});
+    classroom = await classroom.populate('messages').execPopulate();
+    return socket.emit('catch up', classroom.filterSafe());
+  }
   let participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
   if (participant) {
     if (!participant.isOnline) {
@@ -105,7 +112,7 @@ async function joinClassroom(packet, socket, io) {
     }
   } else {
     classroom.participants.push({
-      user: meta.invoker.id,
+      user: meta.invoker,
       permission: 'student'
     });
     const message = await Messages.Message.create({
@@ -117,7 +124,6 @@ async function joinClassroom(packet, socket, io) {
     classroom.messages.push(message);
     io.to(classroom.id).emit('new message', message.filterSafe());
     await classroom.save();
-    await classroom.populate('participants.user').execPopulate();
     participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
   }
   socket.data.invokerClassroom = classroom;
@@ -129,8 +135,7 @@ async function joinClassroom(packet, socket, io) {
   notifyClassroomMetaChanged(classroom, io);
   io.to(classroom.id).emit('participant changed', participant.filterSafe());
   callback({});
-  classroom = await classroom.populate('host').populate('participants.user').populate('messages').execPopulate();
-  // TODO: different handling when results are released
+  classroom = await classroom.populate('messages').execPopulate();
   const retClassroom = classroom.filterSafe();
   retClassroom.messages = await Promise.all(classroom.messages.map(async (x) => {
     if (x.type !== 'mcq' && x.type !== 'saq') return x.filterSafe();
@@ -172,7 +177,7 @@ async function lostConnection(packet, socket, io) {
 // TODO: implement leaving
 async function leaveClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
-  if (!socket.data.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!socket.data.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   let classroom = meta.invokerClassroom;
 
   socket.emit('kick', { reason: 'Left classroom successfully' });
@@ -247,7 +252,7 @@ async function kickParticipant(packet, socket, io) {
 
   if (!meta.invokerClassroom) {
     return callback({
-      error: 'You are not in a classroom'
+      error: 'You are not in an open classroom'
     });
   }
 

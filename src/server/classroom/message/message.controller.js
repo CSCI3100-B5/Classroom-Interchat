@@ -13,7 +13,7 @@ const APIError = require('../../helpers/APIError');
 async function sendMessage(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   let classroom = meta.invokerClassroom;
   const participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
   if (classroom.isMuted) return callback({ error: 'The entire classroom is muted' });
@@ -80,7 +80,7 @@ async function sendMessage(packet, socket, io) {
 async function resolveQuestion(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   let classroom = meta.invokerClassroom;
   classroom = await classroom.populate('messages').execPopulate();
   let message = classroom.messages.find(x => x.id === data.messageId);
