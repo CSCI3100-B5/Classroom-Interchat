@@ -74,6 +74,7 @@ async function update(req, res, next) {
     if (req.body.name) user.name = req.body.name;
     if (req.body.email) {
       user.email = req.body.email;
+      await user.newEmailVerification();
     }
     if (req.body.newPassword) {
       if (!req.body.oldPassword) return next(new APIError('You must also provide the old password', httpStatus.FORBIDDEN, true));

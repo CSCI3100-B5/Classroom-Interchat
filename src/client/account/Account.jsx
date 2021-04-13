@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Row, Col, Tab, Button, Navbar, Nav
 } from 'react-bootstrap';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import LaunchApp from './LaunchApp.jsx';
 import ManageProfile from './ManageProfile.jsx';
 import ChangePassword from './ChangePassword.jsx';
@@ -19,10 +19,11 @@ export default function Account() {
   const { data } = useDataStore();
 
   const history = useHistory();
+  const location = useLocation();
 
   const { toast } = useToast();
 
-  const { logout } = useApi();
+  const { logout, getUserProfile } = useApi();
 
   // Redirect to /auth after logout
   const onLogOut = async () => {
@@ -45,6 +46,16 @@ export default function Account() {
       if (!data.refreshToken || !data.user) {
         history.push('/auth');
       }
+      const result = await getUserProfile(data.user.id);
+      console.log('Get user profile', result);
+      if (result.success) {
+        data.user = result.response.data;
+      } else {
+        data.refreshToken = null;
+        data.accessToken = null;
+        data.user = null;
+        history.push('/auth');
+      }
     })();
   }, []);
 
@@ -65,10 +76,14 @@ export default function Account() {
         </Nav.Item>
       </Navbar>
 
-      <Tab.Container defaultActiveKey="launchApp">
+      <Tab.Container defaultActiveKey={
+        ['manageProfile', 'changePassword', 'manageTokens'].includes(location.hash.substr(1))
+          ? location.hash.substr(1)
+          : 'launchApp'}
+      >
         <Row className="h-full sm-overflow-y-auto">
           <Col sm={3} className="sm-h-full">
-            <Nav variant="tabs" className="flex-column sidebar">
+            <Nav variant="pills" className="flex-column sidebar">
               <Nav.Item>
                 <Nav.Link eventKey="launchApp">
                   <span className="text-secondary font-weight-bold">Launch App</span>

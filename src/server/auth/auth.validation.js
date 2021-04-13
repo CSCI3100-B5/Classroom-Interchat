@@ -14,5 +14,11 @@ module.exports = {
       email: Joi.string().email().required(),
       password: Joi.string().min(8).max(64).required()
     })
+  },
+  verifyEmail: {
+    params: Joi.object({
+      userId: Joi.string().hex().length(24).required(),
+      verification: Joi.string().required()
+    })
   }
 };
