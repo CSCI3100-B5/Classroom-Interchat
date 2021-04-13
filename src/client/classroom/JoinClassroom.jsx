@@ -13,6 +13,7 @@ import { useRealtime } from '../contexts/RealtimeProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import './JoinClassroom.scoped.css';
+import { useSocket } from '../contexts/SocketProvider.jsx';
 
 const schema = yup.object().shape({
   classroomId: yup.string().required().matches(/^[0-9a-f]{24}$/si, 'The classroom ID is invalid').label('Classroom ID'),
@@ -37,6 +38,24 @@ export default function JoinClassroom() {
   const localData = useStates({
     initialClassroomId: () => qs.parse(location.search, { ignoreQueryPrefix: true }).id ?? ''
   });
+
+  const socket = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+    if (!localData.initialClassroomId) return;
+    if (data.peekClassroomMeta?.value?.id === localData.initialClassroomId) return;
+    (async () => {
+      if (await schema.isValid({ classroomId: localData.initialClassroomId })) {
+        try {
+          setPeekClassroomId(localData.initialClassroomId);
+          data.peekClassroomMeta = await peekClassroom(localData.initialClassroomId);
+        } catch (ex) {
+          data.peekClassroomMeta = ex;
+        }
+      }
+    })();
+  }, [localData.initialClassroomId, socket]);
 
   useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
