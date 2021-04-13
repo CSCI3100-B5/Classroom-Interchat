@@ -108,10 +108,11 @@ export default function ChangePassword() {
               </Col>
             </Form.Group>
 
-            <Col sm={2} />
-            <Col sm={10}>
-              <Button className="btn shadow-sm float-right mr-n1" type="submit">Save changes</Button>
-            </Col>
+            <Row>
+              <Col sm={10}>
+                <Button className="shadow-sm float-right" type="submit">Save changes</Button>
+              </Col>
+            </Row>
 
           </Form>
         )}

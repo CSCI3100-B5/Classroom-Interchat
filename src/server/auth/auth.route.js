@@ -2,7 +2,7 @@ const express = require('express');
 const { validate } = require('express-validation');
 const paramValidation = require('./auth.validation');
 const authCtrl = require('./auth.controller');
-const { requireRefreshToken } = require('./../helpers/requireAuth');
+const { requireRefreshToken, requireAccessToken } = require('./../helpers/requireAuth');
 
 const router = express.Router();
 
@@ -14,6 +14,16 @@ router.route('/login')
 router.route('/signup')
   .post(validate(paramValidation.signup), authCtrl.signup);
 
+/** POST /api/auth/email - Send a verification email to the user */
+router.route('/email')
+  .post(requireAccessToken, authCtrl.sendEmail);
+
+/** GET /api/auth/email/:userId/:verification - A link that the user click from the email,
+ * verifies the account email
+ */
+router.route('/email/:userId/:verification')
+  .get(authCtrl.verifyEmail);
+
 /** GET /api/auth/token - Returns a new access token if the refresh token is valid */
 router.route('/token')
   .get(requireRefreshToken, authCtrl.token);
@@ -22,5 +32,7 @@ router.route('/token')
  * Authorization: Bearer {token} */
 router.route('/logout')
   .delete(requireRefreshToken, authCtrl.logout);
+
+router.param('userId', authCtrl.loadUser);
 
 module.exports = router;

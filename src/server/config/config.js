@@ -23,7 +23,11 @@ const envVarsSchema = Joi.object({
   MONGO_HOST: Joi.string().required()
     .description('Mongo DB host url'),
   BASE_URL: Joi.string().default('https://classroom-interchat.herokuapp.com/')
-    .description('Base url that is used to access this server')
+    .description('Base url that is used to access this server'),
+  EMAIL_USER: Joi.string().required()
+    .description('The email account to send verification emails from'),
+  EMAIL_PASSWORD: Joi.string().required()
+    .description('The password to the email account')
 }).unknown()
   .required();
 
@@ -41,7 +45,11 @@ const config = {
   mongo: {
     host: envVars.MONGO_HOST,
   },
-  baseUrl: envVars.BASE_URL
+  baseUrl: envVars.BASE_URL,
+  email: {
+    user: envVars.EMAIL_USER,
+    pass: envVars.EMAIL_PASSWORD,
+  }
 };
 
 module.exports = config;

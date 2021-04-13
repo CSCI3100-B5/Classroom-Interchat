@@ -55,6 +55,19 @@ export function ApiProvider({ children }) {
   }
 
   /**
+   * Send email request
+   * @returns response body
+   */
+  async function sendEmail() {
+    const result = await request({
+      method: 'POST',
+      url: '/auth/email',
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
+  /**
    * Logout
    * @returns response body
    */
@@ -158,6 +171,7 @@ export function ApiProvider({ children }) {
       refreshAccessToken,
       login,
       signup,
+      sendEmail,
       logout,
       getUserProfile,
       updateUserProfile,

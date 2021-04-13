@@ -32,7 +32,7 @@ export default function SignupBox() {
     if (result.success) {
       const loginResult = await login(values.signupEmail, values.signupPassword);
       if (loginResult.success) {
-        history.push('/account');
+        history.push('/account#manageProfile');
       } else {
         toast('error', 'Log in failed', loginResult.response.data.message);
       }
