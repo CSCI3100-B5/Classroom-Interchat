@@ -83,7 +83,7 @@ export default function Account() {
       >
         <Row className="h-full sm-overflow-y-auto">
           <Col sm={3} className="sm-h-full">
-            <Nav variant="pills" className="flex-column sidebar">
+            <Nav variant="tabs" className="flex-column sidebar">
               <Nav.Item>
                 <Nav.Link eventKey="launchApp">
                   <span className="text-secondary font-weight-bold">Launch App</span>
