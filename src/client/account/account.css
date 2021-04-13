@@ -14,6 +14,14 @@
   height: calc(100% - 1rem);
 }
 
+.sidebar a {
+  border-radius: 5px;
+}
+
+.sidebar a.nav-link.active {
+  border-color: #dee2e6;
+}
+
 .account-content {
   margin-top: 0.5rem;
   height: calc(100% - 0.5rem);

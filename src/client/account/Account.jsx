@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Row, Col, Tab, Button, Navbar, Nav
 } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import LaunchApp from './LaunchApp.jsx';
 import ManageProfile from './ManageProfile.jsx';
 import ChangePassword from './ChangePassword.jsx';
@@ -55,13 +55,13 @@ export default function Account() {
       <Navbar bg="primary" sticky="top" className="shadow-sm">
         <Navbar.Brand>
           <Link to="/">
-            <span  className="text-white font-weight-bold align-middle ml-2">
+            <span className="text-white font-weight-bold align-middle ml-2">
               Classroom Interchat
             </span>
           </Link>
         </Navbar.Brand>
         <Nav.Item className="ml-auto">
-          <Button variant="outline-info" onClick={onLogOut}>Log out</Button>
+          <Button variant="outline-light" onClick={onLogOut}>Log out</Button>
         </Nav.Item>
       </Navbar>
 
