@@ -51,6 +51,22 @@
   max-height: 400px;
 }
 
+.message-box a:link {
+  color: rgb(195, 233, 255);
+}
+
+.message-box a:visited {
+  color: rgb(161, 205, 255);
+}
+
+.message-box a:hover {
+  color: rgb(164, 219, 255);
+}
+
+.message-box a:active {
+  color: rgb(133, 190, 236);
+}
+
 table,
 th,
 td {
