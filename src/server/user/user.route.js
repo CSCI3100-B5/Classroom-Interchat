@@ -4,9 +4,7 @@ const paramValidation = require('./user.validation');
 const userCtrl = require('./user.controller');
 const { requireAccessToken, requireAdminAccess } = require('./../helpers/requireAuth');
 
-// TODO: GUIDE: you may copy this file to make your xxx.route.js
-
-const router = express.Router(); // eslint-disable-line new-cap
+const router = express.Router();
 
 router.route('/')
   /** POST /api/user - Create a new user (admin only)

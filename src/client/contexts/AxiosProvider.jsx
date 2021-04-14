@@ -47,13 +47,19 @@ export function AxiosProvider({ children }) {
                 data.accessToken = null;
                 data.refreshToken = null;
                 data.user = null;
-                // TODO: should route to /login
+
+                // pages detect changes in the refresh token and automatically
+                // re-routes to /auth
+                // therefore there's no need to reroute to /auth here
+
                 return Promise.reject(error);
               }).catch((e) => {
                 data.accessToken = null;
                 data.refreshToken = null;
                 data.user = null;
-                // TODO: should route to /login
+
+                // same situation as above
+
                 return Promise.reject(e);
               }).finally(() => createInterceptor());
           }

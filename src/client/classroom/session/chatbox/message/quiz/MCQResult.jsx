@@ -16,8 +16,8 @@ export default function MCQResult({ message }) {
     if (!(values.choices instanceof Array)) {
       values.choices = [values.choices];
     }
-    // TODO: send the token awardees to server
-    // note that server should only accept a list of user ids to award tokens to
+
+    // note that server only accept a list of user ids to award tokens to
     // it is the client's job to compute that list
     console.log('MCQ select token awardees ', values);
     if (message.content.correct?.length > 0 || (values.choices && values.choices.length > 0)) {

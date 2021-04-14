@@ -21,7 +21,7 @@ export function RealtimeProvider({ children }) {
     if (socket) {
       socket.onAny((...args) => console.log(args));
 
-      // TODO: GUIDE: write all realtime event receiver here
+      // GUIDE: write all realtime event receiver here
       // instead of writing the receivers in components and update UI directly,
       // write receivers here and update data, then design the components so
       // that they react to data changes (e.g. using useEffect)
@@ -134,7 +134,7 @@ export function RealtimeProvider({ children }) {
     }
   }, [socket]);
 
-  // TODO: GUIDE: write all realtime event emitter here
+  // GUIDE: write all realtime event emitter here
 
   function createClassroom(classroomName) {
     return new Promise((resolve, reject) => {
@@ -314,7 +314,7 @@ export function RealtimeProvider({ children }) {
 
   return (
     <RealtimeContext.Provider value={{
-      // TODO: GUIDE: export functions to send socket messages to server
+      // GUIDE: export functions to send socket events to server
       createClassroom,
       joinClassroom,
       peekClassroom,

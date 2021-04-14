@@ -11,8 +11,6 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
 import './MessageCompose.scoped.css';
 
-// TODO: reply to question
-
 export default function MessageCompose({ onCreateQuiz }) {
   const { sendMessage } = useRealtime();
   const { data, getSelfParticipant } = useDataStore();

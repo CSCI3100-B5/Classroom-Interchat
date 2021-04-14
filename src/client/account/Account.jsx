@@ -12,9 +12,6 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
-// TODO: The UI is implemented as a tab control here, but a continuous
-// scrollable page is preferred
-
 export default function Account() {
   const { data } = useDataStore();
 
@@ -57,7 +54,7 @@ export default function Account() {
         history.push('/auth');
       }
     })();
-  }, []);
+  }, [data.refreshToken]);
 
   if (!data.refreshToken || !data.user) return (<p>Redirecting you to log in...</p>);
 

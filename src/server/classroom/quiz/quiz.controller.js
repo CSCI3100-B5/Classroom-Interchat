@@ -78,7 +78,6 @@ async function sendQuiz(packet, socket, io) {
   classroom.messages.push(message);// message
   await classroom.save();
   cachegoose.clearCache(`ClassroomById-${classroom.id}`);
-  // TODO: emit different quiz to different participants
   socket.to(classroom.id).emit('new quiz', message.filterWithoutAnswer());
   io.to(meta.invoker.id).emit('new quiz', message.filterSafe());
   return callback({});

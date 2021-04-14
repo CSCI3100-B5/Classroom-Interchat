@@ -85,7 +85,6 @@ async function peekClassroom(packet, socket, io) {
   });
 }
 
-// TODO: disallow if classroom closed
 async function joinClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
   if (meta.invokerClassroom) return callback({ error: 'You are already in a classroom' });
@@ -98,7 +97,9 @@ async function joinClassroom(packet, socket, io) {
   }
 
   // joining a closed classroom
-  // send classroom history for viewing
+  // send classroom history for viewing instead
+  // not saving the classroom in the socket connection, so that
+  // attempts to modify classroom contents will be rejected
   if (classroom.closedAt) {
     callback({});
     classroom = await classroom.populate('messages').populate('messages.sender').execPopulate();
@@ -175,7 +176,6 @@ async function lostConnection(packet, socket, io) {
   }
 }
 
-// TODO: implement leaving
 async function leaveClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
   if (!socket.data.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
@@ -205,7 +205,6 @@ async function leaveClassroom(packet, socket, io) {
 
     classroom = await classroom.populate('host').populate('participants.user').execPopulate();
     io.to(classroom.id).emit('participant deleted', { userId: meta.invoker.id });
-    // TODO: close classroom or transfer host if host leave
     if (meta.invoker.id === classroom.host.id) {
       if (classroom.participants.length > 0) {
         const instructors = classroom.participants.filter(x => x.permission === 'instructor');

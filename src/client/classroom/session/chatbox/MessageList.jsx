@@ -10,10 +10,6 @@ export default function MessageList() {
   const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
   const ongoingQuizzes = data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt);
 
-  // TODO: filter by thread
-  // TODO: filter unresolved questions only
-  // TODO: collapse multiple messages
-
   let messageList;
   if (!data.messageFilter) {
     messageList = data.messages;

@@ -32,6 +32,10 @@ export default function CreateClassroom() {
     if (data.classroomMeta) history.push('/classroom/session');
   }, [data.classroomMeta]);
 
+  useEffect(() => {
+    if (!data.refreshToken) history.push('/auth');
+  }, [data.refreshToken]);
+
   const onSubmit = async (values) => {
     try {
       await createClassroom(values.classroomName);
@@ -40,7 +44,6 @@ export default function CreateClassroom() {
     }
   };
 
-  // Redirect to /auth after logout
   const onLogOut = async () => {
     const result = await logout();
     if (!result.success) {
@@ -53,7 +56,6 @@ export default function CreateClassroom() {
     } else {
       toast('info', 'Log out', 'You have been logged out');
     }
-    history.push('/auth');
   };
 
   return (

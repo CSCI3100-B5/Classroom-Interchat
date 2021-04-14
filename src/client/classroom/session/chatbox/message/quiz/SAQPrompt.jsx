@@ -11,8 +11,8 @@ export default function SAQPrompt({ message }) {
   const data = useStates({
     answer: ''
   });
+
   const onSubmit = async () => {
-    // TODO: send answer to server
     if (!data.answer) return;
     console.log('SAQ answer object', data.answer);
     try {
@@ -22,6 +22,7 @@ export default function SAQPrompt({ message }) {
       toast('error', 'Error when answering SAQ', ex.error);
     }
   };
+
   return (
     <div className="d-flex flex-column">
       <div className="m-2"><MarkdownRender>{message.content.prompt}</MarkdownRender></div>

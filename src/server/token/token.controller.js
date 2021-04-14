@@ -28,9 +28,6 @@ function loadUser(req, res, next, id) {
     .catch(e => next(e));
 }
 
-// TODO: invalidate token
-// TODO: get all tokens of a user
-
 /**
  * Get all tokens of a given user id
  */

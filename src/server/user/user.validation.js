@@ -1,8 +1,5 @@
 const Joi = require('joi');
 
-// TODO: GUIDE: you may copy this file to make your xxx.validation.js
-// For more info on how to write Joi schemas, see https://joi.dev/api/
-
 module.exports = {
   // POST /api/user
   createUser: {
