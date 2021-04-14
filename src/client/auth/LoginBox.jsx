@@ -1,62 +1,45 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { Button, Form, Alert } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
-
-// The Log in box, not an independent page.
-// This component is shown when the user select the log in
-// tab in the /auth page.
+import { useToast } from '../contexts/ToastProvider.jsx';
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(8).max(64).required(),
-  rememberMe: yup.bool().required(),
+  email: yup.string().email().required().label('Email'),
+  password: yup.string().min(8).max(64).required()
+    .label('Password'),
+  rememberMe: yup.bool().required().label('Remember me'),
 });
 
 
 export default function LoginBox() {
-  const [showAlert, setAlertVisibility] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-
   const history = useHistory();
 
   const { login } = useApi();
-  const {
-    rememberMe,
-    setRememberMe,
-  } = useDataStore();
+  const { data } = useDataStore();
+  const { toast } = useToast();
 
   const onSubmit = async (values) => {
     const result = await login(values.email, values.password);
     if (result.success) {
-      history.push('/classroom');
+      history.push('/account');
     } else {
-      setAlertMessage(result.response.data.message);
-      setAlertVisibility(true);
+      toast('error', 'Log in failed', result.response.data.message);
     }
   };
 
   return (
     <div>
-      <Alert
-        className="m-2"
-        show={showAlert}
-        variant="warning"
-        onClose={() => setAlertVisibility(false)}
-        dismissible
-      >
-        {alertMessage}
-      </Alert>
       <Formik
         validationSchema={schema}
         onSubmit={onSubmit}
         initialValues={{
           email: '',
           password: '',
-          rememberMe
+          rememberMe: data.rememberMe
         }}
       >
         {({
@@ -66,7 +49,7 @@ export default function LoginBox() {
           touched,
           errors,
         }) => (
-          <Form className="m-4" noValidate onSubmit={handleSubmit}>
+          <Form className="mt-4 mx-1" noValidate onSubmit={handleSubmit}>
             <Form.Group controlId="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -75,6 +58,7 @@ export default function LoginBox() {
                 value={values.email}
                 onChange={handleChange}
                 isValid={touched.email && !errors.email}
+                isInvalid={touched.email && errors.email}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.email}
@@ -88,24 +72,27 @@ export default function LoginBox() {
                 value={values.password}
                 onChange={handleChange}
                 isValid={touched.password && !errors.password}
+                isInvalid={touched.password && errors.password}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.password}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group>
+            <Form.Group controlId="rememberMe">
               <Form.Check
                 required
                 name="rememberMe"
                 label="Remember me"
                 checked={values.rememberMe}
-                onChange={(event) => { handleChange(event); setRememberMe(event.target.checked); }}
+                onChange={(event) => {
+                  handleChange(event);
+                  data.rememberMe = event.target.checked;
+                }}
                 isInvalid={!!errors.rememberMe}
                 feedback={errors.rememberMe}
-                id="rememberMe"
               />
             </Form.Group>
-            <Button type="submit">Log in</Button>
+            <Button className="btn btn-primary btn-block" type="submit"><strong>Log in</strong></Button>
           </Form>
         )}
       </Formik>

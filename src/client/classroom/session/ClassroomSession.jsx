@@ -1,38 +1,34 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import ClassroomInfo from './info/ClassroomInfo.jsx';
-import Dashboard from './dashboard/Dashboard.jsx';
 import ChatBox from './chatbox/ChatBox.jsx';
-
-// A page shown when users have joined the classroom.
-// This page is divided into 3 main parts:
-//  - ClassroomInfo - basic info of this classroom and participant list
-//  - ChatBox - message history and the send message box
-//  - Dashboard - visible to instructors only, allowing them to
-//      perform actions such as creating quizzes and disabling the classroom
+import { useDataStore } from '../../contexts/DataStoreProvider.jsx';
+import './ClassroomSession.scoped.css';
+import ParticipantList from './info/ParticipantList.jsx';
 
 export default function ClassroomSession() {
-  const { classroomId } = useParams();
-  const [classroom] = useState({
-    id: classroomId,
-    name: 'Classroom name',
-    createdBy: {
-      name: 'name'
-    },
-    participants: [
-      {
-        name: 'name 1'
-      },
-      {
-        name: 'name 2'
-      }
-    ]
-  });
+  const history = useHistory();
+  const { data } = useDataStore();
+  const [showParticipantList, setShowParticipantList] = useState(false);
+
+  useEffect(() => {
+    if (!data.refreshToken) history.push('/auth');
+  }, [data.refreshToken]);
+
+  useEffect(() => {
+    if (!data.classroomMeta) {
+      console.log('Classroom meta does not exist, re-routing to join classroom');
+      history.push('/classroom');
+    }
+  }, [data.classroomMeta]);
+
+  if (!data.classroomMeta) return (<p>No session detected...</p>);
   return (
-    <div>
-      <ClassroomInfo classroom={classroom} />
-      <ChatBox />
-      <Dashboard />
+    <div className="session-container">
+      <ClassroomInfo className="classroom-info" onShowParticipantList={() => setShowParticipantList(!showParticipantList)} />
+      {showParticipantList
+        ? <ParticipantList onCloseParticipantList={() => setShowParticipantList(false)} />
+        : <ChatBox className="chat-box" />}
     </div>
   );
 }

@@ -1,0 +1,86 @@
+.classroom-info {
+  grid-area: top;
+  position: relative;
+  width: 100%;
+}
+
+.classroom-info-card {
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+  border: 0px solid white;
+  width: 100%;
+  margin: 0px;
+  border-radius: 0px;
+}
+
+.classroom-card-title {
+  display: flex;
+  width: 100%;
+  margin: -4px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.classroom-card-body {
+  display: grid;
+  width: 100%;
+  margin: -4px;
+  grid-template-columns: minmax(0, 1fr) min-content;
+  grid-template-areas: "bottomleft bottomright";
+  align-items: center;
+}
+
+.classroom-name {
+  font-size: 1.5rem;
+  margin-right: 8px;
+}
+
+.account-name {
+  font-size: 1.2rem;
+}
+
+.account-name span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.participant-count {
+  grid-area: bottomleft;
+  margin-right: 8px;
+  color: white;
+  text-align: left;
+}
+
+.leave-button {
+  grid-area: bottomright;
+}
+
+.status-banner {
+  border: 0px;
+  border-bottom: 1px solid lightgrey;
+  background-color: #0d6dfd21;
+  color: var(--secondary);
+  padding: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 0px;
+}
+
+.status-banner.active {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.status-banner.clickable {
+  text-align: left;
+  color: black;
+  display: block;
+}
+
+.status-banner.clickable:hover {
+  color: white;
+  background-color: var(--secondary);
+}
+
+.status-banner.clickable.active:hover {
+  color: white;
+}

@@ -1,21 +1,75 @@
-import React from 'react';
-import './Landing.scoped.css';
-import { Button } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import {
+  Button, Row, Col, Card, Container
+} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import AppImage from './Icon@4x.png';
+import { BiTimer, BiCloudLightning, BiEditAlt } from 'react-icons/bi';
+import { useHistory } from 'react-router-dom';
+import './Landing.scoped.css';
 
-// This is the homepage of our website, shown to the user when
-// they are not logged in.
-
-export default function App() {
+export default function Landing() {
+  const history = useHistory();
+  useEffect(() => {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('In standalone UI, routing to /auth');
+      history.push('/auth');
+    }
+  }, []);
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    return (
+      <div className="splash-container">
+        <img className="splash-icon" src="/favicon.svg" alt="Page loading" />
+      </div>
+    );
+  }
   return (
     <div>
-      <h1 className="title">Classroom Interchat</h1>
-      <p>Enjoy an innovative real-time interactive classroom experience!</p>
-      <LinkContainer to="/auth">
-        <Button>Login</Button>
-      </LinkContainer>
-      <img src={AppImage} alt="Classroom Interchat icon" />
+      <div className="landing-bg" />
+
+      <Container>
+        <Row className="mt-4">
+          <Col className="d-flex flex-column justify-content-center">
+            <h1 className="heading text-light">Classroom Interchat</h1>
+            <p className="heading-desc text-light">Enjoy an innovative real-time interactive classroom experience!</p>
+            <div className="d-flex">
+              <LinkContainer to="/auth">
+                <Button className="ml-3 mt-1 px-4 shadow-sm" variant="outline-light" size="lg">
+                  <strong className="white-space-nowrap">Log in</strong>
+                </Button>
+              </LinkContainer>
+              <LinkContainer to="/auth#signup">
+                <Button className="ml-2 mt-1 px-4 shadow-sm" variant="light" size="lg">
+                  <strong className="white-space-nowrap">Sign up</strong>
+                </Button>
+              </LinkContainer>
+            </div>
+          </Col>
+          <Col sm="auto" className="d-flex flex-column justify-content-center">
+            <img src="/favicon.svg" className="img-fluid" alt="Classroom Interchat icon" />
+          </Col>
+        </Row>
+        <Card as={Row} className="my-4 shadow-sm">
+          <Card.Body className="p-4 bg-light">
+            <Row>
+              <Col sm={4} className="d-flex flex-column align-items-center">
+                <BiTimer className="large-icon" />
+                <p><strong>Speedy</strong></p>
+                <p className="text-center">Real-time classroom with minimal set-up and no installation</p>
+              </Col>
+              <Col sm={4} className="d-flex flex-column align-items-center">
+                <BiCloudLightning className="large-icon" />
+                <p><strong>Reliable</strong></p>
+                <p className="text-center">Bad Internet? Need to switch device? Never worry about missed messages</p>
+              </Col>
+              <Col sm={4} className="d-flex flex-column align-items-center">
+                <BiEditAlt className="large-icon" />
+                <p><strong>Flexible</strong></p>
+                <p className="text-center">Send text, code, equations, tables, quizzes, questions and more</p>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      </Container>
     </div>
   );
 }

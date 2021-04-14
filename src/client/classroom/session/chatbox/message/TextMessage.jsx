@@ -1,11 +1,10 @@
 import React from 'react';
+import MarkdownRender from './MarkdownRender.jsx';
 
-// A type of message with plain text only.
-
-export default function TextMessage() {
+export default function TextMessage({ message }) {
   return (
-    <div>
-      <p>The message text</p>
+    <div className="message-box">
+      <MarkdownRender>{message.content}</MarkdownRender>
     </div>
   );
 }

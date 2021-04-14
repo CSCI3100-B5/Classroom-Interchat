@@ -1,6 +1,7 @@
 # [Classroom Interchat](https://classroom-interchat.herokuapp.com/)
 
 [![Node.js CI](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/CSCI3100-B5/Classroom-Interchat/actions/workflows/node.js.yml)
+<a href="https://codeclimate.com/github/CSCI3100-B5/Classroom-Interchat/maintainability"><img src="https://api.codeclimate.com/v1/badges/8265e4919576641da911/maintainability" /></a>
 
 Boilerplate code credits:
 

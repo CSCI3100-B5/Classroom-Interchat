@@ -60,11 +60,11 @@ A `message` sent by `instructors`, intended to test the `participants`' understa
 
 **`Short answer quiz`**
 
-A type of `quiz` where `participants` can type any textual response. The result will be listed (similar to uReply). There are no correct answers.
+A type of `quiz` where `participants` can type any textual response. The results will be listed (similar to uReply). There are no correct answers.
 
 **`Multiple choice quiz`**
 
-A type of `quiz` where `participants` can pick one out of 2 to 10 choices. The result will be shown as the percentage of students choosing each choice. A correct answer can be set, or if there isn't a correct answer, this `quiz` simply becomes a poll.
+A type of `quiz` where `participants` can pick one out of 2 to 10 choices. The results will be shown as the percentage of students choosing each choice. A correct answer can be set, or if there isn't a correct answer, this `quiz` simply becomes a poll.
 
 **`Question`**
 

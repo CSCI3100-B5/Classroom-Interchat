@@ -1,0 +1,61 @@
+.reply-message {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 10px;
+}
+
+.msg-left .reply-message {
+  justify-content: flex-start;
+}
+
+.reply-container {
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.reply-box {
+  display: grid;
+  gap: 0px;
+  grid-template-columns: auto minmax(0, 1fr);
+  overflow-x: hidden;
+}
+
+.reply-text {
+  display: inline-block;
+  height: 100%;
+  border: 0px solid white;
+  font-size: 0.9rem;
+  background-color: var(--lightlightgray);
+  border-radius: 5px 0px 0px 0px;
+  margin-right: -0.5px;
+  margin-bottom: -0.5px;
+  text-align: left;
+  cursor: default !important;
+}
+
+.reply-content {
+  display: inline-block;
+  height: 100%;
+  border: 0px solid white;
+  font-size: 0.9rem;
+  background-color: var(--lightlightgray);
+  border-radius: 0px 5px 0px 0px;
+  margin-right: -0.5px;
+  margin-bottom: -0.5px;
+  text-align: left;
+  color: gray;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default !important;
+}
+
+.reply-message-box {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  max-width: 100%;
+}

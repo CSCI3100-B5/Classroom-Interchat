@@ -11,35 +11,31 @@ import JoinClassroom from './JoinClassroom.jsx';
 import ClassroomSession from './session/ClassroomSession.jsx';
 import { SocketProvider } from '../contexts/SocketProvider.jsx';
 import { RealtimeProvider } from '../contexts/RealtimeProvider.jsx';
-
-// The root of all classroom-related components
-// Routes pages such as join, create and classroom session page.
+import { ToastProvider } from '../contexts/ToastProvider.jsx';
 
 export default function ClassroomRoot() {
   const { path, url } = useRouteMatch();
   return (
     <SocketProvider>
       <RealtimeProvider>
-        <Router>
-          <div>
-            {/* A <Switch> looks through its children <Route>s and
+        <div>
+          {/* A <Switch> looks through its children <Route>s and
         renders the first one that matches the current URL. */}
-            <Switch>
-              <Route path={`${path}/join`}>
-                <JoinClassroom />
-              </Route>
-              <Route path={`${path}/create`}>
-                <CreateClassroom />
-              </Route>
-              <Route path={`${path}/id/:classroomId`}>
-                <ClassroomSession />
-              </Route>
-              <Route path={path}>
-                <Redirect to={`${url}/join`} />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
+          <Switch>
+            <Route path={`${path}/join`}>
+              <JoinClassroom />
+            </Route>
+            <Route path={`${path}/create`}>
+              <CreateClassroom />
+            </Route>
+            <Route path={`${path}/session`}>
+              <ClassroomSession />
+            </Route>
+            <Route path={path}>
+              <Redirect to={`${url}/join`} />
+            </Route>
+          </Switch>
+        </div>
       </RealtimeProvider>
     </SocketProvider>
   );

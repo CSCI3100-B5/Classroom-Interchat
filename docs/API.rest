@@ -7,37 +7,56 @@
 Token object
 {
   "id": "<token id>",
-  "createdBy": "<user id>",
-  "receivedBy": "<user id>",
+  "createdBy": "<REF user id>",
+  "receivedBy": "<REF user id>",
   "createdAt": "<timestmap>",
+  "classroom": "<REF classroom id>",
   "isValid": boolean,
   "value": "<string>"
 }
 
 User object
 {
+  "id": "<user id>",
   "name": "<string>",
   "email": "<email>",
   "password": "<hash>",
-  "id": "<user id>",
   "isAdmin": boolean,
   "createdAt": "<timestamp>",
-  "tokenIds": [ "<string>" ],  // IDs of refresh and access tokens. Refresh tokens are only valid if their IDs are in this array
+  "authTokenIds": [ "<string>" ],  // IDs of refresh and access tokens. Refresh tokens are only valid if their IDs are in this array
   "emailVerification": "<string>" | null,  // the email verification code sent to user, null when email is already verified
-  "lastVerifiedEmail": "<email>"
+  "lastVerifiedEmail": "<email>",
+  "tokens": [ "<REF token id>" ]
 }
 
 Classroom object
 {
-  "name": "<string>",
   "id": "<classroom id>",
-  "host": "<user id>",
+  "name": "<string>",
+  "host": "<REF user id>",
   "createdAt": "<timestmap>",
+  "closedAt": "<timestamp>", // null when the classroom is still open
   "participants": {
-    "userId": "<user id>",
+    "user": "<REF user id>",
     "permission": "instructor/student/requesting",
+    "createdAt": "<timestamp>", // represents the time when the user first join the classroom
+    "isOnline": boolean,
+    "lastOnlineAt": "<timestamp>", // only meaningful when isOnline = false
     "isMuted": boolean
   },
+  "messages": [ "<REF message id>" ],
+  "isMuted": boolean
+}
+
+// This object is not stored to the database. It is sent
+// by the server for previewing classroom before joining
+PeekClassroom response
+{
+  "id": "<classroom id>",
+  "name": "<string>",
+  "host": "<REF user id>",
+  "createdAt": "<timestmap>",
+  "participantCount": number,
   "isMuted": boolean
 }
 
@@ -45,33 +64,70 @@ Message object
 {
   "id": "<message id>",
   "createdAt": "<timestamp>",
-  "classroom": "<classroom id>",
-  "sender": "<user id>",
-  "type": "text|poll|status|question|reply",
-  "content": "<string>"  // text content or status content
-  | {  // poll content
-    "type": "SAQ|MCQ",
+  "classroom": "<REF classroom id>",
+  "sender": "<REF user id>",
+  "type": "text|mcq|saq|question|reply",
+  "content": "<string>"  // text content
+  | {  // saq content
     "prompt": "<string>",
-    "choices": [ "<string>" ],   // only MCQ
-    "correct": [ number ]     // only MCQ // index of correct answer inside "choices"
-                              // if there are more than one correct answer, assume all answers need to be checked to be considered correct
+    "closedAt": "<timestamp>",
+    "results": [ "<REF quiz answer>" ]
+  }
+  | {  // mcq content
+    "prompt": "<string>",
+    "choices": [ "<string>" ],
+    "correct": [ number ],     // index of correct answer inside "choices"
+    "multiSelect": boolean,
+    "closedAt": "<timestamp>",
+    "results": [ "<REF quiz answer>" ]
   }
   | { // question content
     "isResolved": boolean,
     "content": "<string>"
   }
   | { // reply content
-    "replyTo": "<message id>",
+    "replyTo": "<REF message id>", // replyTo should not be populated
     "content": "<string>"
   }
 }
 
-PollAnswer object
+// This object is not saved to the database, but is what the client receives
+// from server when a new quiz arrives
+// This object is embedded into Message.content
+QuizContent repsonse
 {
-  "id": "<pollanswer id>",
-  "pollId": "<message id>",
+  "type": "SAQ|MCQ",
+  "prompt": "<string>",
+  "choices": [ "<string>" ],   // only MCQ
+  "multiSelect": boolean  // only MCQ
+}
+
+// This object is also not saved to the database, but is what the client receives
+// from server when a quiz result is released
+// This object is embedded into Message.content
+QuizContentWithResults repsonse
+{
+  "type": "SAQ|MCQ",
+  "prompt": "<string>",
+  "choices": [ "<string>" ],   // only MCQ
+  "correct": [ number ],  // only MCQ
+  "multiSelect": boolean,
+  "results": [
+    {
+      "user": "<user id>",
+      "content": "<string>" | [ number ],
+      "createdAt": "<timestamp>"
+    }
+  ]
+}
+
+QuizAnswer object
+{
+  "id": "<quizanswer id>",
+  "quiz": "<REF message id>",
   "createdAt": "<timestamp>",
-  "content": "<string>" | number
+  "user": "<REF user id>",
+  "content": "<string>" | [ number ]
 }
 
 ############################################################
@@ -94,7 +150,13 @@ RESPONSE:
 {
   "accessToken": "<string>",
   "refreshToken": "<string>",
-  "userId": "<user id>"
+  "user": {
+    "name": "<string>",
+    "email": "<email>",
+    "id": "<user id>",
+    "isAdmin": boolean,
+    "createdAt": "<timestamp>"
+  }
 }
 
 ############################################################

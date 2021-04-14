@@ -10,10 +10,9 @@ export function useApi() {
 
 export function ApiProvider({ children }) {
   const {
-    setAccessToken,
-    setRefreshToken,
+    data,
+    accessTokenHeader,
     refreshTokenHeader,
-    setUserId
   } = useDataStore();
   const request = useAxios();
 
@@ -29,11 +28,11 @@ export function ApiProvider({ children }) {
       url: '/auth/token',
       headers: refreshTokenHeader()
     });
-    if (result.success) setAccessToken(result.response.data.accessToken);
+    if (result.success) data.accessToken = result.response.data.accessToken;
     return result;
   }
 
-  // TODO: API calls should be put here
+  // GUIDE: API calls should be put here
 
   /**
    * Login with email and password
@@ -48,9 +47,41 @@ export function ApiProvider({ children }) {
       data: { email, password }
     });
     if (result.success) {
-      setAccessToken(result.response.data.accessToken);
-      setRefreshToken(result.response.data.refreshToken);
-      setUserId(result.response.data.userId);
+      data.accessToken = result.response.data.accessToken;
+      data.refreshToken = result.response.data.refreshToken;
+      data.user = result.response.data.user;
+    }
+    return result;
+  }
+
+  /**
+   * Send email request
+   * @returns response body
+   */
+  async function sendEmail() {
+    const result = await request({
+      method: 'POST',
+      url: '/auth/email',
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
+  /**
+   * Logout
+   * @returns response body
+   */
+  async function logout() {
+    const result = await request({
+      method: 'DELETE',
+      url: '/auth/logout',
+      headers: refreshTokenHeader()
+    });
+    if (result.success) {
+      data.rememberMe = true;
+      data.accessToken = null;
+      data.refreshToken = null;
+      data.user = null;
     }
     return result;
   }
@@ -71,11 +102,81 @@ export function ApiProvider({ children }) {
     return result;
   }
 
+  /**
+   * Get user profile
+   * @param {String} userId userId
+   * @returns response body
+   */
+  async function getUserProfile(userId) {
+    const result = await request({
+      method: 'GET',
+      url: `/user/${userId}`,
+      headers: accessTokenHeader()
+    });
+    if (result.success) {
+      data.user = result.response.data;
+    }
+    return result;
+  }
+
+  /**
+   * Update user profile and change password
+   * @param {String} userId userId
+   * @param {Object} profile new profile data
+   * @returns response body
+   */
+  async function updateUserProfile(userId, profile) {
+    const result = await request({
+      method: 'PATCH',
+      url: `/user/${userId}`,
+      headers: accessTokenHeader(),
+      data: profile
+    });
+    if (result.success) {
+      data.user = result.response.data;
+    }
+    return result;
+  }
+
+  /**
+   * Get all tokens of a given user id
+   * @param {String} userId userId
+   * @returns response body
+   */
+  async function getUserTokens(userId) {
+    const result = await request({
+      method: 'GET',
+      url: `/token/${userId}`,
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
+  /**
+   * Sets isValid of a token to false
+   * @param {String} tokenId tokenId
+   * @returns response
+   */
+  async function setTokenFalse(tokenId) {
+    const result = await request({
+      method: 'PATCH',
+      url: `/token/${tokenId}/invalidate`,
+      headers: accessTokenHeader()
+    });
+    return result;
+  }
+
   return (
     <ApiContext.Provider value={{
       refreshAccessToken,
       login,
-      signup
+      signup,
+      sendEmail,
+      logout,
+      getUserProfile,
+      updateUserProfile,
+      getUserTokens,
+      setTokenFalse
     }}
     >
       {children}

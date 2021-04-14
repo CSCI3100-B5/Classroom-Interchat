@@ -1,32 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Container, Row } from 'react-bootstrap';
+import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
-
-// The message history, belonging to the chatbox.
+import './MessageList.scoped.css';
 
 export default function MessageList() {
-  const [messageList] = useState([
-    {
-      type: 'Text',
-      text: 'message text',
-      sender: 'name',
-      timestamp: new Date(),
-    },
-    {
-      type: 'Quiz',
-      text: 'message text 2',
-      sender: 'name2',
-      timestamp: new Date(),
+  const { data } = useDataStore();
+
+  const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
+  const ongoingQuizzes = data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt);
+
+  let messageList;
+  if (!data.messageFilter) {
+    messageList = data.messages;
+  } else if (data.messageFilter === 'unresolved') {
+    messageList = unresolvedQuestions;
+  } else if (data.messageFilter === 'quiz') {
+    messageList = ongoingQuizzes;
+  } else {
+    const question = data.messages.find(x => x.id === data.messageFilter);
+    if (question) {
+      messageList = data.messages.filter(
+        x => x.id === data.messageFilter || x.content?.replyTo === data.messageFilter
+      );
+    } else {
+      data.messageFilter = null;
+      messageList = data.messages;
     }
-  ]);
+  }
+
+  const messageBtm = useRef(null);
+
+  useEffect(() => {
+    messageBtm.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messageList.length]);
+
   return (
-    <div>
-      <ul>
+    <Container className="message-list-container">
+      <div className="message-list">
         {
-          messageList.map(message => (
-            <li><Message message={message} /></li>
+          messageList.map((message, idx) => (
+            <Row key={message.id}><Message message={message} index={idx} /></Row>
           ))
         }
-      </ul>
-    </div>
+        <div ref={messageBtm} />
+      </div>
+    </Container>
   );
 }

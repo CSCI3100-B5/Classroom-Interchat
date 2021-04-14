@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const cachegoose = require('cachegoose');
 const User = require('../models/user.model');
 const APIError = require('./../helpers/APIError');
 
@@ -8,7 +9,7 @@ const APIError = require('./../helpers/APIError');
 function load(req, res, next, id) {
   User.get(id)
     .then((user) => {
-      req.user = user; // eslint-disable-line no-param-reassign
+      req.user = user;
       return next();
     })
     .catch(e => next(e));
@@ -22,13 +23,7 @@ function get(req, res, next) {
   if (req.invoker.id !== req.user.id && !req.invoker.isAdmin) {
     return next(new APIError("Cannot access others' profiles", httpStatus.FORBIDDEN, true));
   }
-  return res.json({
-    name: req.user.name,
-    email: req.user.email,
-    id: req.user.id,
-    isAdmin: req.user.isAdmin,
-    createdAt: req.user.createdAt
-  });
+  return res.json(req.user.filterSafe());
 }
 
 /**
@@ -55,6 +50,7 @@ async function create(req, res, next) {
       lastVerifiedEmail: req.body.lastVerifiedEmail
     });
     await user.setPassword(req.body.password);
+    cachegoose.clearCache(`UserById-${user.id}`);
     return res.json(user);
   } catch (e) {
     return next(e);
@@ -64,7 +60,8 @@ async function create(req, res, next) {
 /**
  * Update existing user
  * @property {string} req.body.name - The name of user.
- * @property {string} req.body.password - The password of user.
+ * @property {string} req.body.oldPassword - The old password of user.
+ * @property {string} req.body.newPassword - The new password of user.
  * @property {string} req.body.email - The email of user.
  * @returns {User}
  */
@@ -77,16 +74,17 @@ async function update(req, res, next) {
     if (req.body.name) user.name = req.body.name;
     if (req.body.email) {
       user.email = req.body.email;
+      await user.newEmailVerification();
     }
-    if (req.body.password) await user.setPassword(req.body.password);
-    else await user.save();
-    return res.json({
-      name: req.user.name,
-      email: req.user.email,
-      id: req.user.id,
-      isAdmin: req.user.isAdmin,
-      createdAt: req.user.createdAt
-    });
+    if (req.body.newPassword) {
+      if (!req.body.oldPassword) return next(new APIError('You must also provide the old password', httpStatus.FORBIDDEN, true));
+      if (!await user.comparePassword(req.body.oldPassword)) {
+        return next(new APIError('Incorrect old password', httpStatus.FORBIDDEN, true));
+      }
+      await user.setPassword(req.body.newPassword);
+    } else await user.save();
+    cachegoose.clearCache(`UserById-${user.id}`);
+    return res.json(user.filterSafe());
   } catch (e) {
     return next(e);
   }

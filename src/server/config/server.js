@@ -14,11 +14,11 @@ const expressValidation = require('express-validation');
 const helmet = require('helmet');
 const winstonInstance = require('./winston');
 const routes = require('../index.route');
-const listeners = require('../index.listener');
+const events = require('../index.events');
 const config = require('./config');
 const APIError = require('../helpers/APIError');
 const middlewareWrap = require('../helpers/middlewareWrap');
-const { requireAccessToken } = require('../helpers/requireAuth');
+const { requireEmailVerified } = require('../helpers/requireAuth');
 
 const app = express();
 const server = http.Server(app);
@@ -30,12 +30,17 @@ const io = socketio(server, {
 
 // Reuse the express requireAccessToken middleware here
 // for authenticating the user
-// requireAccessToken middleware also retrieves the user from database
+// requireEmailVerified middleware also retrieves the user from database
 // it can be accessed via socket.request.invoker
-io.use(middlewareWrap(requireAccessToken));
+io.use(middlewareWrap(requireEmailVerified));
+// move socket.request to socket.data for persistence
+io.use((socket, next) => {
+  socket.data.invoker = socket.request.invoker;
+  next();
+});
 
 io.on('connection', (socket) => {
-  listeners(socket, io);
+  events(socket, io);
 });
 
 if (config.env === 'development') {
@@ -56,7 +61,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       'script-src': ["'self'", "'unsafe-inline'"],
-      'connect-src': ["'self'", "'unsafe-inline'", 'classroom-interchat-develop.herokuapp.com', 'classroom-interchat.herokuapp.com']
+      'connect-src': ["'self'", "'unsafe-inline'", 'classroom-interchat-develop.herokuapp.com', 'classroom-interchat.herokuapp.com', '*']
     },
   }
 }));

@@ -8,7 +8,7 @@ module.exports = {
       password: Joi.string().min(8).max(64).required(),
       email: Joi.string().email().required(),
       isAdmin: Joi.boolean().default(false),
-      emailVerification: Joi.string().default('sample-code'),
+      emailVerification: Joi.string().max(100).default('sample-code'),
       lastVerifiedEmail: Joi.string().email().default(null),
     })
   },
@@ -17,11 +17,12 @@ module.exports = {
   updateUser: {
     body: Joi.object({
       name: Joi.string().min(5).max(100),
-      password: Joi.string().min(8).max(64),
+      oldPassword: Joi.string().min(8).max(64),
+      newPassword: Joi.string().min(8).max(64),
       email: Joi.string().email()
     }),
-    params: {
-      userId: Joi.string().hex().required()
-    }
+    params: Joi.object({
+      userId: Joi.string().hex().length(24).required()
+    })
   }
 };

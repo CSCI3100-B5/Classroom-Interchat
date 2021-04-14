@@ -5,10 +5,15 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const APIError = require('../helpers/APIError');
 
+const { Schema } = mongoose;
+
+// GUIDE: All database models should be defined as separate files in this /models folder
+
 /**
  * User Schema
  */
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
+  // the actual database field name is _id, but you can access it with id
   name: {
     type: String,
     required: true
@@ -31,7 +36,7 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  tokenIds: {
+  authTokenIds: {
     type: Array,
     default: []
   },
@@ -41,6 +46,10 @@ const UserSchema = new mongoose.Schema({
   },
   lastVerifiedEmail: {
     type: String,
+    default: null
+  },
+  lastEmailSentAt: {
+    type: Date,
     default: null
   }
 });
@@ -56,15 +65,25 @@ const UserSchema = new mongoose.Schema({
  * Methods
  */
 UserSchema.method({
-  isTokenIdValid(tokenId) {
-    return this.tokenIds.includes(tokenId);
+  filterSafe() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      isAdmin: this.isAdmin,
+      createdAt: this.createdAt,
+      emailVerified: this.isEmailVerified()
+    };
   },
-  async invalidateTokenId(tokenId) {
-    this.tokenIds.pull(tokenId);
+  isAuthTokenIdValid(authTokenId) {
+    return this.authTokenIds.includes(authTokenId);
+  },
+  async invalidateAuthTokenId(authTokenId) {
+    this.authTokenIds.pull(authTokenId);
     await this.save();
   },
-  async addTokenId(tokenId) {
-    this.tokenIds.push(tokenId);
+  async addAuthTokenId(authTokenId) {
+    this.authTokenIds.push(authTokenId);
     await this.save();
   },
   isEmailVerified() {
@@ -101,6 +120,32 @@ UserSchema.statics = {
         }
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+
+  /**
+   * Get user
+   * @param {ObjectId} id - The objectId of user.
+   * @returns {Promise<User, APIError>}
+   */
+  getCached(id) {
+    return this.findById(id)
+      .cache(0, `UserById-${id}`)
+      .exec()
+      .then((user) => {
+        if (user) {
+          return user;
+        }
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      })
+      .catch(() => {
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 
@@ -116,6 +161,10 @@ UserSchema.statics = {
         if (user) {
           return user;
         }
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      })
+      .catch(() => {
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });

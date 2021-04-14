@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MessageList from './MessageList.jsx';
 import MessageCompose from './MessageCompose.jsx';
-
-// A part of the classroom session page. A combination of the message
-// list and the send message text box.
+import CreateQuiz from './CreateQuiz.jsx';
+import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
+import './ChatBox.scoped.css';
 
 export default function ChatBox() {
+  const [showCreateQuiz, setShowCreateQuiz] = useState(false);
+  const { data } = useDataStore();
+  if (showCreateQuiz) {
+    return (
+      <div className="create-quiz-container">
+        <CreateQuiz onBack={() => setShowCreateQuiz(false)} />
+      </div>
+    );
+  }
   return (
-    <div>
+    <div className="chat-box">
       <MessageList />
-      <MessageCompose />
+      {data.classroomMeta.closedAt
+        ? null
+        : <MessageCompose onCreateQuiz={() => setShowCreateQuiz(true)} />}
     </div>
   );
 }
