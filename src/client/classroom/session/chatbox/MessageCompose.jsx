@@ -96,6 +96,7 @@ export default function MessageCompose({ onCreateQuiz }) {
             <InputGroup>
               <FormControl
                 as="textarea"
+                maxLength={5000}
                 placeholder="Type your reply..."
                 aria-label="Type your reply"
                 className="reply-compose compose-box"
@@ -144,6 +145,7 @@ export default function MessageCompose({ onCreateQuiz }) {
           <InputGroup className="compose-shadow">
             <FormControl
               as="textarea"
+              maxLength={5000}
               className="compose-box"
               placeholder="Type your message..."
               aria-label="Type your message"

@@ -10,7 +10,8 @@ module.exports = {
   }),
   awardToken: Joi.object({
     userIds: Joi.array().items(Joi.string().hex().length(24).required()).required(),
-    value: Joi.string().allow('').default('').optional()
+    value: Joi.string().allow('').default('').max(200)
+      .optional()
   }),
   demoteParticipant: Joi.object({
     userId: Joi.string().hex().length(24).required()

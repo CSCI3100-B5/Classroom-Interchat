@@ -2,14 +2,14 @@ const Joi = require('joi');
 
 module.exports = {
   sendMessage: Joi.object({
-    message: Joi.string().required(),
+    message: Joi.string().max(5000).required(),
     information: {
       type: Joi.string().valid('text', 'question', 'reply').required(),
-      qMessageId: Joi.string(),
+      qMessageId: Joi.string().hex().length(24),
     }
   }),
 
   resolveQuestion: Joi.object({
-    messageId: Joi.string().required(),
+    messageId: Joi.string().hex().length(24).required(),
   }),
 };

@@ -13,7 +13,7 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 
 
 const schema = yup.object().shape({
-  classroomName: yup.string().required().label('Classroom Name'),
+  classroomName: yup.string().max(200).required().label('Classroom Name'),
 });
 
 
@@ -96,6 +96,7 @@ export default function CreateClassroom() {
                   <Form.Control
                     type="text"
                     name="classroomName"
+                    maxLength={200}
                     value={values.classroomName}
                     onChange={handleChange}
                     isValid={touched.classroomName && !errors.classroomName}

@@ -18,7 +18,7 @@ module.exports = {
   verifyEmail: {
     params: Joi.object({
       userId: Joi.string().hex().length(24).required(),
-      verification: Joi.string().required()
+      verification: Joi.string().max(100).required()
     })
   }
 };

@@ -13,11 +13,10 @@
 }
 
 .classroom-card-title {
-  display: grid;
+  display: flex;
   width: 100%;
   margin: -4px;
-  grid-template-columns: minmax(0, 1fr) min-content;
-  grid-template-areas: "topleft topright";
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -31,15 +30,12 @@
 }
 
 .classroom-name {
-  grid-area: topleft;
   font-size: 1.5rem;
   margin-right: 8px;
 }
 
 .account-name {
-  grid-area: topright;
   font-size: 1.2rem;
-  white-space: nowrap;
 }
 
 .account-name span {

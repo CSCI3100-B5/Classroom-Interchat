@@ -8,6 +8,7 @@ export default function TokenAwarder({ userIds, onClose }) {
   const [note, setNote] = useState('');
   const { awardToken } = useRealtime();
   const { toast } = useToast();
+
   const onAwardToken = async () => {
     try {
       await awardToken(userIds, note);
@@ -17,12 +18,14 @@ export default function TokenAwarder({ userIds, onClose }) {
       toast('error', 'Error when awarding tokens', ex.error);
     }
   };
+
   useEffect(() => {
     if (userIds && userIds.length === 0) {
       toast('error', 'Error when awarding tokens', 'There is no one to award a token to');
       onClose();
     }
   }, [userIds]);
+
   return (
     <Modal show={!!userIds} onHide={onClose} centered>
       <Modal.Header closeButton>
@@ -37,6 +40,7 @@ export default function TokenAwarder({ userIds, onClose }) {
           participants
         </p>
         <FormControl
+          maxLength={200}
           placeholder="Specify a note for this token (optional)"
           aria-label="Optionally specify a note for this token"
           {...bindState(note, setNote)}

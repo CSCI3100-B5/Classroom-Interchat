@@ -69,6 +69,7 @@ export default function ManageProfile() {
                 <Form.Control
                   type="text"
                   name="profileName"
+                  maxLength={100}
                   value={values.profileName}
                   onChange={handleChange}
                   isValid={touched.profileName && !errors.profileName}

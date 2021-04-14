@@ -36,7 +36,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 const schema = yup.object().shape({
-  prompt: yup.string().required().label('Prompt'),
+  prompt: yup.string().max(200).required().label('Prompt'),
   type: yup.string().oneOf(['SAQ', 'MCQ']).label('Type'),
   choiceCount: yup.number().integer().min(2).max(10)
     .test(
@@ -130,6 +130,7 @@ export default function CreateQuiz({ onBack }) {
                 <Form.Label>Prompt</Form.Label>
                 <Form.Control
                   type="text"
+                  maxLength={200}
                   name="prompt"
                   value={values.prompt}
                   onChange={handleChange}
