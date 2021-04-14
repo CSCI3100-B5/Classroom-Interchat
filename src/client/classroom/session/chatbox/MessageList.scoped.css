@@ -1,7 +1,18 @@
-
-.message-list {
+.message-list-container {
   height: 100%;
   grid-area: messagelist;
   overflow-y: auto;
 }
-ul {list-style-type:none;}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+}

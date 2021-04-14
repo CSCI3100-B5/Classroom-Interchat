@@ -1,21 +1,4 @@
-.relativeBox{
-    position: relative;
-    right: 5px;
-    width: 100%;
-    height:300px;
-  }
-.timeRight{
-    position: absolute;
-    width: 300px;
-    right: 5px;
-    font-size: 1rem;
-    word-wrap: break-word;
-  }
-
-.timeLeft{
-    position: absolute;
-    width: 300px;
-    left: 5px;
-    font-size: 1rem;
-    word-wrap: break-word;
-  }
+.message-meta {
+  color: var(--secondary);
+  font-size: 0.8rem;
+}

@@ -101,7 +101,7 @@ async function joinClassroom(packet, socket, io) {
   // send classroom history for viewing
   if (classroom.closedAt) {
     callback({});
-    classroom = await classroom.populate('messages').execPopulate();
+    classroom = await classroom.populate('messages').populate('messages.sender').execPopulate();
     return socket.emit('catch up', classroom.filterSafe());
   }
   let participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
@@ -136,6 +136,7 @@ async function joinClassroom(packet, socket, io) {
   io.to(classroom.id).emit('participant changed', participant.filterSafe());
   callback({});
   classroom = await classroom.populate('messages').execPopulate();
+  classroom = await classroom.populate('messages.sender').execPopulate();
   const retClassroom = classroom.filterSafe();
   retClassroom.messages = await Promise.all(classroom.messages.map(async (x) => {
     if (x.type !== 'mcq' && x.type !== 'saq') return x.filterSafe();

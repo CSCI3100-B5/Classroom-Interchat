@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsFillReplyFill } from 'react-icons/bs';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
@@ -8,21 +8,38 @@ import './ReplyMessage.scoped.css';
 
 export default function ReplyMessage({ message }) {
   const { data } = useDataStore();
-  return (
-    <div>
-      <p className="iconRight"><BsFillReplyFill /></p>
 
-      <p className="senderRight">
-        reply:
-      </p>
-      <div className="MessageRight">
-        <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
+  const replyToMessage = data.messages.find(x => x.id === message.content.replyTo);
+  return (
+    <div className="reply-message">
+      <OverlayTrigger
+        placement="top"
+        overlay={(
+          <Tooltip id="tooltip-reply">
+            This is a reply
+          </Tooltip>
+          )}
+      >
+        <BsFillReplyFill className="icon-large message-icon" />
+      </OverlayTrigger>
+
+      <div className="reply-container">
+        <div className="reply-box">
+          <span className="reply-text btn">
+            Replying to
+            {' '}
+            {replyToMessage.sender.name}
+            {'\'s Question'}
+          </span>
+          <span className="reply-content btn">
+            {replyToMessage.content.content}
+          </span>
+        </div>
+        <div className="message-box reply-message-box shadow-none">
+          <MarkdownRender>{message.content.content}</MarkdownRender>
+        </div>
       </div>
-      <p className="replyingToRight">
-        Replying to
-        {' '}
-        {data.messages.find(x => x.id === message.content.replyTo).content.content}
-      </p>
+
     </div>
   );
 }

@@ -10,7 +10,6 @@
   width: 100%;
   margin: 0px;
   border-radius: 0px;
-  margin-bottom: 8px;
 }
 
 .classroom-card-title {
@@ -57,4 +56,35 @@
 
 .leave-button {
   grid-area: bottomright;
+}
+
+.status-banner {
+  border: 0px;
+  border-bottom: 1px solid lightgrey;
+  background-color: #0d6dfd21;
+  color: var(--secondary);
+  padding: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 0px;
+}
+
+.status-banner.active {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.status-banner.clickable {
+  text-align: left;
+  color: black;
+  display: block;
+}
+
+.status-banner.clickable:hover {
+  color: white;
+  background-color: var(--secondary);
+}
+
+.status-banner.clickable.active:hover {
+  color: white;
 }

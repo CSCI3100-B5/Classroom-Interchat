@@ -11,7 +11,7 @@ export default function ToastCenter() {
 
   return (
     <div className="toast-container">
-      {data.toasts.map((x) => {
+      {[...data.toasts].reverse().map((x) => {
         let icon = <BsFillInfoCircleFill />;
         if (x.type === 'error') {
           icon = <BsFillXCircleFill />;

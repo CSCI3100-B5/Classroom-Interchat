@@ -58,6 +58,11 @@ export function RealtimeProvider({ children }) {
             const messages = [...data.messages];
             messages[idx] = payload;
             data.messages = messages;
+            if (data.messageFilter === 'quiz'
+            && data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt).length === 0) {
+              data.messageFilter = null;
+              console.log('cleared message filter because there are no ongoing quizzes');
+            }
           } else {
             data.messages = [...data.messages, payload];
           }

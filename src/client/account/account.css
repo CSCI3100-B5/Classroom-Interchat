@@ -36,10 +36,6 @@
   border: 0px solid white;
 }
 
-.h-full {
-  height: 100%;
-}
-
 @media (max-width: 576px) {
   .sm-overflow-y-auto {
     overflow-y: auto;

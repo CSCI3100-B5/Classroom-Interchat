@@ -7,6 +7,8 @@ import MCQResult from './MCQResult.jsx';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../../../contexts/ToastProvider.jsx';
+import './QuizMessage.scoped.css';
+import './quiz.css';
 
 export default function QuizMessage({ message }) {
   const { data } = useDataStore();
@@ -44,20 +46,45 @@ export default function QuizMessage({ message }) {
     quiz = (<MCQPrompt message={message} />);
   }
   return (
-    <div>
-      <Badge>QUIZ</Badge>
-      {quiz}
-      {(() => {
-        if ((message.sender.id ?? message.sender) === data.user.id) {
-          if (!message.content.closedAt) {
-            return (<Button onClick={onEndQuiz}>End quiz</Button>);
+    <div className="quiz-message">
+      <div className="message-box quiz-message-box">
+        {quiz}
+      </div>
+      <div className="quiz-controls w-full d-flex">
+        {(() => {
+          if ((message.sender.id ?? message.sender) === data.user.id) {
+            if (!message.content.closedAt) {
+              return (
+                <Button
+                  onClick={onEndQuiz}
+                  variant="outline-primary"
+                  className="control-button"
+                >
+                  End quiz
+                </Button>
+              );
+            }
+            if (!message.content.resultsReleased) {
+              return (
+                <Button
+                  onClick={onReleaseResults}
+                  variant="outline-primary"
+                  className="control-button"
+                >
+                  Release results
+                </Button>
+              );
+            }
+
+            return (
+              <span className="text-small text-muted">
+                Results released
+              </span>
+            );
           }
-          if (!message.content.resultsReleased) {
-            return (<Button onClick={onReleaseResults}>Release results</Button>);
-          }
-        }
-        return null;
-      })()}
+          return null;
+        })()}
+      </div>
     </div>
   );
 }

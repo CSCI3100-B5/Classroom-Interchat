@@ -112,8 +112,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
   }
 
   return (
-
-    <div className="d-flex flex-column justify-content-between">
+    <div className="d-flex flex-column justify-content-between mt-2">
       <Container className="mb-2">
         <Row className="justify-content-center">
           {permissionButton ? (

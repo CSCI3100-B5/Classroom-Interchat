@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
+const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
@@ -29,8 +30,8 @@ MessageSchema.method({
       return {
         id: this.id,
         createdAt: this.createdAt,
-        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
-        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        classroom: filterSafeOrOriginal(this.classroom),
+        sender: filterSafeOrOriginal(this.sender),
         type: this.type,
         content: {
           prompt: this.content.prompt,
@@ -38,7 +39,7 @@ MessageSchema.method({
           correct: this.content.correct && this.content.correct.length > 0 ? this.content.correct : null,
           multiSelect: this.content.multiSelect,
           closedAt: this.content.closedAt,
-          results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
+          results: filterSafeOrOriginal(this.content.results),
           resultsReleased: this.content.resultsReleased
         }
       };
@@ -47,13 +48,13 @@ MessageSchema.method({
       return {
         id: this.id,
         createdAt: this.createdAt,
-        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
-        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        classroom: filterSafeOrOriginal(this.classroom),
+        sender: filterSafeOrOriginal(this.sender),
         type: this.type,
         content: {
           prompt: this.content.prompt,
           closedAt: this.content.closedAt,
-          results: this.populated('content.results') ? this.content.results.map(x => x.filterSafe()) : this.content.results,
+          results: filterSafeOrOriginal(this.content.results),
           resultsReleased: this.content.resultsReleased
         }
       };
@@ -61,8 +62,8 @@ MessageSchema.method({
     return {
       id: this.id,
       createdAt: this.createdAt,
-      classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
-      sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+      classroom: filterSafeOrOriginal(this.classroom),
+      sender: filterSafeOrOriginal(this.sender),
       type: this.type,
       content: this.content
     };
@@ -72,8 +73,8 @@ MessageSchema.method({
       return {
         id: this.id,
         createdAt: this.createdAt,
-        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
-        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        classroom: filterSafeOrOriginal(this.classroom),
+        sender: filterSafeOrOriginal(this.sender),
         type: this.type,
         content: {
           prompt: this.content.prompt,
@@ -88,8 +89,8 @@ MessageSchema.method({
       return {
         id: this.id,
         createdAt: this.createdAt,
-        classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
-        sender: this.populated('sender') ? this.sender.filterSafe() : this.sender,
+        classroom: filterSafeOrOriginal(this.classroom),
+        sender: filterSafeOrOriginal(this.sender),
         type: this.type,
         content: {
           prompt: this.content.prompt,

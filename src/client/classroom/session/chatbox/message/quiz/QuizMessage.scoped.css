@@ -1,0 +1,21 @@
+.quiz-message {
+  min-width: 50%;
+}
+
+.quiz-message-box {
+  max-width: 100%;
+  width: 100%;
+}
+
+.control-button {
+  white-space: nowrap;
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 0px;
+}
+
+.quiz-controls {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}

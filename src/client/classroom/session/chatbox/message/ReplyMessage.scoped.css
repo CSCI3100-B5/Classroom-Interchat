@@ -1,94 +1,63 @@
-/*u send a message*/
-.relativeBox{
-  position: relative;
-  right: 5px;
+.reply-message {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
-  height: 256px;
+  gap: 10px;
 }
-.iconRight{
-  position: absolute;
-  top:51px;
-  right: 312px;
+
+.msg-left .reply-box {
+  justify-content: flex-start;
 }
-.timeRight{
-  position: absolute;
-  width: 300px;
-  right: 5px;  
-  top:-1.2rem;
-  font-size: 1rem;
-  word-wrap: break-word;
+
+.reply-container {
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
-.senderRight{
-  position: absolute;
-  width: 300px;
-  top:54px;
-  right: 5px;
-  font-size: 1rem;
-  word-wrap: break-word;
+
+.reply-box {
+  display: grid;
+  gap: 0px;
+  grid-template-columns: min-content minmax(0, 1fr);
+  overflow-x: hidden;
 }
-.MessageRight {
-  background-color: #acd6ee80;
-  position: absolute;
-  padding: 5px; 
-  width: 300px;
-  right: 5px;
-  top: 78px;
-  font-size: 1rem;
-  border-radius: 5px; 
-  word-wrap: break-word;
+
+.reply-text {
+  display: inline-block;
+  height: 100%;
+  border: 0px solid white;
+  font-size: 0.9rem;
+  background-color: var(--lightlightgray);
+  border-radius: 5px 0px 0px 0px;
+  margin-right: -0.5px;
+  margin-bottom: -0.5px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default !important;
 }
-.replyingToRight {
-  background-color: #acd6ee80;
-  position: absolute;
-  width: 300px;
-  padding: 5px; 
-  right: 5px;
-  top: 150px;
-  font-size: 1rem;
-  border-radius: 5px; 
-  word-wrap: break-word;
+
+.reply-content {
+  display: inline-block;
+  height: 100%;
+  border: 0px solid white;
+  font-size: 0.9rem;
+  background-color: var(--lightlightgray);
+  border-radius: 0px 5px 0px 0px;
+  margin-right: -0.5px;
+  margin-bottom: -0.5px;
+  text-align: left;
+  color: gray;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default !important;
 }
-/*left*/
-.iconLeft{
-  position: absolute;
-  top:21px;
-  left: -12px;
-}
-.timeLeft{
-  position: absolute;
-  width: 300px;
-  top:-1.2rem;
-  left: 5px;
-  font-size: 1rem;
-  word-wrap: break-word;
-}
-.senderLeft{
-  position: absolute;
-  width: 300px;
-  top:54px;
-  left: 5px;
-  font-size: 1rem;
-  word-wrap: break-word;
-}
-.MessageLeft {
-  background-color: #acd6ee80;
-  position: absolute;
-  padding: 5px; 
-  width: 300px;
-  left: 5px;
-  top: 78px;
-  font-size: 1rem;
-  border-radius: 5px; 
-  word-wrap: break-word;
-}
-.replyingToLeft {
-  background-color: #acd6ee80;
-  position: absolute;
-  width: 300px;
-  left: 5px;
-  padding: 5px; 
-  top: 200px;
-  font-size: 1rem;
-  border-radius: 5px; 
-  word-wrap: break-word;
+
+.reply-message-box {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  max-width: 100%;
 }

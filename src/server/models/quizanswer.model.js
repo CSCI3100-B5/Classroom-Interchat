@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
+const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
@@ -38,8 +39,8 @@ QuizAnswerSchema.method({
     return {
       id: this.id,
       createdAt: this.createdAt,
-      quiz: this.populated('quiz') ? this.quiz.filterSafe() : this.quiz,
-      user: this.populated('user') ? this.user.filterSafe() : this.user,
+      quiz: filterSafeOrOriginal(this.quiz),
+      user: filterSafeOrOriginal(this.user),
       type: this.type,
       content: this.content
     };

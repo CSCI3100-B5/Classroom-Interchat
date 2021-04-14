@@ -1,13 +1,17 @@
 import React from 'react';
-import { Badge, Button, Card } from 'react-bootstrap';
+import {
+  Badge, Button, Card, ButtonGroup, ToggleButton, Container, Row, Col
+} from 'react-bootstrap';
 import { BsFillMicMuteFill, BsPeopleCircle, BsPeopleFill } from 'react-icons/bs';
+import { RiQuestionnaireFill } from 'react-icons/ri';
+import { FaArrowCircleUp, FaQuestionCircle, FaFilter } from 'react-icons/fa';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
 import './ClassroomInfo.scoped.css';
 
 function ClassroomInfo({ onShowParticipantList }) {
-  const { data } = useDataStore();
+  const { data, getSelfParticipant } = useDataStore();
   const { leaveClassroom } = useRealtime();
   const { toast } = useToast();
 
@@ -18,6 +22,10 @@ function ClassroomInfo({ onShowParticipantList }) {
       toast('error', 'Error when leaving classroom', ex.error);
     }
   };
+
+  const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
+  const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
+  const ongoingQuizzes = data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt);
 
   return (
     <div className="classroom-info">
@@ -59,6 +67,75 @@ function ClassroomInfo({ onShowParticipantList }) {
           </Card.Text>
         </Card.Body>
       </Card>
+      {getSelfParticipant()
+        && getSelfParticipant().permission !== 'student'
+        && requestingParticipants.length ? (
+          <Container className="status-banner">
+            <Row>
+              <Col>
+                <FaArrowCircleUp className="mr-2" />
+                {requestingParticipants.length}
+                { ' '}
+                requesting for instructor permission
+              </Col>
+            </Row>
+          </Container>
+        ) : null}
+      {unresolvedQuestions.length ? (
+        <Button
+          as={Container}
+          variant="outline-secondary"
+          className={`${data.messageFilter === 'unresolved' ? 'active' : ''} status-banner clickable`}
+          onClick={() => {
+            if (data.messageFilter === 'unresolved') data.messageFilter = null;
+            else data.messageFilter = 'unresolved';
+          }}
+        >
+          {data.messageFilter === 'unresolved'
+            ? <FaFilter className="mr-2" />
+            : <FaQuestionCircle className="mr-2" />}
+          {unresolvedQuestions.length}
+          {' '}
+          unresolved questions
+        </Button>
+      ) : null}
+      {ongoingQuizzes.length ? (
+        <Button
+          as={Container}
+          variant="outline-secondary"
+          className={`${data.messageFilter === 'quiz' ? 'active' : ''} status-banner clickable`}
+          onClick={() => {
+            if (data.messageFilter === 'quiz') data.messageFilter = null;
+            else data.messageFilter = 'quiz';
+          }}
+        >
+          {data.messageFilter === 'quiz'
+            ? <FaFilter className="mr-2" />
+            : <RiQuestionnaireFill className="mr-2" />}
+          {ongoingQuizzes.length}
+          {' '}
+          ongoing quizzes
+        </Button>
+      ) : null}
+      {data.messageFilter && !['unresolved', 'quiz'].includes(data.messageFilter) ? (
+        <Button
+          as={Container}
+          variant="outline-secondary"
+          className={`${data.messageFilter ? 'active' : ''} status-banner clickable`}
+          onClick={() => {
+            if (data.messageFilter) data.messageFilter = null;
+          }}
+        >
+          {data.messageFilter
+            ? <FaFilter className="mr-2" />
+            : <FaQuestionCircle className="mr-2" />}
+          Viewing
+          {' '}
+          {data.messages.find(x => x.id === data.messageFilter).sender.name}
+          {' '}
+          &apos;s thread
+        </Button>
+      ) : null}
     </div>
   );
 }

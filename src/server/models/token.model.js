@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
+const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
@@ -49,10 +50,10 @@ TokenSchema.method({
   filterSafe() {
     return {
       id: this.id,
-      createdBy: this.populated('createdBy') ? this.createdBy.filterSafe() : this.createdBy,
-      receivedBy: this.populated('receivedBy') ? this.receivedBy.filterSafe() : this.receivedBy,
+      createdBy: filterSafeOrOriginal(this.createdBy),
+      receivedBy: filterSafeOrOriginal(this.receivedBy),
       createdAt: this.createdAt,
-      classroom: this.populated('classroom') ? this.classroom.filterSafe() : this.classroom,
+      classroom: filterSafeOrOriginal(this.classroom),
       isValid: this.isValid,
       value: this.value
     };

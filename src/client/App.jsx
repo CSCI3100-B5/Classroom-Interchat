@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from 'react-router-dom';
-import Landing from './landing/Landing.jsx';
-import ClassroomRoot from './classroom/index.jsx';
-import Auth from './auth/Auth.jsx';
-import Account from './account/Account.jsx';
-import NotFound from './not-found/NotFound.jsx';
 import { DataStoreProvider } from './contexts/DataStoreProvider.jsx';
 import { AxiosProvider } from './contexts/AxiosProvider.jsx';
 import { ApiProvider } from './contexts/ApiProvider.jsx';
 import ToastCenter from './ToastCenter.jsx';
 import { ToastProvider } from './contexts/ToastProvider.jsx';
+
+const Landing = lazy(() => import('./landing/Landing.jsx'));
+const ClassroomRoot = lazy(() => import('./classroom/index.jsx'));
+const Auth = lazy(() => import('./auth/Auth.jsx'));
+const Account = lazy(() => import('./account/Account.jsx'));
+const NotFound = lazy(() => import('./not-found/NotFound.jsx'));
 
 
 export default function App() {
@@ -25,7 +26,12 @@ export default function App() {
             <ApiProvider>
               <ToastCenter />
               <Router>
-                <div>
+                <Suspense fallback={(
+                  <div className="splash-container">
+                    <img className="splash-icon" src="/favicon.svg" alt="Page loading" />
+                  </div>
+                  )}
+                >
                   {/* A <Switch> looks through its children <Route>s and
                 renders the first one that matches the current URL. */}
                   <Switch>
@@ -46,7 +52,7 @@ export default function App() {
                       <NotFound />
                     </Route>
                   </Switch>
-                </div>
+                </Suspense>
               </Router>
             </ApiProvider>
           </AxiosProvider>

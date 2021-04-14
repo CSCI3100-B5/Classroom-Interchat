@@ -4,19 +4,48 @@ import TextMessage from './TextMessage.jsx';
 import QuizMessage from './quiz/QuizMessage.jsx';
 import StatusMessage from './StatusMessage.jsx';
 import ReplyMessage from './ReplyMessage.jsx';
+import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import './Message.scoped.css';
+import './message.css';
 
-function Message({ message }) {
+function Message({ message, index }) {
+  const { data } = useDataStore();
+  let messageAlign = 'align-items-start msg-left';
+  if (!message.sender) {
+    messageAlign = 'align-items-center';
+  } else {
+    if (['mcq', 'saq'].includes(message.type)) {
+      messageAlign = 'align-items-center';
+    } else if (message.sender.id === data.user.id) {
+      messageAlign = 'align-items-end msg-right';
+    }
+    const pSender = data.participants.find(x => x.user.id === message.sender.id);
+    if (pSender && pSender.permission === 'instructor') {
+      messageAlign += ' instructor';
+    }
+  }
+
+  let shouldRenderMeta = true;
+  if (index > 0) {
+    const lastMsg = data.messages[index - 1];
+    if (
+      ((lastMsg.sender && message.sender && lastMsg.sender.id === message.sender.id)
+      || lastMsg.sender === message.sender)
+      && !['mcq', 'saq'].includes(lastMsg.type)
+      && !['mcq', 'saq'].includes(message.type)
+      && (new Date(message.createdAt)).getTime() - (new Date(lastMsg.createdAt)).getTime() < 1000 * 120) {
+      shouldRenderMeta = false;
+    }
+  }
   return (
-    <div className="relativeBox">
-      <p className="timeRight">
-        By sender123456 at
-        <p>
-          {message.createdAt.toString()}
-        </p>
-      </p>
+    <div className={`d-flex flex-column w-full ${messageAlign}`}>
+      {shouldRenderMeta ? (
+        <span className="message-meta">
+          {message.sender ? `${message.sender.name}, ` : ''}
+          {new Date(message.createdAt).toLocaleTimeString()}
+        </span>
+      ) : null}
 
-      {message.sender ? (<p>{message.sender.name}</p>) : null}
       {
         (() => {
           switch (message.type) {

@@ -4,9 +4,9 @@ import './StatusMessage.scoped.css';
 export default function StatusMessage({ message }) {
   return (
     <div>
-      <p className="myMessageRight">
+      <span className="text-muted">
         {message.content}
-      </p>
+      </span>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import {
 } from 'react-bootstrap';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 import TokenAwarder from '../../../TokenAwarder.jsx';
+import MarkdownRender from '../MarkdownRender.jsx';
 
 export default function MCQResult({ message }) {
   const { data } = useDataStore();
@@ -26,9 +27,11 @@ export default function MCQResult({ message }) {
 
   return (
     <div>
-      <h5>Quiz Results</h5>
-      <p>{message.content.prompt}</p>
-      {message.content.multiSelect ? <p className="text-muted">You may choose more than 1 answer</p> : null}
+      <h5 className="m-2">MCQ Quiz Results</h5>
+      <div className="mx-2"><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
+      {message.content.multiSelect
+        ? <span className="m-2 text-light text-small">Multi-selection allowed</span>
+        : null}
       <Formik
         onSubmit={onSubmit}
         initialValues={{
@@ -42,9 +45,9 @@ export default function MCQResult({ message }) {
           touched,
           errors,
         }) => (
-          <Form className="m-4" noValidate onSubmit={handleSubmit}>
+          <Form className="m-2" noValidate onSubmit={handleSubmit}>
             <Form.Group>
-              <ButtonGroup toggle vertical className="mb-2 d-flex">
+              <ButtonGroup toggle vertical className="p-0 mb-2 d-flex">
                 {message.content.choices.map((x, idx) => {
                   const percentage = message.content.results.reduce(
                     (prev, curr) => (prev + (curr.content.includes(idx) ? 1 : 0)),
@@ -61,13 +64,13 @@ export default function MCQResult({ message }) {
                   if (message.content.multiSelect) {
                     return (
                       <ToggleButton
-                        className="m-1"
+                        className="quiz-answer-button"
                         disabled={
                           (message.sender.id ?? message.sender) !== data.user.id
                           || message.content.correct
                           || !message.content.closedAt
                         }
-                        variant={message.content.correct?.includes(idx) ? 'primary' : 'outline-primary'}
+                        variant={message.content.correct?.includes(idx) ? 'light' : 'outline-light'}
                         required
                         type="checkbox"
                         key={x}
@@ -90,8 +93,8 @@ export default function MCQResult({ message }) {
                         || message.content.correct
                         || !message.content.closedAt
                       }
-                      className="m-1"
-                      variant={message.content.correct?.includes(idx) ? 'primary' : 'outline-primary'}
+                      className="quiz-answer-button"
+                      variant={message.content.correct?.includes(idx) ? 'light' : 'outline-light'}
                       type="radio"
                       key={x}
                       name="choices"
@@ -110,7 +113,13 @@ export default function MCQResult({ message }) {
             {(message.sender.id ?? message.sender) === data.user.id && message.content.closedAt
               ? (
                 <>
-                  <Button type="submit">Award Token</Button>
+                  <Button
+                    type="submit"
+                    variant="outline-light"
+                    className="quiz-bottom-action"
+                  >
+                    Award Token
+                  </Button>
                   <TokenAwarder
                     userIds={
                     showModal
