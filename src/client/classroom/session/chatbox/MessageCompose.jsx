@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   InputGroup, FormControl, Button, Form, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
@@ -60,6 +60,9 @@ export default function MessageCompose({ onCreateQuiz }) {
     );
   }
 
+  const replyInput = useRef(null);
+  const msgInput = useRef(null);
+
   return (
     <div className="message-compose">
       {replyToMessage !== null
@@ -98,6 +101,7 @@ export default function MessageCompose({ onCreateQuiz }) {
             <InputGroup>
               <FormControl
                 as="textarea"
+                ref={replyInput}
                 maxLength={5000}
                 placeholder="Type your reply..."
                 aria-label="Type your reply"
@@ -133,7 +137,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                   <Button
                     variant="outline-secondary"
                     className="reply-send"
-                    onClick={() => { messageData.information = { type: 'reply', qMessageId: data.replyToMessageId }; onSend(); }}
+                    onClick={() => {
+                      messageData.information = { type: 'reply', qMessageId: data.replyToMessageId };
+                      onSend();
+                      replyInput.current.focus();
+                    }}
                     disabled={!messageData.message}
                   >
                     <BsReplyFill className="button-icon" />
@@ -147,6 +155,7 @@ export default function MessageCompose({ onCreateQuiz }) {
           <InputGroup className="compose-shadow">
             <FormControl
               as="textarea"
+              ref={msgInput}
               maxLength={5000}
               className="compose-box"
               placeholder="Type your message..."
@@ -182,7 +191,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                 <Button
                   variant="outline-secondary"
                   className="compose-button"
-                  onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
+                  onClick={() => {
+                    messageData.information = { type: 'text' };
+                    onSend();
+                    msgInput.current.focus();
+                  }}
                   disabled={!messageData.message}
                 >
                   <IoSend className="button-icon" />
@@ -203,7 +216,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                 <Button
                   variant="outline-secondary"
                   className="compose-button"
-                  onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
+                  onClick={() => {
+                    messageData.information = { type: 'question' };
+                    onSend();
+                    msgInput.current.focus();
+                  }}
                   disabled={!messageData.message}
                 >
                   <RiQuestionnaireFill className="button-icon" />

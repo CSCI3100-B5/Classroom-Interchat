@@ -124,7 +124,7 @@ export default function Account() {
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="manageTokens" className="h-full">
-                <div className="h-full account-content-pane">
+                <div className="h-full account-content-pane overflow-auto">
                   <h2>Manage Tokens</h2>
                   <ManageTokens />
                 </div>

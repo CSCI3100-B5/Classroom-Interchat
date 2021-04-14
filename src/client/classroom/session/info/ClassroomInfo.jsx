@@ -54,7 +54,7 @@ function ClassroomInfo({ onShowParticipantList }) {
                 <BsPeopleFill className="mr-2" />
                 {data.participants.length}
                 {' '}
-                participants
+                {data.participants.length > 1 ? 'participants' : 'participant'}
               </Button>
               <Button
                 variant="danger"
