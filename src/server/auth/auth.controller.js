@@ -124,7 +124,7 @@ async function sendEmail(req, res, next) {
   return res.sendStatus(httpStatus.NO_CONTENT);
 }
 
-async function verifyEmail(req, res, next) {
+async function verifyEmail(req, res) {
   const { user } = req;
   if (user.email === user.lastVerifiedEmail) {
     return res.redirect('../../../../account#manageProfile');

@@ -168,7 +168,8 @@ export default function ParticipantList({ onCloseParticipantList }) {
                 {x.isOnline ? null : (<RiWifiOffLine />)}
                 {x.isMuted ? (<BsFillMicMuteFill className="text-danger" />) : null}
                 {(() => {
-                  const unresolved = data.messages.filter(m => (m.sender?.id ?? m.sender) === (x.user.id ?? x.user)
+                  const unresolved = data.messages
+                    .filter(m => (m.sender?.id ?? m.sender) === (x.user.id ?? x.user)
                     && m.type === 'question'
                     && !m.content.isResolved);
                   if (unresolved.length > 0) {

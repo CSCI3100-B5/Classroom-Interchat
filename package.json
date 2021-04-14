@@ -8,7 +8,8 @@
     "start": "node src/server/index.js",
     "client": "webpack serve --mode development --devtool inline-source-map --hot",
     "server": "nodemon --trace-warnings src/server/index.js",
-    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+    "dev": "concurrently \"yarn run server\" \"yarn run client\"",
+    "lint": "eslint src/**/*.js src/**/*.jsx"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {

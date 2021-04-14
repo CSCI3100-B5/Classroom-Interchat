@@ -37,7 +37,7 @@ export function AxiosProvider({ children }) {
           */
             console.log('Access token expired, auto-refreshing...');
             axios.interceptors.response.eject(interceptor);
-            return refreshAccessToken()
+            return refreshAccessToken() // eslint-disable-line no-use-before-define
               .then((result) => {
                 if (result.success) {
                   error.response.config.headers.Authorization = `Bearer ${result.response.data.accessToken}`;

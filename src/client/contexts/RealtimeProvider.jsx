@@ -70,7 +70,8 @@ export function RealtimeProvider({ children }) {
       });
 
       socket.on('quiz digest', (payload) => {
-        if (payload.sender.id === data.user.id) return; // ignore digests if this user is the quiz sender
+        // ignore digests if this user is the quiz sender
+        if (payload.sender.id === data.user.id) return;
         const idx = data.messages.findIndex(x => x.id === payload.id);
         if (idx >= 0) {
           const messages = [...data.messages];

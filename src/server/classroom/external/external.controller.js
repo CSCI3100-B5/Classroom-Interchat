@@ -1,8 +1,6 @@
-const httpStatus = require('http-status');
 const cachegoose = require('cachegoose');
 const Classroom = require('../../models/classroom.model');
 const Messages = require('../../models/message.model');
-const APIError = require('../../helpers/APIError');
 
 function notifyClassroomMetaChanged(classroom, io) {
   io.to(`peek-${classroom.id}`).emit('peek update', {
@@ -171,7 +169,6 @@ async function cleanupClassroom(classroomId, userId, lastOnline) {
 // the user's participant entry is not removed, since the user is
 // expected to reconnect
 async function lostConnection(packet, socket, io) {
-  const [reason] = packet;
   if (!socket.data.invokerClassroom) return;
   let classroom = await Classroom.getCached(
     socket.data.invokerClassroom.id

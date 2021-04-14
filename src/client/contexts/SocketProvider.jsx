@@ -99,6 +99,7 @@ export function SocketProvider({ children }) {
         data.user = null;
         return history.push('/auth');
       }
+      return null;
     });
 
     return () => newSocket.close();

@@ -189,7 +189,8 @@ export default function JoinClassroom() {
                             </b>
                           </p>
                           <p>
-                            This classroom is closed, but you may still view its read-only message history.
+                            This classroom is closed, but you may still view
+                            its read-only message history.
                           </p>
                         </>
                       );
