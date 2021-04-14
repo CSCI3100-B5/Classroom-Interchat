@@ -7,24 +7,26 @@ import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 
 export default function SAQPrompt({ message }) {
   const { ansSAQuiz } = useRealtime();
+  const { toast } = useToast();
   const data = useStates({
     answer: ''
   });
-  const { toast } = useToast();
+
   const onSubmit = async () => {
-    // TODO: send answer to server
     if (!data.answer) return;
     console.log('SAQ answer object', data.answer);
     try {
       await ansSAQuiz(data.answer, message.id);
+      toast('info', 'Short answer quiz', 'Answer sent');
     } catch (ex) {
       toast('error', 'Error when answering SAQ', ex.error);
     }
   };
+
   return (
-    <div>
-      <div><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
-      <InputGroup>
+    <div className="d-flex flex-column">
+      <div className="m-2"><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
+      <InputGroup className="mb-2">
         <FormControl
           placeholder="Type your answer..."
           aria-label="Type your answer"
@@ -33,7 +35,7 @@ export default function SAQPrompt({ message }) {
         />
         <InputGroup.Append>
           <Button
-            variant="outline-secondary"
+            variant="outline-light"
             onClick={onSubmit}
             disabled={!!message.content.closedAt}
           >

@@ -5,6 +5,7 @@ import {
 import { Formik } from 'formik';
 import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 import TokenAwarder from '../../../TokenAwarder.jsx';
+import MarkdownRender from '../MarkdownRender.jsx';
 
 export default function SAQResult({ message }) {
   const [groupView, setGroupView] = useState(true);
@@ -41,18 +42,24 @@ export default function SAQResult({ message }) {
 
   return (
     <div>
-      <h5>Quiz Results</h5>
-      <ButtonGroup toggle className="mb-2">
-        <ToggleButton
-          type="checkbox"
-          variant="info"
-          checked={groupView}
-          value="1"
-          onChange={e => setGroupView(e.currentTarget.checked)}
-        >
-          {groupView ? 'Group View' : 'Individual View'}
-        </ToggleButton>
-      </ButtonGroup>
+      <div className="d-flex align-items-center m-2">
+        <h5 className="flex-grow-1 mb-0 mr-4">SAQ Quiz Results</h5>
+        <ButtonGroup toggle>
+          <ToggleButton
+            type="checkbox"
+            variant="outline-light"
+            checked={groupView}
+            value="1"
+            onChange={e => setGroupView(e.currentTarget.checked)}
+          >
+            {groupView ? 'Group View' : 'Individual View'}
+          </ToggleButton>
+        </ButtonGroup>
+      </div>
+      <div className="mx-2"><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
+      {answerDigest.length === 0
+        ? <span className="m-4 text-light">Waiting for answers...</span>
+        : null}
       <Formik
         onSubmit={onSubmit}
         initialValues={{
@@ -66,18 +73,18 @@ export default function SAQResult({ message }) {
           touched,
           errors,
         }) => (
-          <Form className="m-4" noValidate onSubmit={handleSubmit}>
+          <Form className="m-2" noValidate onSubmit={handleSubmit}>
             <Form.Group>
-              <ButtonGroup toggle vertical className="mb-2 d-flex">
+              <ButtonGroup toggle vertical className="p-0 mb-2 d-flex">
                 {answerDigest.map(x => (
                   <ToggleButton
                     required
-                    className="m-1"
+                    className="quiz-answer-button"
                     disabled={
                       (message.sender.id ?? message.sender) !== data.user.id
                       || !message.content.closedAt
                     }
-                    variant="outline-primary"
+                    variant="outline-light"
                     type="radio"
                     key={x.id}
                     name="choice"
@@ -102,7 +109,14 @@ export default function SAQResult({ message }) {
             (message.sender.id ?? message.sender) === data.user.id && message.content.closedAt
               ? (
                 <>
-                  <Button type="submit">Award Token</Button>
+                  <Button
+                    type="submit"
+                    variant="outline-light"
+                    className="quiz-bottom-action"
+                  >
+                    Award Token
+
+                  </Button>
                   <TokenAwarder
                     userIds={
                     showModal

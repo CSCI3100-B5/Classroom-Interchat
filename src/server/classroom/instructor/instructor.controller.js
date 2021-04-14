@@ -188,7 +188,6 @@ async function awardToken(packet, socket, io) {
     value: data.value ?? null
   })));
 
-  // TODO: update participant token counts
   return callback({});
 }
 

@@ -85,7 +85,6 @@ async function peekClassroom(packet, socket, io) {
   });
 }
 
-// TODO: disallow if classroom closed
 async function joinClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
   if (meta.invokerClassroom) return callback({ error: 'You are already in a classroom' });
@@ -98,10 +97,12 @@ async function joinClassroom(packet, socket, io) {
   }
 
   // joining a closed classroom
-  // send classroom history for viewing
+  // send classroom history for viewing instead
+  // not saving the classroom in the socket connection, so that
+  // attempts to modify classroom contents will be rejected
   if (classroom.closedAt) {
     callback({});
-    classroom = await classroom.populate('messages').execPopulate();
+    classroom = await classroom.populate('messages').populate('messages.sender').execPopulate();
     return socket.emit('catch up', classroom.filterSafe());
   }
   let participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
@@ -136,6 +137,7 @@ async function joinClassroom(packet, socket, io) {
   io.to(classroom.id).emit('participant changed', participant.filterSafe());
   callback({});
   classroom = await classroom.populate('messages').execPopulate();
+  classroom = await classroom.populate('messages.sender').execPopulate();
   const retClassroom = classroom.filterSafe();
   retClassroom.messages = await Promise.all(classroom.messages.map(async (x) => {
     if (x.type !== 'mcq' && x.type !== 'saq') return x.filterSafe();
@@ -147,6 +149,23 @@ async function joinClassroom(packet, socket, io) {
   return socket.emit('catch up', retClassroom);
 }
 
+async function cleanupClassroom(classroomId, userId, lastOnline) {
+  try {
+    const classroom = await Classroom.get(classroomId);
+    if (classroom.closedAt) return;
+    if (classroom.participants.length > 1) return;
+    const p = classroom.participants.find(x => x.user._id.toString() === userId);
+    if (!p) return;
+    if (p.isOnline) return;
+    if (p.lastOnlineAt.getTime() === lastOnline.getTime()) {
+      classroom.closedAt = new Date();
+      classroom.participants.pull(p);
+      await classroom.save();
+    }
+  } catch (ex) {
+    // ignore errors
+  }
+}
 
 // lostConnection updates the user's online status and notify others
 // the user's participant entry is not removed, since the user is
@@ -168,13 +187,23 @@ async function lostConnection(packet, socket, io) {
     participant.lastOnlineAt = Date.now();
     await classroom.save();
     cachegoose.clearCache(`ClassroomById-${classroom.id}`);
-    // TODO: schedule a timeout to treat user as left
+
+    // If the user is the last participant in the classroom
+    // and remains disconnected for more than an hour,
+    // close the classroom automatically
+    if (classroom.participants.length === 1) {
+      setTimeout(
+        cleanupClassroom,
+        1000 * 3600,
+        classroom.id, socket.data.invoker.id, participant.lastOnlineAt
+      );
+    }
+
     notifyClassroomMetaChanged(classroom, io);
     io.to(classroom.id).emit('participant changed', participant.filterSafe());
   }
 }
 
-// TODO: implement leaving
 async function leaveClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
   if (!socket.data.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
@@ -204,7 +233,6 @@ async function leaveClassroom(packet, socket, io) {
 
     classroom = await classroom.populate('host').populate('participants.user').execPopulate();
     io.to(classroom.id).emit('participant deleted', { userId: meta.invoker.id });
-    // TODO: close classroom or transfer host if host leave
     if (meta.invoker.id === classroom.host.id) {
       if (classroom.participants.length > 0) {
         const instructors = classroom.participants.filter(x => x.permission === 'instructor');

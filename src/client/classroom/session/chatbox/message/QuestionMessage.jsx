@@ -1,12 +1,14 @@
 import React from 'react';
 import {
-  Badge, Button, ButtonGroup, ToggleButton
+  Badge, Button, ButtonGroup, ToggleButton, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
+import { BsFillQuestionCircleFill } from 'react-icons/bs';
+import { FaCheckCircle, FaFilter } from 'react-icons/fa';
 import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../../contexts/ToastProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
-
+import './QuestionMessage.scoped.css';
 
 export default function QuestionMessage({ message }) {
   const { resolveQuestion } = useRealtime();
@@ -24,44 +26,75 @@ export default function QuestionMessage({ message }) {
 
   let resolveButton = null;
   if (!message.content.isResolved) {
-    resolveButton = message.sender === data.user.id
-      ? (<Button onClick={onResolveQuestion}>Resolve Question</Button>)
-      : (<p>not resolved</p>);
+    resolveButton = message.sender.id === data.user.id
+      ? (
+        <Button
+          variant="outline-primary"
+          className="control-button"
+          onClick={onResolveQuestion}
+        >
+          Resolve Question
+        </Button>
+      )
+      : null;
   }
 
-  // not tested
-  const onViewReply = () => {
-    data.messageFilter = message.id;
-  };
-
   return (
-    <div>
-      <Badge>{message.content.isResolved ? 'RESOLVED' : 'QUESTION'}</Badge>
-      {resolveButton}
-      <div><MarkdownRender>{message.content.content}</MarkdownRender></div>
-      {message.content.isResolved ? null : (
-        <Button onClick={() => { data.replyToMessageId = message.id; }}>
-          Reply
-        </Button>
-      )}
-      {replies.length > 0
-        ? (
-          <ButtonGroup toggle className="mb-2">
-            <ToggleButton
-              type="checkbox"
-              variant="info"
-              checked={data.messageFilter === message.id}
-              value="1"
-              onChange={() => {
-                if (data.messageFilter === message.id) data.messageFilter = null;
-                else data.messageFilter = message.id;
-              }}
-            >
-              {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
-            </ToggleButton>
-          </ButtonGroup>
-        )
-        : (<p className="text-muted">Send a reply</p>)}
+    <div className="question-container">
+
+      <div className="question-box">
+        <OverlayTrigger
+          placement="top"
+          overlay={(
+            <Tooltip id="tooltip-unresolved-question">
+              Unresolved question
+            </Tooltip>
+          )}
+        >
+          {message.content.isResolved
+            ? <FaCheckCircle className="icon-large message-icon" />
+            : <BsFillQuestionCircleFill className="icon-large message-icon" />}
+        </OverlayTrigger>
+        <div className="message-box">
+          <MarkdownRender>{message.content.content}</MarkdownRender>
+        </div>
+      </div>
+
+      <div className="question-controls">
+        {message.content.isResolved
+          ? <Badge>RESOLVED</Badge>
+          : null}
+        {resolveButton}
+        {message.content.isResolved ? null : (
+          <Button
+            variant="outline-primary"
+            className="control-button"
+            onClick={() => { data.replyToMessageId = message.id; }}
+          >
+            Reply
+          </Button>
+        )}
+        {replies.length > 0
+          ? (
+            <ButtonGroup toggle>
+              <ToggleButton
+                type="checkbox"
+                variant="outline-info"
+                className="control-button"
+                checked={data.messageFilter === message.id}
+                value="1"
+                onChange={() => {
+                  if (data.messageFilter === message.id) data.messageFilter = null;
+                  else data.messageFilter = message.id;
+                }}
+              >
+                <FaFilter className="mr-2" />
+                {replies.length === 1 ? '1 reply' : `${replies.length} replies`}
+              </ToggleButton>
+            </ButtonGroup>
+          ) : (<span className="text-small text-muted">No replies</span>)}
+      </div>
+
     </div>
   );
 }

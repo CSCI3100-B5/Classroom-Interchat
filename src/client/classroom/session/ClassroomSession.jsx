@@ -12,6 +12,10 @@ export default function ClassroomSession() {
   const [showParticipantList, setShowParticipantList] = useState(false);
 
   useEffect(() => {
+    if (!data.refreshToken) history.push('/auth');
+  }, [data.refreshToken]);
+
+  useEffect(() => {
     if (!data.classroomMeta) {
       console.log('Classroom meta does not exist, re-routing to join classroom');
       history.push('/classroom');

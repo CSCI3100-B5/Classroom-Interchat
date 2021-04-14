@@ -5,7 +5,7 @@ const tokenRoutes = require('./token/token.route');
 
 const router = express.Router();
 
-// TODO: GUIDE: remember to mount your xxx.route.js here
+// GUIDE: mount all sub-routes here
 
 /** GET /health-check - Check service health */
 router.get('/health-check', (req, res) => res.send('OK'));

@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
-  Button, Navbar, Row, Col, Card, Container
+  Button, Row, Col, Card, Container
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { BiTimer, BiCloudLightning, BiEditAlt } from 'react-icons/bi';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import './Landing.scoped.css';
 
-// redirect to either / or account page
-
-
 export default function Landing() {
+  const history = useHistory();
+  useEffect(() => {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('In standalone UI, routing to /auth');
+      history.push('/auth');
+    }
+  }, []);
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    return (
+      <div className="splash-container">
+        <img className="splash-icon" src="/favicon.svg" alt="Page loading" />
+      </div>
+    );
+  }
   return (
     <div>
       <div className="landing-bg" />

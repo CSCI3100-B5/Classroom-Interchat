@@ -58,6 +58,10 @@ export default function JoinClassroom() {
   }, [localData.initialClassroomId, socket]);
 
   useEffect(() => {
+    if (!data.refreshToken) history.push('/auth');
+  }, [data.refreshToken]);
+
+  useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
   }, [data.classroomMeta]);
 
@@ -147,7 +151,10 @@ export default function JoinClassroom() {
                     name="classroomId"
                     value={values.classroomId}
                     onChange={(event) => {
-                      // TODO: convert invite link to classroom ID
+                      const res = /^https?:\/\/.*\?id=([0-9a-f]+)/.exec(event.target.value);
+                      if (res) {
+                        [, event.target.value] = res;
+                      }
                       handleChange(event);
                       onChange(event);
                     }}

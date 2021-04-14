@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
+import { BsChevronCompactUp } from 'react-icons/bs';
 import * as yup from 'yup';
 import {
-  Button, Form, ButtonGroup, ToggleButton, InputGroup
+  Button, Form, ButtonGroup, ToggleButton, InputGroup, Container
 } from 'react-bootstrap';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
+import './CreateQuiz.scoped.css';
 
 const choicesSchema = {};
 const choicesDefault = {};
@@ -34,7 +36,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 const schema = yup.object().shape({
-  prompt: yup.string().required().label('Prompt'),
+  prompt: yup.string().max(200).required().label('Prompt'),
   type: yup.string().oneOf(['SAQ', 'MCQ']).label('Type'),
   choiceCount: yup.number().integer().min(2).max(10)
     .test(
@@ -99,146 +101,149 @@ export default function CreateQuiz({ onBack }) {
   };
 
   return (
-    <div>
-      <Button variant="flat" onClick={onBack}>Back</Button>
-      <Formik
-        validationSchema={schema}
-        onSubmit={onSubmit}
-        initialValues={{
-          prompt: '',
-          type: 'SAQ',
-          choiceCount: 4,
-          ...choicesDefault,
-          multiSelect: false
-        }}
-      >
-        {({
-          handleSubmit,
-          handleChange,
-          values,
-          touched,
-          errors,
-        }) => (
-          <Form
-            className="m-4"
-            onSubmit={handleSubmit}
-            noValidate
-          >
-            <Form.Group controlId="prompt">
-              <Form.Label>Prompt</Form.Label>
-              <Form.Control
-                type="text"
-                name="prompt"
-                value={values.prompt}
-                onChange={handleChange}
-                isValid={touched.prompt && !errors.prompt}
-                isInvalid={touched.prompt && errors.prompt}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.prompt}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <ButtonGroup toggle className="mb-2 d-flex">
-              <ToggleButton
-                required
-                variant="outline-primary"
-                type="radio"
-                name="type"
-                value="SAQ"
-                label="SAQ"
-                checked={values.type === 'SAQ'}
-                onChange={handleChange}
-                feedback={errors.type}
-              >
-                Short Answer
-              </ToggleButton>
-              <ToggleButton
-                required
-                variant="outline-primary"
-                type="radio"
-                name="type"
-                value="MCQ"
-                label="MCQ"
-                checked={values.type === 'MCQ'}
-                onChange={handleChange}
-                feedback={errors.type}
-              >
-                Multiple Choice
-              </ToggleButton>
-            </ButtonGroup>
-            {values.type === 'MCQ' ? (
-              <>
-                <Form.Group controlId="choiceCount">
-                  <Form.Label>
-                    Number of choices:
-                    {' '}
-                    {values.choiceCount}
-                  </Form.Label>
-                  <Form.Control
-                    type="range"
-                    required
-                    name="choiceCount"
-                    value={values.choiceCount}
-                    min="2"
-                    max="10"
-                    onChange={handleChange}
-                    isValid={touched.choiceCount && !errors.choiceCount}
-                    isInvalid={touched.choiceCount && errors.choiceCount}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.choiceCount}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                {(() => {
-                  const choices = [];
-                  for (let i = 0; i < values.choiceCount; i++) {
-                    choices.push(
+    <div className="create-quiz-page">
+      <Container className="form-container">
+        <Formik
+          validationSchema={schema}
+          onSubmit={onSubmit}
+          initialValues={{
+            prompt: '',
+            type: 'SAQ',
+            choiceCount: 4,
+            ...choicesDefault,
+            multiSelect: false
+          }}
+        >
+          {({
+            handleSubmit,
+            handleChange,
+            values,
+            touched,
+            errors,
+          }) => (
+            <Form
+              className="m-4"
+              onSubmit={handleSubmit}
+              noValidate
+            >
+              <Form.Group controlId="prompt">
+                <Form.Label>Prompt</Form.Label>
+                <Form.Control
+                  type="text"
+                  maxLength={200}
+                  name="prompt"
+                  value={values.prompt}
+                  onChange={handleChange}
+                  isValid={touched.prompt && !errors.prompt}
+                  isInvalid={touched.prompt && errors.prompt}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.prompt}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <ButtonGroup toggle className="mb-2 d-flex">
+                <ToggleButton
+                  required
+                  variant="outline-primary"
+                  type="radio"
+                  name="type"
+                  value="SAQ"
+                  label="SAQ"
+                  checked={values.type === 'SAQ'}
+                  onChange={handleChange}
+                  feedback={errors.type}
+                >
+                  Short Answer
+                </ToggleButton>
+                <ToggleButton
+                  required
+                  variant="outline-primary"
+                  type="radio"
+                  name="type"
+                  value="MCQ"
+                  label="MCQ"
+                  checked={values.type === 'MCQ'}
+                  onChange={handleChange}
+                  feedback={errors.type}
+                >
+                  Multiple Choice
+                </ToggleButton>
+              </ButtonGroup>
+              {values.type === 'MCQ' ? (
+                <>
+                  <Form.Group controlId="choiceCount">
+                    <Form.Label>
+                      Number of choices:
+                      {' '}
+                      {values.choiceCount}
+                    </Form.Label>
+                    <Form.Control
+                      type="range"
+                      required
+                      name="choiceCount"
+                      value={values.choiceCount}
+                      min="2"
+                      max="10"
+                      onChange={handleChange}
+                      isValid={touched.choiceCount && !errors.choiceCount}
+                      isInvalid={touched.choiceCount && errors.choiceCount}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.choiceCount}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  {(() => {
+                    const choices = [];
+                    for (let i = 0; i < values.choiceCount; i++) {
+                      choices.push(
 
-                      <Form.Group key={i} controlId={`choice${i}`}>
-                        <Form.Label>{`Choice ${i + 1}`}</Form.Label>
-                        <InputGroup className="mb-3">
-                          <InputGroup.Prepend>
-                            <InputGroup.Checkbox
-                              aria-label="Checkbox for following text input"
-                              name={`choice${i}correct`}
-                              checked={values[`choice${i}correct`]}
+                        <Form.Group key={i} controlId={`choice${i}`}>
+                          <Form.Label>{`Choice ${i + 1}`}</Form.Label>
+                          <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                              <InputGroup.Checkbox
+                                aria-label="Checkbox for following text input"
+                                name={`choice${i}correct`}
+                                checked={values[`choice${i}correct`]}
+                                onChange={handleChange}
+                              />
+                            </InputGroup.Prepend>
+                            <Form.Control
+                              type="text"
+                              name={`choice${i}`}
+                              value={values[`choice${i}`]}
                               onChange={handleChange}
+                              isValid={touched[`choice${i}`] && !errors[`choice${i}`]}
+                              isInvalid={touched[`choice${i}`] && errors[`choice${i}`]}
                             />
-                          </InputGroup.Prepend>
-                          <Form.Control
-                            type="text"
-                            name={`choice${i}`}
-                            value={values[`choice${i}`]}
-                            onChange={handleChange}
-                            isValid={touched[`choice${i}`] && !errors[`choice${i}`]}
-                            isInvalid={touched[`choice${i}`] && errors[`choice${i}`]}
-                          />
-                        </InputGroup>
-                        <Form.Control.Feedback type="invalid">
-                          {errors[`choice${i}`]}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    );
-                  }
-                  return choices;
-                })()}
-                <Form.Group controlId="multiSelect">
-                  <Form.Check
-                    required
-                    name="multiSelect"
-                    label="Allow choosing multiple answers"
-                    checked={values.multiSelect}
-                    onChange={handleChange}
-                    isInvalid={!!errors.multiSelect}
-                    feedback={errors.multiSelect}
-                  />
-                </Form.Group>
-              </>
-            ) : null}
-            <Button type="submit">Send Quiz</Button>
-          </Form>
-        )}
-      </Formik>
+                          </InputGroup>
+                          <Form.Control.Feedback type="invalid">
+                            {errors[`choice${i}`]}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      );
+                    }
+                    return choices;
+                  })()}
+                  <Form.Group controlId="multiSelect">
+                    <Form.Check
+                      required
+                      name="multiSelect"
+                      label="Allow choosing multiple answers"
+                      checked={values.multiSelect}
+                      onChange={handleChange}
+                      isInvalid={!!errors.multiSelect}
+                      feedback={errors.multiSelect}
+                    />
+                  </Form.Group>
+                </>
+              ) : null}
+              <Button type="submit">Send Quiz</Button>
+            </Form>
+          )}
+        </Formik>
+      </Container>
+      <Button className="close-create" variant="flat" onClick={onBack}><BsChevronCompactUp /></Button>
     </div>
   );
 }

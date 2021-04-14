@@ -3,9 +3,9 @@ import React from 'react';
 export default function StatusMessage({ message }) {
   return (
     <div>
-      <p className="text-muted">
+      <span className="text-muted">
         {message.content}
-      </p>
+      </span>
     </div>
   );
 }

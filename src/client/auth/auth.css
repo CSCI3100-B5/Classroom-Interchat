@@ -1,3 +1,8 @@
 .body {
-    background-color: #f7f7f7;
+  background-color: #f7f7f7;
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }

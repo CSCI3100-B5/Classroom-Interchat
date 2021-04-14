@@ -46,7 +46,7 @@ module.exports = function indexEvents(socket, io) {
   // join the user's own "room"
   socket.join(socket.data.invoker.id);
 
-  // TODO: GUIDE: register all listeners here
+  // GUIDE: register all listeners here
   externalEvents(socket, io);
   messageEvents(socket, io);
   quizEvents(socket, io);

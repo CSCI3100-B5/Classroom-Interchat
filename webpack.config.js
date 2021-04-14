@@ -10,7 +10,8 @@ module.exports = {
   entry: ['babel-polyfill', './src/client/index.jsx'],
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
     publicPath: '/'
   },
   module: {
@@ -67,7 +68,8 @@ module.exports = {
       ],
     }),
     new GenerateSW({
-      maximumFileSizeToCacheInBytes: 30 * 1024 * 1024
+      maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
+      cleanupOutdatedCaches: true,
     })
   ]
 };

@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
+const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
@@ -36,7 +37,7 @@ ParticipantSchema.method({
   filterSafe() {
     return {
       id: this.id,
-      user: this.user.filterSafe ? this.user.filterSafe() : this.user,
+      user: filterSafeOrOriginal(this.user),
       permission: this.permission,
       createdAt: this.createdAt,
       isOnline: this.isOnline,
@@ -92,11 +93,11 @@ ClassroomSchema.method({
     return {
       id: this.id,
       name: this.name,
-      host: this.populated('host') ? this.host.filterSafe() : this.host,
+      host: filterSafeOrOriginal(this.host),
       createdAt: this.createdAt,
       closedAt: this.closedAt,
       participants: this.participants.map(x => x.filterSafe()),
-      messages: this.populated('messages') ? this.messages.map(x => x.filterSafe()) : this.messages,
+      messages: filterSafeOrOriginal(this.messages),
       isMuted: this.isMuted
     };
   },
@@ -104,7 +105,7 @@ ClassroomSchema.method({
     return {
       id: this.id,
       name: this.name,
-      host: this.populated('host') ? this.host.filterSafe() : this.host,
+      host: filterSafeOrOriginal(this.host),
       createdAt: this.createdAt,
       closedAt: this.closedAt,
       isMuted: this.isMuted

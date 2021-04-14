@@ -16,7 +16,7 @@ const smtpTransport = nodemailer.createTransport({
 });
 
 function generateAccessToken(payload) {
-  return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '10m' });
+  return jwt.sign(payload, config.accessTokenSecret, { expiresIn: '10s' }); // TODO: debug
 }
 
 /**

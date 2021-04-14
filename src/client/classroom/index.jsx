@@ -18,26 +18,24 @@ export default function ClassroomRoot() {
   return (
     <SocketProvider>
       <RealtimeProvider>
-        <Router>
-          <div>
-            {/* A <Switch> looks through its children <Route>s and
+        <div>
+          {/* A <Switch> looks through its children <Route>s and
         renders the first one that matches the current URL. */}
-            <Switch>
-              <Route path={`${path}/join`}>
-                <JoinClassroom />
-              </Route>
-              <Route path={`${path}/create`}>
-                <CreateClassroom />
-              </Route>
-              <Route path={`${path}/session`}>
-                <ClassroomSession />
-              </Route>
-              <Route path={path}>
-                <Redirect to={`${url}/join`} />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
+          <Switch>
+            <Route path={`${path}/join`}>
+              <JoinClassroom />
+            </Route>
+            <Route path={`${path}/create`}>
+              <CreateClassroom />
+            </Route>
+            <Route path={`${path}/session`}>
+              <ClassroomSession />
+            </Route>
+            <Route path={path}>
+              <Redirect to={`${url}/join`} />
+            </Route>
+          </Switch>
+        </div>
       </RealtimeProvider>
     </SocketProvider>
   );

@@ -37,7 +37,6 @@ export function SocketProvider({ children }) {
     console.log(`Socket connecting to ${env.hostUrl}`);
     setSocket(newSocket);
     newSocket.on('connect', (...args) => console.log('Socket connect', args));
-    // TODO: auto-join classroom if previously disconnected without leaving
     newSocket.io.on('reconnect', (retryCount) => {
       console.log('io reconnect', retryCount);
       data.toasts = data.toasts.filter(x => x.title !== 'Real-time connection lost');
@@ -59,7 +58,6 @@ export function SocketProvider({ children }) {
         console.log('Attempting to reconnect to classroom');
       }
     });
-    // TODO: show internet warning
     newSocket.io.on('reconnect_error', (...args) => {
       console.log('io reconnect error', args);
       toast('error', 'Real-time connection lost', "Can't connect to server. Please check your Internet connection.", true, true);

@@ -5,6 +5,7 @@ import {
 } from 'react-bootstrap';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../../../contexts/ToastProvider.jsx';
+import MarkdownRender from '../MarkdownRender.jsx';
 
 export default function MCQPrompt({ message }) {
   const { ansMCQuiz } = useRealtime();
@@ -20,6 +21,7 @@ export default function MCQPrompt({ message }) {
     console.log('MCQ answer object', cleanedChoices);
     try {
       await ansMCQuiz(cleanedChoices, message.id);
+      toast('info', 'Multiple choice quiz', 'Answer sent');
     } catch (ex) {
       toast('error', 'Error when answering MCQ', ex.error);
     }
@@ -27,8 +29,10 @@ export default function MCQPrompt({ message }) {
 
   return (
     <div>
-      <p>{message.content.prompt}</p>
-      {message.content.multiSelect ? <p className="text-muted">You may choose more than 1 answer</p> : null}
+      <div className="m-2"><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
+      {message.content.multiSelect
+        ? <p className="m-2 text-light text-small">You may choose more than 1 answer</p>
+        : null}
       <Formik
         onSubmit={onSubmit}
         initialValues={{
@@ -42,15 +46,15 @@ export default function MCQPrompt({ message }) {
           touched,
           errors,
         }) => (
-          <Form className="m-4" noValidate onSubmit={handleSubmit}>
+          <Form className="m-2" noValidate onSubmit={handleSubmit}>
             <Form.Group>
-              <ButtonGroup toggle vertical className="mb-2 d-flex">
+              <ButtonGroup toggle vertical className="p-0 mb-2 d-flex">
                 {message.content.choices.map((x) => {
                   if (message.content.multiSelect) {
                     return (
                       <ToggleButton
-                        className="m-1"
-                        variant="outline-primary"
+                        className="quiz-answer-button"
+                        variant="outline-light"
                         required
                         disabled={!!message.content.closedAt}
                         type="checkbox"
@@ -70,8 +74,8 @@ export default function MCQPrompt({ message }) {
                     <ToggleButton
                       required
                       disabled={!!message.content.closedAt}
-                      className="m-1"
-                      variant="outline-primary"
+                      className="quiz-answer-button"
+                      variant="outline-light"
                       type="radio"
                       key={x}
                       name="choices"
@@ -89,6 +93,8 @@ export default function MCQPrompt({ message }) {
             </Form.Group>
             <Button
               type="submit"
+              variant="outline-light"
+              className="quiz-bottom-action"
               disabled={!!message.content.closedAt}
             >
               Submit answer

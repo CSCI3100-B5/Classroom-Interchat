@@ -35,11 +35,10 @@ export default function Auth() {
   if (data.refreshToken && data.user) return (<p>Loading...</p>);
   return (
     <div className="body">
-      <Container>
-        <Row>
-          <Col />
-          <Col sm="6">
-            <Card className="mt-2 shadow-sm rounded">
+      <Container className="h-full">
+        <Row className="h-full justify-content-md-center">
+          <Col md={8} lg={6} className="h-full d-flex justify-content-center align-items-center">
+            <Card className="w-full shadow-sm rounded">
               <Card.Body>
                 <Tabs justify variant="pills" defaultActiveKey={location.hash === '#signup' ? 'signup' : 'login'} id="auth">
                   <Tab eventKey="login" title="Log in">
@@ -52,7 +51,6 @@ export default function Auth() {
               </Card.Body>
             </Card>
           </Col>
-          <Col />
         </Row>
       </Container>
     </div>

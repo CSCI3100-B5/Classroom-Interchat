@@ -11,8 +11,6 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
 import './MessageCompose.scoped.css';
 
-// TODO: reply to question
-
 export default function MessageCompose({ onCreateQuiz }) {
   const { sendMessage } = useRealtime();
   const { data, getSelfParticipant } = useDataStore();
@@ -25,13 +23,14 @@ export default function MessageCompose({ onCreateQuiz }) {
 
   const onSend = async () => {
     if (!messageData.message) return;
-    console.log('Send message object: ', { message: messageData.message, information: messageData.information });
+    const msgText = messageData.message;
+    messageData.message = '';
+    console.log('Send message object: ', { message: msgText, information: messageData.information });
     try {
-      await sendMessage(messageData.message, messageData.information);
+      await sendMessage(msgText, messageData.information);
     } catch (ex) {
       toast('error', 'Error when sending message', ex.error);
     }
-    messageData.message = '';
     messageData.information = null;
   };
 
@@ -97,14 +96,32 @@ export default function MessageCompose({ onCreateQuiz }) {
             <InputGroup>
               <FormControl
                 as="textarea"
+                maxLength={5000}
                 placeholder="Type your reply..."
                 aria-label="Type your reply"
                 className="reply-compose compose-box"
+                onKeyPress={(e) => {
+                  let isShift;
+                  if (window.event) {
+                    isShift = !!window.event.shiftKey;
+                  } else {
+                    isShift = !!e.shiftKey;
+                  }
+                  if (e.key === 'Enter' && !isShift) {
+                    e.preventDefault();
+                    messageData.information = { type: 'reply', qMessageId: data.replyToMessageId };
+                    onSend();
+                  }
+                }}
                 {...bindState(messageData.$message)}
               />
               <InputGroup.Append>
                 <OverlayTrigger
                   placement="top"
+                  {...(() => {
+                    if (!messageData.message) return { show: false };
+                    return {};
+                  })()}
                   overlay={(
                     <Tooltip id="tooltip-reply">
                       Send reply
@@ -128,14 +145,32 @@ export default function MessageCompose({ onCreateQuiz }) {
           <InputGroup className="compose-shadow">
             <FormControl
               as="textarea"
+              maxLength={5000}
               className="compose-box"
               placeholder="Type your message..."
               aria-label="Type your message"
+              onKeyPress={(e) => {
+                let isShift;
+                if (window.event) {
+                  isShift = !!window.event.shiftKey;
+                } else {
+                  isShift = !!e.shiftKey;
+                }
+                if (e.key === 'Enter' && !isShift) {
+                  e.preventDefault();
+                  messageData.information = { type: 'text' };
+                  onSend();
+                }
+              }}
               {...bindState(messageData.$message)}
             />
             <InputGroup.Append>
               <OverlayTrigger
                 placement="top"
+                {...(() => {
+                  if (!messageData.message) return { show: false };
+                  return {};
+                })()}
                 overlay={(
                   <Tooltip id="tooltip-send">
                     Send
@@ -153,6 +188,10 @@ export default function MessageCompose({ onCreateQuiz }) {
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
+                {...(() => {
+                  if (!messageData.message) return { show: false };
+                  return {};
+                })()}
                 overlay={(
                   <Tooltip id="tooltip-send-as-question">
                     Send as question

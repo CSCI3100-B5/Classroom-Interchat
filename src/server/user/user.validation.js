@@ -1,8 +1,5 @@
 const Joi = require('joi');
 
-// TODO: GUIDE: you may copy this file to make your xxx.validation.js
-// For more info on how to write Joi schemas, see https://joi.dev/api/
-
 module.exports = {
   // POST /api/user
   createUser: {
@@ -11,7 +8,7 @@ module.exports = {
       password: Joi.string().min(8).max(64).required(),
       email: Joi.string().email().required(),
       isAdmin: Joi.boolean().default(false),
-      emailVerification: Joi.string().default('sample-code'),
+      emailVerification: Joi.string().max(100).default('sample-code'),
       lastVerifiedEmail: Joi.string().email().default(null),
     })
   },
@@ -25,7 +22,7 @@ module.exports = {
       email: Joi.string().email()
     }),
     params: Joi.object({
-      userId: Joi.string().hex().required()
+      userId: Joi.string().hex().length(24).required()
     })
   }
 };
