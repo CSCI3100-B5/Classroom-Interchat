@@ -15,7 +15,7 @@ module.exports = {
     messageId: Joi.string().hex().length(24).required(),
   }),
   ansSAQuiz: Joi.object({
-    content: Joi.string().trim().length(200).required(),
+    content: Joi.string().trim().max(200).required(),
     messageId: Joi.string().hex().length(24).required(),
   }),
   ansMCQuiz: Joi.object({
