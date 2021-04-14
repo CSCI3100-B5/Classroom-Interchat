@@ -10,21 +10,40 @@ export function useToast() {
 export function ToastProvider({ children }) {
   const { data } = useDataStore();
 
-  function toast(type, title, body, dedupe = true) {
+  function toast(type, title, body, dedupe = true, sticky = false) {
     let toasts = [...data.toasts];
-    if (dedupe) {
-      toasts = toasts.filter(x => x.type !== type
+    const id = (+new Date()).toString(36);
+    if (!sticky) {
+      if (dedupe) {
+        toasts = toasts.filter(x => x.type !== type
         || x.title !== title
         || x.body !== body);
+      }
+      toasts.push({
+        type,
+        title,
+        body,
+        timestamp: new Date(),
+        id,
+        sticky
+      });
+    } else {
+      const t = toasts.find(x => x.type === type && x.title === title && x.body === body);
+      if (t) {
+        t.sticky = true;
+      } else {
+        toasts.push({
+          type,
+          title,
+          body,
+          timestamp: new Date(),
+          id,
+          sticky
+        });
+      }
     }
-    toasts.push({
-      type,
-      title,
-      body,
-      timestamp: new Date(),
-      id: (+new Date()).toString(36)
-    });
     data.toasts = toasts;
+    return id;
   }
 
   function removeToast(id) {

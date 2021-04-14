@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import {
-  Container, Row, Col, Tab, Tabs, Card, Navbar
+  Container, Row, Col, Tab, Tabs, Card
 } from 'react-bootstrap';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import LoginBox from './LoginBox.jsx';
 import SignupBox from './SignupBox.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
@@ -35,16 +35,6 @@ export default function Auth() {
   if (data.refreshToken && data.user) return (<p>Loading...</p>);
   return (
     <div className="body">
-      <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
-        <Navbar.Brand>
-          <Link to="/">
-            <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
-            <span className="navbar-brand text-white">
-              <strong>Classroom Interchat</strong>
-            </span>
-          </Link>
-        </Navbar.Brand>
-      </Navbar>
       <Container>
         <Row>
           <Col />

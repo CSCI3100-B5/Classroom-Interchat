@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ButtonGroup, ToggleButton } from 'react-bootstrap';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
@@ -29,6 +29,16 @@ export default function MessageList() {
       messageList = data.messages;
     }
   }
+
+  const messageEnd = useRef(null);
+
+  const scrollToBottom = () => {
+    messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messageList.length]);
 
   const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
 
@@ -68,6 +78,7 @@ export default function MessageList() {
           ))
         }
       </ul>
+      <div ref={messageEnd} />
     </div>
   );
 }

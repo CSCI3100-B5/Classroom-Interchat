@@ -14,8 +14,11 @@ const APIError = require('../../helpers/APIError');
 async function sendQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
+  const participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
+  if (classroom.isMuted) return callback({ error: 'The entire classroom is muted' });
+  if (participant.isMuted) return callback({ error: 'You are muted' });
   let message;
 
   switch (data.type) {
@@ -37,7 +40,7 @@ async function sendQuiz(packet, socket, io) {
       if (data.correct) {
         message = await Messages.MCQMessage.create({
           classroom: classroom.id,
-          sender: meta.invoker.id,
+          sender: meta.invoker,
           type: data.type.toLowerCase(),
           content: {
             prompt: data.prompt,
@@ -49,7 +52,7 @@ async function sendQuiz(packet, socket, io) {
       } else {
         message = await Messages.MCQMessage.create({
           classroom: classroom.id,
-          sender: meta.invoker.id,
+          sender: meta.invoker,
           type: data.type.toLowerCase(),
           content: {
             prompt: data.prompt,
@@ -62,7 +65,7 @@ async function sendQuiz(packet, socket, io) {
     case 'SAQ':
       message = await Messages.SAQMessage.create({
         classroom: classroom.id,
-        sender: meta.invoker.id,
+        sender: meta.invoker,
         type: data.type.toLowerCase(),
         content: {
           prompt: data.prompt
@@ -90,7 +93,7 @@ async function sendQuiz(packet, socket, io) {
 async function endQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -112,7 +115,7 @@ async function endQuiz(packet, socket, io) {
   }
   message.content.closedAt = Date.now();
   await message.save();
-  message = await message.populate('content.results').execPopulate();
+  message = await message.populate('content.results').populate('sender').execPopulate();
   socket.to(classroom.id).emit('end quiz', message.filterWithoutAnswer());
   io.to(meta.invoker.id).emit('end quiz', message.filterSafe());
   return callback({});
@@ -127,7 +130,7 @@ async function endQuiz(packet, socket, io) {
 async function releaseResults(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -149,7 +152,7 @@ async function releaseResults(packet, socket, io) {
   }
   message.content.resultsReleased = true;
   await message.save();
-  message = await message.populate('content.results').execPopulate();
+  message = await message.populate('content.results').populate('sender').execPopulate();
   socket.to(classroom.id).emit('quiz digest', message.filterSafe());
   io.to(meta.invoker.id).emit('update quiz', message.filterSafe());
   return callback({});
@@ -158,7 +161,7 @@ async function releaseResults(packet, socket, io) {
 async function ansSAQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -175,7 +178,7 @@ async function ansSAQuiz(packet, socket, io) {
   if (message.content.closedAt) {
     return callback({ error: 'The quiz has already ended' });
   }
-  message = await message.populate('content.results').execPopulate();
+  message = await message.populate('content.results').populate('sender').execPopulate();
   const oldAnswer = message.content.results.find(x => x.user._id.equals(meta.invoker._id));
   if (oldAnswer) {
     message.content.results.pull(oldAnswer);
@@ -193,7 +196,6 @@ async function ansSAQuiz(packet, socket, io) {
     result: quizanswer.filterSafe()
   });
   if (message.content.resultsReleased) {
-    // TODO: compute digest
     io.to(classroom.id).emit('quiz digest', message.filterSafe());
   }
   return callback({});
@@ -202,7 +204,7 @@ async function ansSAQuiz(packet, socket, io) {
 async function ansMCQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
-  if (!meta.invokerClassroom) return callback({ error: 'You are not in a classroom' });
+  if (!meta.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
   const classroom = meta.invokerClassroom;
   let message;
   try {
@@ -225,7 +227,7 @@ async function ansMCQuiz(packet, socket, io) {
   if (data.content.length > 1 && !message.content.multiSelect) {
     return callback({ error: 'You cannot choose more than one answer' });
   }
-  message = await message.populate('content.results').execPopulate();
+  message = await message.populate('content.results').populate('sender').execPopulate();
   const oldAnswer = message.content.results.find(x => x.user._id.equals(meta.invoker._id));
   if (oldAnswer) {
     message.content.results.pull(oldAnswer);
@@ -243,7 +245,6 @@ async function ansMCQuiz(packet, socket, io) {
     result: quizanswer.filterSafe()
   });
   if (message.content.resultsReleased) {
-    // TODO: compute digest
     io.to(classroom.id).emit('quiz digest', message.filterSafe());
   }
   return callback({});

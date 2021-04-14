@@ -24,7 +24,7 @@ export default function TokenAwarder({ userIds, onClose }) {
     }
   }, [userIds]);
   return (
-    <Modal show={!!userIds} onHide={onClose}>
+    <Modal show={!!userIds} onHide={onClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>Token Award</Modal.Title>
       </Modal.Header>

@@ -49,6 +49,10 @@ const UserSchema = new Schema({
     type: String,
     default: null
   },
+  lastEmailSentAt: {
+    type: Date,
+    default: null
+  }
 });
 
 /**

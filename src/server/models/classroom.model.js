@@ -107,6 +107,7 @@ ClassroomSchema.method({
       host: this.populated('host') ? this.host.filterSafe() : this.host,
       createdAt: this.createdAt,
       closedAt: this.closedAt,
+      isMuted: this.isMuted
     };
   },
   filterPeek() {

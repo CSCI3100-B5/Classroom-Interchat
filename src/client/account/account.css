@@ -1,5 +1,5 @@
 .body {
-  background-color: #d8dfec;
+  background-color: #f7f7f7;
   position: fixed;
   top: 0px;
   bottom: 0px;
@@ -12,6 +12,14 @@
 .sidebar {
   margin: 0.5rem;
   height: calc(100% - 1rem);
+}
+
+.sidebar a {
+  border-radius: 5px;
+}
+
+.sidebar a.nav-link.active {
+  border-color: #dee2e6;
 }
 
 .account-content {

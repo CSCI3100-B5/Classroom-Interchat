@@ -19,7 +19,7 @@ export default function QuizMessage({ message }) {
     try {
       await endQuiz(message.id);
     } catch (ex) {
-      toast('error', 'Error when end quiz', ex.error);
+      toast('error', 'Error when ending quiz', ex.error);
     }
   };
 
