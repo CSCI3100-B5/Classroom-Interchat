@@ -1,7 +1,5 @@
 import React from 'react';
 import MarkdownRender from './MarkdownRender.jsx';
-import './TextMessage.scoped.css';
-
 
 export default function TextMessage({ message }) {
   return (
