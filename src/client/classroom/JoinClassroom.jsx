@@ -152,7 +152,7 @@ export default function JoinClassroom() {
                     value={values.classroomId}
                     onChange={(event) => {
                       const res = /^https?:\/\/.*\?id=([0-9a-f]+)/.exec(event.target.value);
-                      if (res.length > 0) {
+                      if (res) {
                         [, event.target.value] = res;
                       }
                       handleChange(event);

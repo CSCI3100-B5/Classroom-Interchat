@@ -149,6 +149,23 @@ async function joinClassroom(packet, socket, io) {
   return socket.emit('catch up', retClassroom);
 }
 
+async function cleanupClassroom(classroomId, userId, lastOnline) {
+  try {
+    const classroom = await Classroom.get(classroomId);
+    if (classroom.closedAt) return;
+    if (classroom.participants.length > 1) return;
+    const p = classroom.participants.find(x => x.user._id.toString() === userId);
+    if (!p) return;
+    if (p.isOnline) return;
+    if (p.lastOnlineAt.getTime() === lastOnline.getTime()) {
+      classroom.closedAt = new Date();
+      classroom.participants.pull(p);
+      await classroom.save();
+    }
+  } catch (ex) {
+    // ignore errors
+  }
+}
 
 // lostConnection updates the user's online status and notify others
 // the user's participant entry is not removed, since the user is
@@ -170,7 +187,18 @@ async function lostConnection(packet, socket, io) {
     participant.lastOnlineAt = Date.now();
     await classroom.save();
     cachegoose.clearCache(`ClassroomById-${classroom.id}`);
-    // TODO: schedule a timeout to treat user as left
+
+    // If the user is the last participant in the classroom
+    // and remains disconnected for more than an hour,
+    // close the classroom automatically
+    if (classroom.participants.length === 1) {
+      setTimeout(
+        cleanupClassroom,
+        1000 * 3600,
+        classroom.id, socket.data.invoker.id, participant.lastOnlineAt
+      );
+    }
+
     notifyClassroomMetaChanged(classroom, io);
     io.to(classroom.id).emit('participant changed', participant.filterSafe());
   }
