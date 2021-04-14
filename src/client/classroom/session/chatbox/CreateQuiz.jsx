@@ -210,6 +210,7 @@ export default function CreateQuiz({ onBack }) {
                             </InputGroup.Prepend>
                             <Form.Control
                               type="text"
+                              maxLength={200}
                               name={`choice${i}`}
                               value={values[`choice${i}`]}
                               onChange={handleChange}

@@ -1,4 +1,5 @@
 .message-meta {
   color: var(--secondary);
   font-size: 0.8rem;
+  max-width: 80%;
 }

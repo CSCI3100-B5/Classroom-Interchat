@@ -78,7 +78,7 @@ export default function Account() {
           ? location.hash.substr(1)
           : 'launchApp'}
       >
-        <Row className="h-full sm-overflow-y-auto">
+        <Row className="h-full sm-overflow-y-auto vw-full">
           <Col sm={3} className="sm-h-full">
             <Nav variant="tabs" className="flex-column sidebar">
               <Nav.Item>

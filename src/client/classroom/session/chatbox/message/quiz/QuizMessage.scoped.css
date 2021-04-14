@@ -1,5 +1,6 @@
 .quiz-message {
   min-width: 50%;
+  max-width: 100%;
 }
 
 .quiz-message-box {
