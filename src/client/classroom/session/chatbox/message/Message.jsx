@@ -4,12 +4,19 @@ import TextMessage from './TextMessage.jsx';
 import QuizMessage from './quiz/QuizMessage.jsx';
 import StatusMessage from './StatusMessage.jsx';
 import ReplyMessage from './ReplyMessage.jsx';
+import './Message.scoped.css';
 
 function Message({ message }) {
   return (
-    <div>
+    <div className="relativeBox">
+      <p className="timeRight">
+        By sender123456 at
+        <p>
+          {message.createdAt.toString()}
+        </p>
+      </p>
+
       {message.sender ? (<p>{message.sender.name}</p>) : null}
-      <p>{message.createdAt.toString()}</p>
       {
         (() => {
           switch (message.type) {
