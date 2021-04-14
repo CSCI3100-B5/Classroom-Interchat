@@ -6,7 +6,7 @@
   gap: 10px;
 }
 
-.msg-left .reply-box {
+.msg-left .reply-message {
   justify-content: flex-start;
 }
 

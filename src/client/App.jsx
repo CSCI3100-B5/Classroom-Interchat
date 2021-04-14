@@ -19,46 +19,46 @@ const NotFound = lazy(() => import('./not-found/NotFound.jsx'));
 
 export default function App() {
   return (
-    <React.StrictMode>
-      <DataStoreProvider>
-        <ToastProvider>
-          <AxiosProvider>
-            <ApiProvider>
-              <ToastCenter />
-              <Router>
-                <Suspense fallback={(
-                  <div className="splash-container">
-                    <img className="splash-icon" src="/favicon.svg" alt="Page loading" />
-                  </div>
+    // Turning strict mode off since react-bootstrap is still using findDOMNode
+    // <React.StrictMode>
+    <DataStoreProvider>
+      <ToastProvider>
+        <AxiosProvider>
+          <ApiProvider>
+            <ToastCenter />
+            <Router>
+              <Suspense fallback={(
+                <div className="splash-container">
+                  <img className="splash-icon" src="/favicon.svg" alt="Page loading" />
+                </div>
                   )}
-                >
-                  {/* A <Switch> looks through its children <Route>s and
+              >
+                {/* A <Switch> looks through its children <Route>s and
                 renders the first one that matches the current URL. */}
-                  <Switch>
-                    <Route path="/auth">
-                      <Auth />
-                    </Route>
-                    <Route path="/account">
-                      <Account />
-                    </Route>
-                    <Route path="/classroom">
-                      <ClassroomRoot />
-                    </Route>
-                    <Route exact path="/">
-                      <Landing />
-                    </Route>
-                    {/* This is the 404 route */}
-                    <Route>
-                      <NotFound />
-                    </Route>
-                  </Switch>
-                </Suspense>
-              </Router>
-            </ApiProvider>
-          </AxiosProvider>
-        </ToastProvider>
-      </DataStoreProvider>
-
-    </React.StrictMode>
+                <Switch>
+                  <Route path="/auth">
+                    <Auth />
+                  </Route>
+                  <Route path="/account">
+                    <Account />
+                  </Route>
+                  <Route path="/classroom">
+                    <ClassroomRoot />
+                  </Route>
+                  <Route exact path="/">
+                    <Landing />
+                  </Route>
+                  {/* This is the 404 route */}
+                  <Route>
+                    <NotFound />
+                  </Route>
+                </Switch>
+              </Suspense>
+            </Router>
+          </ApiProvider>
+        </AxiosProvider>
+      </ToastProvider>
+    </DataStoreProvider>
+    // </React.StrictMode>
   );
 }

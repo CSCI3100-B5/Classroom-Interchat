@@ -68,7 +68,8 @@ module.exports = {
       ],
     }),
     new GenerateSW({
-      maximumFileSizeToCacheInBytes: 30 * 1024 * 1024
+      maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
+      cleanupOutdatedCaches: true,
     })
   ]
 };
