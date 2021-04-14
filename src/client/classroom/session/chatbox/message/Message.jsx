@@ -33,7 +33,9 @@ function Message({ message, index }) {
       || lastMsg.sender === message.sender)
       && !['mcq', 'saq'].includes(lastMsg.type)
       && !['mcq', 'saq'].includes(message.type)
-      && (new Date(message.createdAt)).getTime() - (new Date(lastMsg.createdAt)).getTime() < 1000 * 120) {
+      && (new Date(message.createdAt)).getTime()
+         - (new Date(lastMsg.createdAt)).getTime()
+         < 1000 * 120) {
       shouldRenderMeta = false;
     }
   }

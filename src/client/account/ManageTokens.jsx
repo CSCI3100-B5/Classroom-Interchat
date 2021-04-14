@@ -48,7 +48,7 @@ export default function ManageTokens() {
   };
 
   return (
-    <div className="mt-4 token-tabs">
+    <div className="mt-4 token-tabs w-full">
       <Tabs justify variant="pills" defaultActiveKey="tokensReceived">
         <Tab eventKey="tokensReceived" title="Tokens Received" className="token-card-container">
           {localData.receivedTokens.sort((a, b) => {
@@ -66,7 +66,7 @@ export default function ManageTokens() {
                   </Card.Title>
                 ) : null}
                 <div className="d-flex align-items-start justify-content-between">
-                  <div className="d-flex flex-column mr-2">
+                  <div className="d-flex flex-column mr-2 min-w-0 flex-shrink-1">
                     <div>
                       <span className="text-muted font-weight-light text-small mr-2">CREATED BY </span>
                       <span>{token.createdBy.name}</span>
@@ -78,11 +78,11 @@ export default function ManageTokens() {
                       )
                     </div>
                   </div>
-                  <div className="d-flex flex-column mr-2">
+                  <div className="d-flex flex-column mr-2 min-w-0 flex-shrink-1">
                     <div className="text-muted font-weight-light text-small">CLASSROOM</div>
                     <div>{token.classroom.name}</div>
                   </div>
-                  <div className="d-flex flex-column">
+                  <div className="d-flex flex-column min-w-0 flex-shrink-1">
                     <div className="text-muted font-weight-light text-small">CREATION DATE</div>
                     <div>{new Date(token.createdAt).toLocaleString()}</div>
                   </div>

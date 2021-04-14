@@ -1,14 +1,20 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
+import './NotFound.scoped.css';
 
 export default function NotFound() {
+  const history = useHistory();
   return (
-    <div>
+    <div className="not-found-container">
       <h1>Page not found</h1>
-      <LinkContainer to="/">
-        <Button>Go back to home page</Button>
-      </LinkContainer>
+      <div className="d-flex justify-content-center align-items-center">
+        <LinkContainer to="/">
+          <Button className="m-2">Go to home page</Button>
+        </LinkContainer>
+        <Button onClick={history.goBack} className="m-2">Go back</Button>
+      </div>
     </div>
   );
 }

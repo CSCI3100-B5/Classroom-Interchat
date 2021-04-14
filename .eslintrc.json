@@ -13,6 +13,10 @@
     "react/prop-types": "off",
     "no-plusplus": ["warn", { "allowForLoopAfterthoughts": true }],
     "no-param-reassign": ["warn", { "props": false }],
-    "no-underscore-dangle": ["warn", { "allow": ["_id"] }]
+    "no-underscore-dangle": ["warn", { "allow": ["_id"] }],
+    "no-unused-vars": [
+      "warn",
+      { "vars": "all", "args": "none", "ignoreRestSiblings": true }
+    ]
   }
 }

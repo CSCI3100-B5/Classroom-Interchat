@@ -47,7 +47,9 @@ export default function QuestionMessage({ message }) {
           placement="top"
           overlay={(
             <Tooltip id="tooltip-unresolved-question">
-              Unresolved question
+              {message.content.isResolved
+                ? 'Resolved question'
+                : 'Unresolved question'}
             </Tooltip>
           )}
         >

@@ -4,11 +4,12 @@
   "description": "Advanced real-time chatroom specifically designed for classroom interactions.",
   "main": "src/server/index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
     "start": "node src/server/index.js",
     "client": "webpack serve --mode development --devtool inline-source-map --hot",
     "server": "nodemon --trace-warnings src/server/index.js",
-    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+    "dev": "concurrently \"yarn run server\" \"yarn run client\"",
+    "lint": "eslint src/**/*.js src/**/*.jsx"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
@@ -69,9 +70,11 @@
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-react-scoped-css": "^1.1.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "clean-webpack-plugin": "^1.0.0",
     "concurrently": "^4.0.0",
     "copy-webpack-plugin": "6",
+    "cross-env": "^7.0.3",
     "css-loader": "^2.0.0",
     "eslint": "^5.0.0",
     "eslint-config-airbnb": "^17.0.0",

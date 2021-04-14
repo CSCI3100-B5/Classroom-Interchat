@@ -1,13 +1,15 @@
 .classroom-info {
   grid-area: top;
   position: relative;
-  width: 100%;
+}
+
+.card-title-fixed {
+  width: calc(100vw - 40px);
 }
 
 .classroom-info-card {
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
   border: 0px solid white;
-  width: 100%;
   margin: 0px;
   border-radius: 0px;
 }
@@ -32,15 +34,36 @@
 .classroom-name {
   font-size: 1.5rem;
   margin-right: 8px;
+  flex-shrink: 1;
+  max-width: 100%;
+  min-width: 200px;
+}
+
+.classroom-name-text {
+  max-width: 100%;
 }
 
 .account-name {
   font-size: 1.2rem;
+  flex-shrink: 1;
+  max-width: 100%;
+  min-width: 100px;
+
+  display: flex;
+}
+
+.account-name svg {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
 }
 
 .account-name span {
   display: inline-block;
   vertical-align: middle;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .participant-count {

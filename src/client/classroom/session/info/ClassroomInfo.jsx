@@ -28,17 +28,17 @@ function ClassroomInfo({ onShowParticipantList }) {
   const ongoingQuizzes = data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt);
 
   return (
-    <div className="classroom-info">
+    <div className="classroom-info vw-full">
       <Card
         bg="primary"
         text="light"
-        className="classroom-info-card"
+        className="classroom-info-card vw-full"
       >
-        <Card.Body>
-          <Card.Title>
+        <Card.Body className="vw-full">
+          <Card.Title className="card-title-fixed">
             <div className="classroom-card-title">
               <div className="classroom-name d-flex align-items-center">
-                <span className="mr-2">{data.classroomMeta.name}</span>
+                <span className="mr-2 classroom-name-text">{data.classroomMeta.name}</span>
                 {data.classroomMeta.isMuted ? <BsFillMicMuteFill /> : null}
                 {data.classroomMeta.closedAt ? <Badge variant="light">HISTORY VIEW</Badge> : null}
               </div>
@@ -54,7 +54,7 @@ function ClassroomInfo({ onShowParticipantList }) {
                 <BsPeopleFill className="mr-2" />
                 {data.participants.length}
                 {' '}
-                participants
+                {data.participants.length > 1 ? 'participants' : 'participant'}
               </Button>
               <Button
                 variant="danger"

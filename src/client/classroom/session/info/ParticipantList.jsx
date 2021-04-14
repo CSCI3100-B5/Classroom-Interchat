@@ -158,7 +158,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
           {
             data.participants.map(x => (
               <div key={x.user.id} className="participant-box d-flex justify-content-end align-items-center flex-wrap ">
-                <span className={!x.isOnline || x.isMuted ? 'text-muted' : null}>{x.user.name}</span>
+                <span className={`${!x.isOnline || x.isMuted ? 'text-muted' : ''} max-w-100`}>{x.user.name}</span>
                 {(() => {
                   if (x.user.id === data.classroomMeta.host.id) return (<Badge variant="primary">HOST</Badge>);
                   if (x.permission === 'instructor') return (<Badge variant="success">INSTRUCTOR</Badge>);
@@ -168,7 +168,8 @@ export default function ParticipantList({ onCloseParticipantList }) {
                 {x.isOnline ? null : (<RiWifiOffLine />)}
                 {x.isMuted ? (<BsFillMicMuteFill className="text-danger" />) : null}
                 {(() => {
-                  const unresolved = data.messages.filter(m => (m.sender?.id ?? m.sender) === (x.user.id ?? x.user)
+                  const unresolved = data.messages
+                    .filter(m => (m.sender?.id ?? m.sender) === (x.user.id ?? x.user)
                     && m.type === 'question'
                     && !m.content.isResolved);
                   if (unresolved.length > 0) {

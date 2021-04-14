@@ -30,6 +30,7 @@ export default function SAQPrompt({ message }) {
         <FormControl
           placeholder="Type your answer..."
           aria-label="Type your answer"
+          maxLength={200}
           disabled={!!message.content.closedAt}
           {...bindState(data.$answer)}
         />

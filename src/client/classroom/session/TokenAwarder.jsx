@@ -37,7 +37,7 @@ export default function TokenAwarder({ userIds, onClose }) {
           {' '}
           {userIds?.length}
           {' '}
-          participants
+          {userIds?.length > 1 ? 'participants' : 'participant'}
         </p>
         <FormControl
           maxLength={200}

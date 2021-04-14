@@ -58,7 +58,7 @@ export default function SAQResult({ message }) {
       </div>
       <div className="mx-2"><MarkdownRender>{message.content.prompt}</MarkdownRender></div>
       {answerDigest.length === 0
-        ? <span className="m-4 text-light">Waiting for answers...</span>
+        ? <span className="m-4 text-light">No answers...</span>
         : null}
       <Formik
         onSubmit={onSubmit}

@@ -15,7 +15,7 @@ const renderers = {
 
 export default function MarkdownRender({ children }) {
   return (
-    <ReactMarkdown renderers={renderers} plugins={[gfm, math]}>
+    <ReactMarkdown linkTarget="_blank" renderers={renderers} plugins={[gfm, math]}>
       {children}
     </ReactMarkdown>
   );
