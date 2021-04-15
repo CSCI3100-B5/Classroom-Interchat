@@ -18,7 +18,7 @@ export default function QuestionMessage({ message }) {
 
   const onResolveQuestion = async () => {
     try {
-      resolveQuestion(message.id);
+      await resolveQuestion(message.id);
     } catch (ex) {
       toast('error', 'Error when resolving question', ex.error);
     }

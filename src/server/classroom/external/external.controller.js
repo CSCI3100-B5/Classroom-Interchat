@@ -100,7 +100,8 @@ async function joinClassroom(packet, socket, io) {
   // attempts to modify classroom contents will be rejected
   if (classroom.closedAt) {
     callback({});
-    classroom = await classroom.populate('messages').populate('messages.sender').execPopulate();
+    classroom = await classroom.populate('messages').execPopulate();
+    classroom = await classroom.populate('messages.sender').execPopulate();
     return socket.emit('catch up', classroom.filterSafe());
   }
   let participant = classroom.participants.find(x => x.user._id.equals(meta.invoker._id));
