@@ -32,6 +32,50 @@ describe('QuestionMessage Component', function () {
   let fakeResolveQuestion;
   let fakeToast;
 
+  // assumption : data.messages always contain message to be send to QuestionMessage.jsx
+  const fakeData = {
+    messages: [
+      {
+        id: 'messageId is this',
+        sender: 'sender Id is this',
+        type: 'Question',
+        content: {
+          isResolved: false,
+          content: 'sth like question content'
+        }
+      },
+      {
+        id: 'reply Id 1',
+        sender: 'sender Id 1',
+        type: 'reply',
+        content: {
+          replyTo: 'messageId is this'
+        }
+      },
+      {
+        id: 'reply Id 2',
+        sender: 'sender Id 2',
+        type: 'reply',
+        content: {
+          replyTo: 'messageId is this'
+        }
+      },
+      {
+        id: 'reply Id 3',
+        sender: 'sender Id 3',
+        type: 'reply',
+        content: {
+          replyTo: 'messageId is NOT this'
+        }
+      },
+    ],
+    messageFilter: null,
+    replyToMessageId: null,
+    user: {
+      id: 'sender Id is this'
+    }
+  };
+
   // before each test, set up the fake contexts
   beforeEach(function () {
     fakeResolveQuestion = sinon.fake((messageId) => {
@@ -51,50 +95,6 @@ describe('QuestionMessage Component', function () {
     // here we replace it with a "spy" function that does nothing but
     // records the values that it is called with
     fakeToast = sinon.spy();
-
-    // assumption : data.messages always contain message to be send to QuestionMessage.jsx
-    const fakeData = {
-      messages: [
-        {
-          id: 'messageId is this',
-          sender: 'sender Id is this',
-          type: 'Question',
-          content: {
-            isResolved: false,
-            content: 'sth like question content'
-          }
-        },
-        {
-          id: 'reply Id 1',
-          sender: 'sender Id 1',
-          type: 'reply',
-          content: {
-            replyTo: 'messageId is this'
-          }
-        },
-        {
-          id: 'reply Id 2',
-          sender: 'sender Id 2',
-          type: 'reply',
-          content: {
-            replyTo: 'messageId is this'
-          }
-        },
-        {
-          id: 'reply Id 3',
-          sender: 'sender Id 3',
-          type: 'reply',
-          content: {
-            replyTo: 'messageId is NOT this'
-          }
-        },
-      ],
-      messageFilter: null,
-      replyToMessageId: null,
-      user: {
-        id: 'sender Id is this'
-      }
-    };
 
     // replaces all the useXXX functions to return a fake context
     // sinon.replace(object, property, newFunction)
@@ -131,7 +131,7 @@ describe('QuestionMessage Component', function () {
     expect(screen.getByRole('checkbox', { name: /2 replies/i })).to.not.be.equal(null);
   });
 
-  // test that it render not resolved question (sender)
+  // test that it render resolved question (sender)
   it('Renders resolved Questions (sender)', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
@@ -146,6 +146,9 @@ describe('QuestionMessage Component', function () {
     expect(screen.queryByText('RESOLVED')).to.not.be.equal(null);
     expect(screen.queryByText('sth like question content')).to.not.be.equal(null);
     expect(screen.getByRole('checkbox', { name: /2 replies/i })).to.not.be.equal(null);
+
+    expect(screen.queryByRole('button', { name: /Resolve Question/i })).equal(null);
+    expect(screen.queryByRole('button', { name: /Reply/i })).equal(null);
   });
 
   // test that it render not resolved question (other)
@@ -164,6 +167,8 @@ describe('QuestionMessage Component', function () {
     expect(screen.getByRole('button', { name: /Reply/i })).to.not.be.equal(null);
     expect(screen.queryByText('sth like question content')).to.not.be.equal(null);
     expect(screen.getByRole('checkbox', { name: /2 replies/i })).to.not.be.equal(null);
+
+    expect(screen.queryByRole('button', { name: /Resolve Question/i })).equal(null);
   });
 
   // test that it render Resolved question (other)
@@ -181,6 +186,9 @@ describe('QuestionMessage Component', function () {
     expect(screen.queryByText('RESOLVED')).to.not.be.equal(null);
     expect(screen.queryByText('sth like question content')).to.not.be.equal(null);
     expect(screen.getByRole('checkbox', { name: /2 replies/i })).to.not.be.equal(null);
+
+    expect(screen.queryByRole('button', { name: /Resolve Question/i })).equal(null);
+    expect(screen.queryByRole('button', { name: /Reply/i })).equal(null);
   });
 
   // test that user resolves question successfully
@@ -242,7 +250,6 @@ describe('QuestionMessage Component', function () {
     // simulate clicking the resolve button
     userEvent.click(screen.getByRole('button', { name: /Reply/i }));
 
-    // kind of meaningless with blackbox testing, where vaiable inside is not tested
-    // at least the user can click it
+    expect(fakeData.replyToMessageId).equal('messageId is this');
   });
 });
