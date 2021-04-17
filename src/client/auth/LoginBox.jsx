@@ -92,7 +92,7 @@ export default function LoginBox() {
                 feedback={errors.rememberMe}
               />
             </Form.Group>
-            <Button className="btn btn-primary btn-block" type="submit"><strong>Log in</strong></Button>
+            <Button id="login-btn" className="btn btn-primary btn-block" type="submit"><strong>Log in</strong></Button>
           </Form>
         )}
       </Formik>
