@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 module.exports = {
   createClassroom: Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string().trim().max(200).required(),
   }),
   peekClassroom: Joi.object({
     classroomId: Joi.string().hex().length(24).required()

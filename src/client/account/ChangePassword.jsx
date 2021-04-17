@@ -62,6 +62,7 @@ export default function ChangePassword() {
               <Col sm={8}>
                 <Form.Control
                   type="password"
+                  maxLength={64}
                   name="oldPassword"
                   value={values.oldPassword}
                   onChange={handleChange}
@@ -79,6 +80,7 @@ export default function ChangePassword() {
               <Col sm={8}>
                 <Form.Control
                   type="password"
+                  maxLength={64}
                   name="newPassword"
                   value={values.newPassword}
                   onChange={handleChange}
@@ -96,6 +98,7 @@ export default function ChangePassword() {
               <Col sm={8}>
                 <Form.Control
                   type="password"
+                  maxLength={64}
                   name="confirmPassword"
                   value={values.confirmPassword}
                   onChange={handleChange}
@@ -108,10 +111,11 @@ export default function ChangePassword() {
               </Col>
             </Form.Group>
 
-            <Col sm={2} />
-            <Col sm={10}>
-              <Button className="btn btn-secondary shadow-sm float-right mr-n1" type="submit">Save changes</Button>
-            </Col>
+            <Row>
+              <Col sm={10}>
+                <Button className="shadow-sm float-right" type="submit">Save changes</Button>
+              </Col>
+            </Row>
 
           </Form>
         )}

@@ -4,11 +4,12 @@
   "description": "Advanced real-time chatroom specifically designed for classroom interactions.",
   "main": "src/server/index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
     "start": "node src/server/index.js",
     "client": "webpack serve --mode development --devtool inline-source-map --hot",
     "server": "nodemon --trace-warnings src/server/index.js",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
+    "lint": "eslint src/**/*.js src/**/*.jsx"
     "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
     "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 5000 --exit 'src/server/**/*.test.js'"
   },
@@ -39,6 +40,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^5.12.0",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.5.0",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "qs": "^6.10.1",
@@ -64,6 +66,7 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-private-methods": "^7.13.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.13.14",
@@ -72,12 +75,14 @@
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-react-scoped-css": "^1.1.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "concurrently": "^4.0.0",
+    "copy-webpack-plugin": "6",
     "babel-plugin-rewire": "^1.2.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.3.0",
     "clean-webpack-plugin": "^1.0.0",
-    "concurrently": "^4.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^2.0.0",
     "eslint": "^5.0.0",
@@ -99,6 +104,7 @@
     "url-loader": "^1.0.1",
     "webpack": "^4.5.0",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.1.3"
+    "webpack-dev-server": "^3.1.3",
+    "workbox-webpack-plugin": "^6.1.2"
   }
 }

@@ -32,7 +32,7 @@ export function ApiProvider({ children }) {
     return result;
   }
 
-  // TODO: GUIDE: API calls should be put here
+  // GUIDE: API calls should be put here
 
   /**
    * Login with email and password
@@ -51,6 +51,19 @@ export function ApiProvider({ children }) {
       data.refreshToken = result.response.data.refreshToken;
       data.user = result.response.data.user;
     }
+    return result;
+  }
+
+  /**
+   * Send email request
+   * @returns response body
+   */
+  async function sendEmail() {
+    const result = await request({
+      method: 'POST',
+      url: '/auth/email',
+      headers: accessTokenHeader()
+    });
     return result;
   }
 
@@ -158,6 +171,7 @@ export function ApiProvider({ children }) {
       refreshAccessToken,
       login,
       signup,
+      sendEmail,
       logout,
       getUserProfile,
       updateUserProfile,

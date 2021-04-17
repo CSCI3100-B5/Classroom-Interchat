@@ -14,7 +14,7 @@ export function DataStoreProvider({ children }) {
   const [savedUser, saveUser] = useLocalStorage('user', null);
 
 
-  // TODO: GUIDE: All app-wide states should be defined here
+  // GUIDE: All app-wide states should be defined here
   const data = useStates({
     accessToken: savedAccessToken,
     refreshToken: savedRefreshToken,
@@ -52,7 +52,7 @@ export function DataStoreProvider({ children }) {
     saveUser(data.user);
   }, [data.user]);
 
-  // TODO: GUIDE: put computed states here as functions
+  // GUIDE: put computed states here as functions
 
   function refreshTokenHeader() {
     return {

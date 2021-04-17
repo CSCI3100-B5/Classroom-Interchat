@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Row, Col, Tab, Button, Navbar, Nav
 } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import LaunchApp from './LaunchApp.jsx';
 import ManageProfile from './ManageProfile.jsx';
 import ChangePassword from './ChangePassword.jsx';
@@ -12,17 +12,15 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
-// TODO: The UI is implemented as a tab control here, but a continuous
-// scrollable page is preferred
-
 export default function Account() {
   const { data } = useDataStore();
 
   const history = useHistory();
+  const location = useLocation();
 
   const { toast } = useToast();
 
-  const { logout } = useApi();
+  const { logout, getUserProfile } = useApi();
 
   // Redirect to /auth after logout
   const onLogOut = async () => {
@@ -45,27 +43,42 @@ export default function Account() {
       if (!data.refreshToken || !data.user) {
         history.push('/auth');
       }
+      const result = await getUserProfile(data.user.id);
+      console.log('Get user profile', result);
+      if (result.success) {
+        data.user = result.response.data;
+      } else {
+        data.refreshToken = null;
+        data.accessToken = null;
+        data.user = null;
+        history.push('/auth');
+      }
     })();
-  }, []);
+  }, [data.refreshToken]);
 
   if (!data.refreshToken || !data.user) return (<p>Redirecting you to log in...</p>);
 
   return (
     <div className="body">
-      <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
+      <Navbar bg="primary" sticky="top" className="shadow-sm">
         <Navbar.Brand>
-          <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
-          <span className="navbar-brand text-white">
-            <strong>Classroom Interchat</strong>
-          </span>
+          <Link to="/">
+            <span className="text-white font-weight-bold align-middle ml-2">
+              Classroom Interchat
+            </span>
+          </Link>
         </Navbar.Brand>
         <Nav.Item className="ml-auto">
-          <Button variant="outline-info" onClick={onLogOut}>Log out</Button>
+          <Button variant="outline-light" onClick={onLogOut}>Log out</Button>
         </Nav.Item>
       </Navbar>
 
-      <Tab.Container defaultActiveKey="launchApp">
-        <Row className="h-full sm-overflow-y-auto">
+      <Tab.Container defaultActiveKey={
+        ['manageProfile', 'changePassword', 'manageTokens'].includes(location.hash.substr(1))
+          ? location.hash.substr(1)
+          : 'launchApp'}
+      >
+        <Row className="h-full sm-overflow-y-auto vw-full">
           <Col sm={3} className="sm-h-full">
             <Nav variant="tabs" className="flex-column sidebar">
               <Nav.Item>
@@ -111,7 +124,7 @@ export default function Account() {
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="manageTokens" className="h-full">
-                <div className="h-full account-content-pane">
+                <div className="h-full account-content-pane overflow-auto">
                   <h2>Manage Tokens</h2>
                   <ManageTokens />
                 </div>

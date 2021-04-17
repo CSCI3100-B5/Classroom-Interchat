@@ -48,14 +48,14 @@ export default function ManageTokens() {
   };
 
   return (
-    <div className="mt-4 token-tabs">
+    <div className="mt-4 token-tabs w-full">
       <Tabs justify variant="pills" defaultActiveKey="tokensReceived">
         <Tab eventKey="tokensReceived" title="Tokens Received" className="token-card-container">
           {localData.receivedTokens.sort((a, b) => {
             if (+a.isValid - +b.isValid !== 0) return +b.isValid - +a.isValid;
             return new Date(b.createdAt) - new Date(a.createdAt);
           }).map(token => (
-            <Card key={token.id} className="token-card border-0 shadow-sm">
+            <Card key={token.id} className="token-card border shadow-sm">
               <Card.Header>
                 <span className="text-muted">{token.id}</span>
               </Card.Header>
@@ -65,26 +65,28 @@ export default function ManageTokens() {
                     <span>{token.value}</span>
                   </Card.Title>
                 ) : null}
-                <Card.Text>
-                  <p>
-                    <span className="text-muted font-weight-light text-small mr-2">CREATED BY </span>
-                    {token.createdBy.name}
-                    <span className="text-muted text-small">
+                <div className="d-flex align-items-start justify-content-between">
+                  <div className="d-flex flex-column mr-2 min-w-0 flex-shrink-1">
+                    <div>
+                      <span className="text-muted font-weight-light text-small mr-2">CREATED BY </span>
+                      <span>{token.createdBy.name}</span>
+                    </div>
+                    <div className="text-muted text-small">
                       {' '}
                       (
                       {token.createdBy.email}
                       )
-                    </span>
-                  </p>
-                  <p>
-                    <span className="text-muted font-weight-light text-small mr-2">CLASSROOM </span>
-                    {token.classroom.name}
-                  </p>
-                  <p>
-                    <span className="text-muted font-weight-light text-small mr-2">CREATION DATE </span>
-                    {new Date(token.createdAt).toLocaleString()}
-                  </p>
-                </Card.Text>
+                    </div>
+                  </div>
+                  <div className="d-flex flex-column mr-2 min-w-0 flex-shrink-1">
+                    <div className="text-muted font-weight-light text-small">CLASSROOM</div>
+                    <div>{token.classroom.name}</div>
+                  </div>
+                  <div className="d-flex flex-column min-w-0 flex-shrink-1">
+                    <div className="text-muted font-weight-light text-small">CREATION DATE</div>
+                    <div>{new Date(token.createdAt).toLocaleString()}</div>
+                  </div>
+                </div>
               </Card.Body>
               <Card.Footer>
                 {token.isValid ? (
@@ -101,7 +103,7 @@ export default function ManageTokens() {
             if (+a.isValid - +b.isValid !== 0) return +b.isValid - +a.isValid;
             return new Date(b.createdAt) - new Date(a.createdAt);
           }).map(token => (
-            <Card key={token.id} className="token-card border-0 shadow-sm">
+            <Card key={token.id} className="token-card border shadow-sm">
               <Card.Header>
                 <span className="text-muted">{token.id}</span>
               </Card.Header>
@@ -111,26 +113,28 @@ export default function ManageTokens() {
                     <span>{token.value}</span>
                   </Card.Title>
                 ) : null}
-                <Card.Text>
-                  <p>
-                    <span className="text-muted font-weight-light text-small mr-2">RECEIVED BY </span>
-                    {token.receivedBy.name}
-                    <span className="text-muted text-small">
+                <div className="d-flex align-items-start justify-content-between">
+                  <div className="d-flex flex-column mr-2">
+                    <div>
+                      <span className="text-muted font-weight-light text-small mr-2">RECEIVED BY </span>
+                      <span>{token.receivedBy.name}</span>
+                    </div>
+                    <div className="text-muted text-small">
                       {' '}
                       (
                       {token.receivedBy.email}
                       )
-                    </span>
-                  </p>
-                  <p>
-                    <span className="text-muted font-weight-light text-small mr-2">CLASSROOM </span>
-                    {token.classroom.name}
-                  </p>
-                  <p>
-                    <span className="text-muted font-weight-light text-small mr-2">CREATION DATE </span>
-                    {new Date(token.createdAt).toLocaleString()}
-                  </p>
-                </Card.Text>
+                    </div>
+                  </div>
+                  <div className="d-flex flex-column mr-2">
+                    <div className="text-muted font-weight-light text-small">CLASSROOM</div>
+                    <div>{token.classroom.name}</div>
+                  </div>
+                  <div className="d-flex flex-column">
+                    <div className="text-muted font-weight-light text-small">CREATION DATE</div>
+                    <div>{new Date(token.createdAt).toLocaleString()}</div>
+                  </div>
+                </div>
               </Card.Body>
               <Card.Footer className="d-flex justify-content-between align-items-center">
                 {token.isValid ? (

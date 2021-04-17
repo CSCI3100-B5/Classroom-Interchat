@@ -7,8 +7,7 @@ const APIError = require('../helpers/APIError');
 
 const { Schema } = mongoose;
 
-// TODO: GUIDE: All database models should be defined as separate files in this models/ folder
-// Copy this user model for reference
+// GUIDE: All database models should be defined as separate files in this /models folder
 
 /**
  * User Schema
@@ -49,6 +48,10 @@ const UserSchema = new Schema({
     type: String,
     default: null
   },
+  lastEmailSentAt: {
+    type: Date,
+    default: null
+  }
 });
 
 /**

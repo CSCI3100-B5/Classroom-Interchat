@@ -1,8 +1,45 @@
-/* Feel free to choose another one, this one comes from https://fonts.google.com/ */
 * {
   font-family: "Ubuntu", sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 :root {
   --lightlightgray: #eeeeee;
+}
+
+.text-small {
+  font-size: 0.8rem;
+}
+
+.text-large {
+  font-size: 1.2rem;
+}
+
+.text-xl {
+  font-size: 1.5rem;
+}
+
+.badge-large {
+  font-size: 1rem;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.max-w-100 {
+  max-width: 100%;
+}
+
+.vw-full {
+  width: 100vw;
+}
+
+.min-w-0 {
+  min-width: 0;
 }

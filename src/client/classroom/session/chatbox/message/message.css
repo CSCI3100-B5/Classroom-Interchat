@@ -1,0 +1,82 @@
+.message-box {
+  padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  background: var(--primary);
+  color: white;
+  max-width: 80%;
+}
+
+.instructor .message-box {
+  background: var(--success);
+  color: white;
+}
+
+.message-color {
+  color: var(--primary);
+}
+
+.icon-large {
+  min-width: 30px;
+  min-height: 30px;
+}
+
+.msg-left .message-icon {
+  order: 2;
+}
+
+.instructor .message-color {
+  color: var(--success);
+}
+
+.message-box > :first-child {
+  margin-top: 0px !important;
+}
+
+.message-box > :last-child {
+  margin-bottom: 0px !important;
+}
+
+.message-box pre {
+  border-radius: 5px;
+}
+
+.message-box code {
+  color: #eeeeee;
+}
+
+.message-box img {
+  max-height: 400px;
+}
+
+.message-box a:link {
+  color: rgb(195, 233, 255);
+}
+
+.message-box a:visited {
+  color: rgb(161, 205, 255);
+}
+
+.message-box a:hover {
+  color: rgb(164, 219, 255);
+}
+
+.message-box a:active {
+  color: rgb(133, 190, 236);
+}
+
+table,
+th,
+td {
+  border: 1px solid lightgray;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+img {
+  max-width: 100%;
+}

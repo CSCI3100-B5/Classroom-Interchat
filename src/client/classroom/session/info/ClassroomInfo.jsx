@@ -1,14 +1,17 @@
 import React from 'react';
-import { Button, Card, Accordion } from 'react-bootstrap';
-import { BsPeopleCircle, BsPeopleFill } from 'react-icons/bs';
+import {
+  Badge, Button, Card, ButtonGroup, ToggleButton, Container, Row, Col
+} from 'react-bootstrap';
+import { BsFillMicMuteFill, BsPeopleCircle, BsPeopleFill } from 'react-icons/bs';
+import { RiQuestionnaireFill } from 'react-icons/ri';
+import { FaArrowCircleUp, FaQuestionCircle, FaFilter } from 'react-icons/fa';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
-import ParticipantList from './ParticipantList.jsx';
 import './ClassroomInfo.scoped.css';
 
-function ClassroomInfo() {
-  const { data } = useDataStore();
+function ClassroomInfo({ onShowParticipantList }) {
+  const { data, getSelfParticipant } = useDataStore();
   const { leaveClassroom } = useRealtime();
   const { toast } = useToast();
 
@@ -20,17 +23,25 @@ function ClassroomInfo() {
     }
   };
 
+  const requestingParticipants = data.participants.filter(x => x.permission === 'requesting');
+  const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
+  const ongoingQuizzes = data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt);
+
   return (
-    <div className="classroom-info">
+    <div className="classroom-info vw-full">
       <Card
         bg="primary"
         text="light"
-        className="classroom-info-card"
+        className="classroom-info-card vw-full"
       >
-        <Card.Body>
-          <Card.Title>
+        <Card.Body className="vw-full">
+          <Card.Title className="card-title-fixed">
             <div className="classroom-card-title">
-              <div className="classroom-name">{data.classroomMeta.name}</div>
+              <div className="classroom-name d-flex align-items-center">
+                <span className="mr-2 classroom-name-text">{data.classroomMeta.name}</span>
+                {data.classroomMeta.isMuted ? <BsFillMicMuteFill /> : null}
+                {data.classroomMeta.closedAt ? <Badge variant="light">HISTORY VIEW</Badge> : null}
+              </div>
               <div className="account-name">
                 <BsPeopleCircle className="mr-2" />
                 <span>{data.user.name}</span>
@@ -39,12 +50,12 @@ function ClassroomInfo() {
           </Card.Title>
           <Card.Text as="div">
             <div className="classroom-card-body">
-              <div className="participant-count">
+              <Button variant="flat" className="participant-count" onClick={onShowParticipantList}>
                 <BsPeopleFill className="mr-2" />
                 {data.participants.length}
                 {' '}
-                participants
-              </div>
+                {data.participants.length > 1 ? 'participants' : 'participant'}
+              </Button>
               <Button
                 variant="danger"
                 onClick={onLeave}
@@ -56,19 +67,75 @@ function ClassroomInfo() {
           </Card.Text>
         </Card.Body>
       </Card>
-
-      <Accordion defaultActiveKey="0">
-        <Card>
-          <Accordion.Toggle as={Card.Header} eventKey="0">
-            Participant List
-          </Accordion.Toggle>
-          <Accordion.Collapse eventKey="0">
-            <Card.Body>
-              <ParticipantList />
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </Accordion>
+      {getSelfParticipant()
+        && getSelfParticipant().permission !== 'student'
+        && requestingParticipants.length ? (
+          <Container className="status-banner">
+            <Row>
+              <Col>
+                <FaArrowCircleUp className="mr-2" />
+                {requestingParticipants.length}
+                { ' '}
+                requesting for instructor permission
+              </Col>
+            </Row>
+          </Container>
+        ) : null}
+      {unresolvedQuestions.length ? (
+        <Button
+          as={Container}
+          variant="outline-secondary"
+          className={`${data.messageFilter === 'unresolved' ? 'active' : ''} status-banner clickable`}
+          onClick={() => {
+            if (data.messageFilter === 'unresolved') data.messageFilter = null;
+            else data.messageFilter = 'unresolved';
+          }}
+        >
+          {data.messageFilter === 'unresolved'
+            ? <FaFilter className="mr-2" />
+            : <FaQuestionCircle className="mr-2" />}
+          {unresolvedQuestions.length}
+          {' '}
+          unresolved questions
+        </Button>
+      ) : null}
+      {ongoingQuizzes.length ? (
+        <Button
+          as={Container}
+          variant="outline-secondary"
+          className={`${data.messageFilter === 'quiz' ? 'active' : ''} status-banner clickable`}
+          onClick={() => {
+            if (data.messageFilter === 'quiz') data.messageFilter = null;
+            else data.messageFilter = 'quiz';
+          }}
+        >
+          {data.messageFilter === 'quiz'
+            ? <FaFilter className="mr-2" />
+            : <RiQuestionnaireFill className="mr-2" />}
+          {ongoingQuizzes.length}
+          {' '}
+          ongoing quizzes
+        </Button>
+      ) : null}
+      {data.messageFilter && !['unresolved', 'quiz'].includes(data.messageFilter) ? (
+        <Button
+          as={Container}
+          variant="outline-secondary"
+          className={`${data.messageFilter ? 'active' : ''} status-banner clickable`}
+          onClick={() => {
+            if (data.messageFilter) data.messageFilter = null;
+          }}
+        >
+          {data.messageFilter
+            ? <FaFilter className="mr-2" />
+            : <FaQuestionCircle className="mr-2" />}
+          Viewing
+          {' '}
+          {data.messages.find(x => x.id === data.messageFilter).sender.name}
+          {' '}
+          &apos;s thread
+        </Button>
+      ) : null}
     </div>
   );
 }

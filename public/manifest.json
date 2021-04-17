@@ -1,0 +1,28 @@
+{
+  "name": "Classroom Interchat",
+  "short_name": "Classroom Interchat",
+  "description": "Enhanced real-time interactions for classrooms",
+  "lang": "en-US",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1976d2",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg"
+    },
+    {
+      "src": "favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

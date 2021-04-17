@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import {
-  Container, Row, Col, Tab, Tabs, Card, Navbar
+  Container, Row, Col, Tab, Tabs, Card
 } from 'react-bootstrap';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import LoginBox from './LoginBox.jsx';
 import SignupBox from './SignupBox.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
@@ -35,21 +35,10 @@ export default function Auth() {
   if (data.refreshToken && data.user) return (<p>Loading...</p>);
   return (
     <div className="body">
-      <Navbar sticky="top" navbar="light" bg="dark" className="py-0">
-        <Navbar.Brand>
-          <Link to="/">
-            <img src="/favicon.svg" width="50" height="50" className="d-inline-block mr-2" alt="" />
-            <span className="navbar-brand text-white">
-              <strong>Classroom Interchat</strong>
-            </span>
-          </Link>
-        </Navbar.Brand>
-      </Navbar>
-      <Container>
-        <Row>
-          <Col />
-          <Col sm="6">
-            <Card className="mt-2 shadow-sm rounded">
+      <Container className="h-full">
+        <Row className="h-full justify-content-md-center">
+          <Col md={8} lg={6} className="h-full d-flex justify-content-center align-items-center">
+            <Card className="w-full shadow-sm rounded">
               <Card.Body>
                 <Tabs justify variant="pills" defaultActiveKey={location.hash === '#signup' ? 'signup' : 'login'} id="auth">
                   <Tab eventKey="login" title="Log in">
@@ -62,7 +51,6 @@ export default function Auth() {
               </Card.Body>
             </Card>
           </Col>
-          <Col />
         </Row>
       </Container>
     </div>

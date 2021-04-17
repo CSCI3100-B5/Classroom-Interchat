@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   InputGroup, FormControl, Button, Form, OverlayTrigger, Tooltip
 } from 'react-bootstrap';
@@ -10,8 +10,6 @@ import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
 import './MessageCompose.scoped.css';
-
-// TODO: reply to question
 
 export default function MessageCompose({ onCreateQuiz }) {
   const { sendMessage } = useRealtime();
@@ -25,13 +23,14 @@ export default function MessageCompose({ onCreateQuiz }) {
 
   const onSend = async () => {
     if (!messageData.message) return;
-    console.log('Send message object: ', { message: messageData.message, information: messageData.information });
+    const msgText = messageData.message;
+    messageData.message = '';
+    console.log('Send message object: ', { message: msgText, information: messageData.information });
     try {
-      await sendMessage(messageData.message, messageData.information);
+      await sendMessage(msgText, messageData.information);
     } catch (ex) {
       toast('error', 'Error when sending message', ex.error);
     }
-    messageData.message = '';
     messageData.information = null;
   };
 
@@ -61,6 +60,9 @@ export default function MessageCompose({ onCreateQuiz }) {
     );
   }
 
+  const replyInput = useRef(null);
+  const msgInput = useRef(null);
+
   return (
     <div className="message-compose">
       {replyToMessage !== null
@@ -70,7 +72,9 @@ export default function MessageCompose({ onCreateQuiz }) {
               <span className="reply-text btn">
                 Replying to
                 {' '}
-                {data.participants.find(x => x.user.id === replyToMessage.sender).user.name}
+                {data.participants
+                  .find(x => x.user.id === (replyToMessage.sender.id ?? replyToMessage.sender))
+                  .user.name}
                 {'\'s Question'}
               </span>
               <span className="reply-content btn">
@@ -97,14 +101,33 @@ export default function MessageCompose({ onCreateQuiz }) {
             <InputGroup>
               <FormControl
                 as="textarea"
+                ref={replyInput}
+                maxLength={5000}
                 placeholder="Type your reply..."
                 aria-label="Type your reply"
                 className="reply-compose compose-box"
+                onKeyPress={(e) => {
+                  let isShift;
+                  if (window.event) {
+                    isShift = !!window.event.shiftKey;
+                  } else {
+                    isShift = !!e.shiftKey;
+                  }
+                  if (e.key === 'Enter' && !isShift) {
+                    e.preventDefault();
+                    messageData.information = { type: 'reply', qMessageId: data.replyToMessageId };
+                    onSend();
+                  }
+                }}
                 {...bindState(messageData.$message)}
               />
               <InputGroup.Append>
                 <OverlayTrigger
                   placement="top"
+                  {...(() => {
+                    if (!messageData.message) return { show: false };
+                    return {};
+                  })()}
                   overlay={(
                     <Tooltip id="tooltip-reply">
                       Send reply
@@ -114,7 +137,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                   <Button
                     variant="outline-secondary"
                     className="reply-send"
-                    onClick={() => { messageData.information = { type: 'reply', qMessageId: data.replyToMessageId }; onSend(); }}
+                    onClick={() => {
+                      messageData.information = { type: 'reply', qMessageId: data.replyToMessageId };
+                      onSend();
+                      replyInput.current.focus();
+                    }}
                     disabled={!messageData.message}
                   >
                     <BsReplyFill className="button-icon" />
@@ -128,14 +155,33 @@ export default function MessageCompose({ onCreateQuiz }) {
           <InputGroup className="compose-shadow">
             <FormControl
               as="textarea"
+              ref={msgInput}
+              maxLength={5000}
               className="compose-box"
               placeholder="Type your message..."
               aria-label="Type your message"
+              onKeyPress={(e) => {
+                let isShift;
+                if (window.event) {
+                  isShift = !!window.event.shiftKey;
+                } else {
+                  isShift = !!e.shiftKey;
+                }
+                if (e.key === 'Enter' && !isShift) {
+                  e.preventDefault();
+                  messageData.information = { type: 'text' };
+                  onSend();
+                }
+              }}
               {...bindState(messageData.$message)}
             />
             <InputGroup.Append>
               <OverlayTrigger
                 placement="top"
+                {...(() => {
+                  if (!messageData.message) return { show: false };
+                  return {};
+                })()}
                 overlay={(
                   <Tooltip id="tooltip-send">
                     Send
@@ -145,7 +191,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                 <Button
                   variant="outline-secondary"
                   className="compose-button"
-                  onClick={() => { messageData.information = { type: 'text' }; onSend(); }}
+                  onClick={() => {
+                    messageData.information = { type: 'text' };
+                    onSend();
+                    msgInput.current.focus();
+                  }}
                   disabled={!messageData.message}
                 >
                   <IoSend className="button-icon" />
@@ -153,6 +203,10 @@ export default function MessageCompose({ onCreateQuiz }) {
               </OverlayTrigger>
               <OverlayTrigger
                 placement="top"
+                {...(() => {
+                  if (!messageData.message) return { show: false };
+                  return {};
+                })()}
                 overlay={(
                   <Tooltip id="tooltip-send-as-question">
                     Send as question
@@ -162,7 +216,11 @@ export default function MessageCompose({ onCreateQuiz }) {
                 <Button
                   variant="outline-secondary"
                   className="compose-button"
-                  onClick={() => { messageData.information = { type: 'question' }; onSend(); }}
+                  onClick={() => {
+                    messageData.information = { type: 'question' };
+                    onSend();
+                    msgInput.current.focus();
+                  }}
                   disabled={!messageData.message}
                 >
                   <RiQuestionnaireFill className="button-icon" />

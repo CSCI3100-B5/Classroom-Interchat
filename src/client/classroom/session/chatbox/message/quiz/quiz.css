@@ -1,0 +1,15 @@
+.quiz-answer-button {
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.quiz-answer-button:not(:first-child) {
+  margin-top: 5px !important;
+}
+
+.quiz-bottom-action {
+  width: 100%;
+}

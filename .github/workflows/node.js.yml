@@ -15,6 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: bahmutov/npm-install@v1.7.2
+      - uses: bahmutov/npm-install@v1.7.4
 
       - run: yarn run build
