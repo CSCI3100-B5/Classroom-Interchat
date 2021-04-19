@@ -20,18 +20,54 @@ import Message from '../classroom/session/chatbox/message/Message.jsx';
 // all tests related to Message
 describe('Message Component', function () {
   // before each test, set up the fake contexts
-  const fakeDivMessage = function QuestionMessage({ message }) {
-    return <div>{message.content}</div>;
+  const fakeDivQuestionMessage = function QuestionMessage({ message }) {
+    return (
+      <div>
+        Question:
+        {message.content}
+      </div>
+    );
   };
-
+  const fakeDivTextMessage = function QuestionMessage({ message }) {
+    return (
+      <div>
+        Text:
+        {message.content}
+      </div>
+    );
+  };
+  const fakeDivQuizMessage = function QuestionMessage({ message }) {
+    return (
+      <div>
+        Quiz:
+        {message.content}
+      </div>
+    );
+  };
+  const fakeDivStatusMessage = function QuestionMessage({ message }) {
+    return (
+      <div>
+        Status:
+        {message.content}
+      </div>
+    );
+  };
+  const fakeDivReplyMessage = function QuestionMessage({ message }) {
+    return (
+      <div>
+        Reply:
+        {message.content}
+      </div>
+    );
+  };
   beforeEach(function () {
     // sinon.replace(object, property, newFunction)
     // fake child component
-    Message.__Rewire__('QuestionMessage', fakeDivMessage);
-    Message.__Rewire__('TextMessage', fakeDivMessage);
-    Message.__Rewire__('QuizMessage', fakeDivMessage);
-    Message.__Rewire__('StatusMessage', fakeDivMessage);
-    Message.__Rewire__('ReplyMessage', fakeDivMessage);
+    Message.__Rewire__('QuestionMessage', fakeDivQuestionMessage);
+    Message.__Rewire__('TextMessage', fakeDivTextMessage);
+    Message.__Rewire__('QuizMessage', fakeDivQuizMessage);
+    Message.__Rewire__('StatusMessage', fakeDivStatusMessage);
+    Message.__Rewire__('ReplyMessage', fakeDivReplyMessage);
   });
 
   // after each test is executed, do clean up actions
@@ -62,7 +98,7 @@ describe('Message Component', function () {
 
     expect(screen.queryByText('sender name is this')).to.not.be.equal(null);
     expect(screen.queryByText('123')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like content')).to.not.be.equal(null);
+    expect(screen.queryByText('Text:sth like content')).to.not.be.equal(null);
   });
 
   // test that it render status message
@@ -76,7 +112,7 @@ describe('Message Component', function () {
 
     expect(screen.queryByText('sender name is this')).equal(null);
     expect(screen.queryByText('123')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like content')).to.not.be.equal(null);
+    expect(screen.queryByText('Status:sth like content')).to.not.be.equal(null);
   });
 
   // test that it render mcq message
@@ -93,7 +129,7 @@ describe('Message Component', function () {
 
     expect(screen.queryByText('sender name is this')).to.not.be.equal(null);
     expect(screen.queryByText('123')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like content')).to.not.be.equal(null);
+    expect(screen.queryByText('Quiz:sth like content')).to.not.be.equal(null);
   });
 
   // test that it render saq message
@@ -110,7 +146,7 @@ describe('Message Component', function () {
 
     expect(screen.queryByText('sender name is this')).to.not.be.equal(null);
     expect(screen.queryByText('123')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like content')).to.not.be.equal(null);
+    expect(screen.queryByText('Quiz:sth like content')).to.not.be.equal(null);
   });
 
   // test that it render question message
@@ -127,7 +163,7 @@ describe('Message Component', function () {
 
     expect(screen.queryByText('sender name is this')).to.not.be.equal(null);
     expect(screen.queryByText('123')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like content')).to.not.be.equal(null);
+    expect(screen.queryByText('Question:sth like content')).to.not.be.equal(null);
   });
 
   // test that it render reply message
@@ -144,7 +180,7 @@ describe('Message Component', function () {
 
     expect(screen.queryByText('sender name is this')).to.not.be.equal(null);
     expect(screen.queryByText('123')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like content')).to.not.be.equal(null);
+    expect(screen.queryByText('Reply:sth like content')).to.not.be.equal(null);
   });
 
   // test that it render unknown type message

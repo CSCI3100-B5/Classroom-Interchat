@@ -4,8 +4,6 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, screen } from '@testing-library/react';
-// user-event allows us to fake inputs like typing and clicking buttons
-import userEvent from '@testing-library/user-event';
 // sinon creates fake functions
 import sinon from 'sinon';
 import {
@@ -31,7 +29,9 @@ describe('QuestionMessage Component', function () {
     messages: [
       {
         id: 'messageId is this',
-        sender: 'sender Id is this',
+        sender: {
+          name: 'sender name is this'
+        },
         type: 'Question',
         content: {
           isResolved: false,
@@ -74,13 +74,17 @@ describe('QuestionMessage Component', function () {
   beforeEach(function () {
     // replaces all the useXXX functions to return a fake context
     // sinon.replace(object, property, newFunction)
-    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: fakeData }));
+    ReplyMessage.__Rewire__('useDataStore', function useDataStore() {
+      return { data: fakeData };
+    });
+    // sinon.stub(DataStoreContext, 'useDataStore').returns(fakeData);
   });
 
   // after each test is executed, do clean up actions
   afterEach(function () {
     // restore the fake functions to their original
     sinon.restore();
+    ReplyMessage.__ResetDependency__('useDataStore');
     // this needs to be done because faked function can't be replaced with
     // faked function, therefore we need to remove the fake before the next test
     // fake it again
@@ -99,8 +103,8 @@ describe('QuestionMessage Component', function () {
     }}
     />);
 
-    expect(screen.queryByText('REPLY')).to.not.be.equal(null);
+    expect(screen.queryByText('Replying to sender name is this\'s Question')).to.not.be.equal(null);
+    expect(screen.queryByText('sth like message content')).to.not.be.equal(null);
     expect(screen.queryByText('sth like reply content')).to.not.be.equal(null);
-    expect(screen.queryByText('Replying to sth like message content')).to.not.be.equal(null);
   });
 });
