@@ -14,8 +14,7 @@
       "plugins": [
         "@babel/plugin-proposal-private-methods",
         "@babel/plugin-proposal-class-properties",
-        "@babel/plugin-syntax-dynamic-import",
-        "rewire"
+        "@babel/plugin-syntax-dynamic-import"
       ]
     }
   }
