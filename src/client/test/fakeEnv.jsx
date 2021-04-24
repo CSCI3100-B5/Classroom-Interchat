@@ -7,6 +7,8 @@ const fakeData = {
   peekClassroomMeta: null,
 
   classroomMeta: {
+    host: 'this is host id',
+    name: 'name in classroomMeta',
     closedAt: null,
     isMuted: false
   },
@@ -63,6 +65,7 @@ const fakeData = {
   messageFilter: null,
 
   user: {
+    name: 'user name is this',
     id: 'sender Id is this'
   },
 
