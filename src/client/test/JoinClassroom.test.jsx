@@ -18,6 +18,8 @@ import JoinClassroom from '../classroom/JoinClassroom.jsx';
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
+import * as ApiContext from '../contexts/ApiProvider.jsx';
+import * as SocketContext from '../contexts/SocketProvider.jsx';
 import { renderWithRouter } from './test-utils.js';
 
 // all tests related to JoinClassroom
@@ -26,6 +28,8 @@ describe('JoinClassroom Component', function () {
   let fakeToast;
   let fakePeekClassroom;
   let fakeJoinClassroom;
+  let fakelogout;
+  let fakesocket;
 
   // set up fakes before each test
   beforeEach(function () {
@@ -58,12 +62,19 @@ describe('JoinClassroom Component', function () {
 
     fakeToast = sinon.spy();
 
+    fakelogout = sinon.fake(() => new Promise((resolve) => {
+      resolve({ success: true, response: { } });
+    }));
+
+    // fakesocket = ;
+
     sinon.replace(RealtimeContext, 'useRealtime', () => ({
       peekClassroom: fakePeekClassroom,
       joinClassroom: fakeJoinClassroom
     }));
     sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
     sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: { rememberMe: true } }));
+    sinon.replace(ApiContext, 'useApi', () => ({ logout: fakelogout }));
   });
 
   // remember to restore the faked function after each test

@@ -34,7 +34,6 @@ describe('QuizMessage Component', function () {
   let fakeendQuiz;
   let fakereleaseResults;
 
-
   // before each test, set up the fake contexts
   beforeEach(function () {
     // replaces all the useXXX functions to return a fake context

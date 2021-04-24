@@ -51,7 +51,7 @@ describe('MessageCompose Component', function () {
 
   it('Renders MessageCompose', function () {
     render(<MessageCompose onCreateQuiz={fakeonCreateQuiz} />);
-
-    expect(screen.queryByText('Type your message...')).to.not.be.equal(null);
+    expect(screen.findByText('Send')).to.not.be.equal(null);
+    expect(screen.findByText('Send as question')).to.not.be.equal(null);
   });
 });

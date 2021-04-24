@@ -11,7 +11,7 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
-import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
+import { usefakeData } from './fakeEnv.jsx';
 
 import SAQPrompt from '../classroom/session/chatbox/message/quiz/SAQPrompt.jsx';
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
