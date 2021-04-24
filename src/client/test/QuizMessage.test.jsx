@@ -11,114 +11,55 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
+import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
+
 // import our component to be tested
 import QuizMessage from '../classroom/session/chatbox/message/quiz/QuizMessage.jsx';
 
-// import the contexts that our component uses
-// every useXXX call (besides react built-in ones, like useState, useEffect, useRef)
-// comes from a context, and we need to fake these contexts for the component
-// to work properly in our tests
+import * as SAQPrompt from '../classroom/session/chatbox/message/quiz/SAQPrompt.jsx';
+import * as SAQResult from '../classroom/session/chatbox/message/quiz/SAQResult.jsx';
+import * as MCQPrompt from '../classroom/session/chatbox/message/quiz/MCQPrompt.jsx';
+import * as MCQResult from '../classroom/session/chatbox/message/quiz/MCQResult.jsx';
+import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
+import * as ToastContext from '../contexts/ToastProvider.jsx';
+import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
 
-// not needed as no history changes
-// import { renderWithRouter } from './test-utils.js';
+describe('QuizMessage Component', function () {
+  let fakeSAQPrompt;
+  let fakeSAQResult;
+  let fakeMCQPrompt;
+  let fakeMCQResult;
 
-describe('MCQPrompt Component', function () {
   let fakeToast;
-  let fakeData;
   let fakeendQuiz;
   let fakereleaseResults;
 
-  fakeData = {
-    messages: [
-      {
-        id: 'messageId is this',
-        sender: {
-          name: 'sender name is this'
-        },
-        type: 'Question',
-        content: {
-          isResolved: false,
-          content: 'sth like message content'
-        }
-      },
-      {
-        id: 'reply Id 1',
-        sender: 'sender Id 1',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 2',
-        sender: 'sender Id 2',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 3',
-        sender: 'sender Id 3',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is NOT this'
-        }
-      },
-    ],
-    messageFilter: null,
-    replyToMessageId: null,
-    user: {
-      id: 'sender Id is this'
-    }
-  };
-
-  const fakeDiv = function QuestionMessage({ message }) {
-    return (<div> div </div>);
-  };
 
   // before each test, set up the fake contexts
   beforeEach(function () {
     // replaces all the useXXX functions to return a fake context
     // sinon.replace(object, property, newFunction)
 
+    fakeSAQPrompt = sinonDefaultReturn(SAQPrompt, 'SAQPrompt return');
+    fakeSAQResult = sinonDefaultReturn(SAQResult, 'SAQResult return');
+    fakeMCQPrompt = sinonDefaultReturn(MCQPrompt, 'MCQPrompt return');
+    fakeMCQResult = sinonDefaultReturn(MCQResult, 'MCQResult return');
+
     fakeToast = sinon.spy();
     fakeendQuiz = sinon.spy();
     fakereleaseResults = sinon.spy();
 
-    QuizMessage.__Rewire__('useRealtime', function useRealtime() {
-      return { endQuiz: fakeendQuiz, releaseResults: fakereleaseResults };
-    });
-    QuizMessage.__Rewire__('useDataStore', function useDataStore() {
-      return { data: fakeData };
-    });
-    QuizMessage.__Rewire__('useToast', function useDataStore() {
-      return { toast: fakeToast };
-    });
-    QuizMessage.__Rewire__('TokenAwarder', function fakeTokenAwarder({ userIds }) {
-      return <div>tokenAwarder</div>;
-    });
-    QuizMessage.__Rewire__('SAQPrompt', fakeDiv);
-    QuizMessage.__Rewire__('SAQResult', fakeDiv);
-    QuizMessage.__Rewire__('MCQPrompt', fakeDiv);
-    QuizMessage.__Rewire__('MCQResult', fakeDiv);
+    sinon.replace(RealtimeContext, 'useRealtime', () => ({
+      endQuiz: fakeendQuiz,
+      releaseResults: fakereleaseResults
+    }));
+    sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
+    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: usefakeData() }));
   });
 
   // after each test is executed, do clean up actions
   afterEach(function () {
-    // restore the fake functions to their original
     sinon.restore();
-    QuizMessage.__ResetDependency__('useRealtime');
-    QuizMessage.__ResetDependency__('useDataStore');
-    QuizMessage.__ResetDependency__('useToast');
-    QuizMessage.__ResetDependency__('TokenAwarder');
-    QuizMessage.__ResetDependency__('SAQPrompt');
-    QuizMessage.__ResetDependency__('SAQResult');
-    QuizMessage.__ResetDependency__('MCQPrompt');
-    QuizMessage.__ResetDependency__('MCQResult');
-    // this needs to be done because faked function can't be replaced with
-    // faked function, therefore we need to remove the fake before the next test
-    // fake it again
   });
 
   it('Renders QuizMessage', function () {

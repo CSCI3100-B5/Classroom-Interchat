@@ -11,67 +11,16 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
-// import our component to be tested
+import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
+
 import SAQPrompt from '../classroom/session/chatbox/message/quiz/SAQPrompt.jsx';
-
-// import the contexts that our component uses
-// every useXXX call (besides react built-in ones, like useState, useEffect, useRef)
-// comes from a context, and we need to fake these contexts for the component
-// to work properly in our tests
-
-// not needed as no history changes
-// import { renderWithRouter } from './test-utils.js';
+import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
+import * as ToastContext from '../contexts/ToastProvider.jsx';
+import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
 
 describe('SAQPrompt Component', function () {
   let fakeToast;
-  let fakeData;
   let fakeansSAQuiz;
-
-  fakeData = {
-    messages: [
-      {
-        id: 'messageId is this',
-        sender: {
-          name: 'sender name is this'
-        },
-        type: 'Question',
-        content: {
-          isResolved: false,
-          content: 'sth like message content'
-        }
-      },
-      {
-        id: 'reply Id 1',
-        sender: 'sender Id 1',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 2',
-        sender: 'sender Id 2',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 3',
-        sender: 'sender Id 3',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is NOT this'
-        }
-      },
-    ],
-    messageFilter: null,
-    replyToMessageId: null,
-    user: {
-      id: 'sender Id is this'
-    }
-  };
-
 
   // before each test, set up the fake contexts
   beforeEach(function () {
@@ -81,27 +30,16 @@ describe('SAQPrompt Component', function () {
     fakeToast = sinon.spy();
     fakeansSAQuiz = sinon.spy();
 
-    SAQPrompt.__Rewire__('useRealtime', function useRealtime() {
-      return { ansSAQuiz: fakeansSAQuiz };
-    });
-    SAQPrompt.__Rewire__('useDataStore', function useDataStore() {
-      return { data: fakeData };
-    });
-    SAQPrompt.__Rewire__('useToast', function useDataStore() {
-      return { toast: fakeToast };
-    });
+    sinon.replace(RealtimeContext, 'useRealtime', () => ({
+      ansSAQuiz: fakeansSAQuiz,
+    }));
+    sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
+    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: usefakeData() }));
   });
 
   // after each test is executed, do clean up actions
   afterEach(function () {
-    // restore the fake functions to their original
     sinon.restore();
-    SAQPrompt.__ResetDependency__('useRealtime');
-    SAQPrompt.__ResetDependency__('useDataStore');
-    SAQPrompt.__ResetDependency__('useToast');
-    // this needs to be done because faked function can't be replaced with
-    // faked function, therefore we need to remove the fake before the next test
-    // fake it again
   });
 
   it('Renders SAQPrompt', function () {

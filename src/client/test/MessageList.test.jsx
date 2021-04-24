@@ -11,107 +11,48 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
+import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
 // import our component to be tested
 import MessageList from '../classroom/session/chatbox/MessageList.jsx';
+import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
+import * as Message from '../classroom/session/chatbox/message/Message.jsx';
 
-// import the contexts that our component uses
-// every useXXX call (besides react built-in ones, like useState, useEffect, useRef)
-// comes from a context, and we need to fake these contexts for the component
-// to work properly in our tests
-
-// not needed as no history changes
-// import { renderWithRouter } from './test-utils.js';
-
+// did not find a way to deal with combination of
+// useRef(), useEffect() and messageBtm.current.scrollIntoView()
+/*
 describe('MessageList Component', function () {
-  let fakeToast;
-  let fakeData;
+  let fakeMessage;
 
-  fakeData = {
-    messages: [
-      {
-        id: 'messageId is this',
-        sender: {
-          name: 'sender name is this'
-        },
-        type: 'Question',
-        content: {
-          isResolved: false,
-          content: 'sth like message content'
-        }
-      },
-      {
-        id: 'reply Id 1',
-        sender: 'sender Id 1',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 2',
-        sender: 'sender Id 2',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 3',
-        sender: 'sender Id 3',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is NOT this'
-        }
-      },
-    ],
-    messageFilter: null,
-    replyToMessageId: null,
-    user: {
-      id: 'sender Id is this'
-    },
-    classroomMeta: {
-      closedAt: null
-    }
-  };
-  const fakeDivMessage = function QuestionMessage({ message }) {
-    return (
-      <div>
-        fakeDivMessage
-      </div>
-    );
-  };
-
-  // before each test, set up the fake contexts
   beforeEach(function () {
-    // replaces all the useXXX functions to return a fake context
-    // sinon.replace(object, property, newFunction)
-
-    fakeToast = sinon.spy();
-
-    MessageList.__Rewire__('useDataStore', () => ({ data: fakeData }));
-    MessageList.__Rewire__('Message', fakeDivMessage);
+    fakeMessage = sinonDefaultReturn(Message, 'Message return');
+    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: usefakeData() }));
   });
 
   // after each test is executed, do clean up actions
   afterEach(function () {
-    // restore the fake functions to their original
     sinon.restore();
-    MessageList.__ResetDependency__('useDataStore');
-    MessageList.__ResetDependency__('Message');
-    // this needs to be done because faked function can't be replaced with
-    // faked function, therefore we need to remove the fake before the next test
-    // fake it again
   });
 
   it('Renders MessageList', function () {
-    const messageBtm = useRef(null);
+    const messageBtm = {
+      id: 'messageId is this',
+      sender: {
+        name: 'sender name is this'
+      },
+      type: 'Question',
+      content: {
+        isResolved: false,
+        content: 'sth like message content'
+      }
+    };
+
     render(
       <div>
-        <MessageList />
-        <div ref={messageBtm} />
+        <MessageList ref={messageBtm} />
       </div>
     );
 
     expect(screen.queryByText('messageId is this')).to.not.be.equal(null);
   });
 });
+*/

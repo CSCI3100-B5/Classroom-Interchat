@@ -10,6 +10,8 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
+import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
+
 // import our component to be tested
 import ReplyMessage from '../classroom/session/chatbox/message/ReplyMessage.jsx';
 
@@ -22,72 +24,16 @@ import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 // not needed as no history changes
 // import { renderWithRouter } from './test-utils.js';
 
-// all tests related to QuestionMessage
-describe('QuestionMessage Component', function () {
-  // assumption : data.messages always contain message to be send to QuestionMessage.jsx
-  const fakeData = {
-    messages: [
-      {
-        id: 'messageId is this',
-        sender: {
-          name: 'sender name is this'
-        },
-        type: 'Question',
-        content: {
-          isResolved: false,
-          content: 'sth like message content'
-        }
-      },
-      {
-        id: 'reply Id 1',
-        sender: 'sender Id 1',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 2',
-        sender: 'sender Id 2',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 3',
-        sender: 'sender Id 3',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is NOT this'
-        }
-      },
-    ],
-    messageFilter: null,
-    replyToMessageId: null,
-    user: {
-      id: 'sender Id is this'
-    }
-  };
-
+// all tests related to ReplyMessage
+describe('ReplyMessage Component', function () {
   // before each test, set up the fake contexts
   beforeEach(function () {
-    // replaces all the useXXX functions to return a fake context
-    // sinon.replace(object, property, newFunction)
-    ReplyMessage.__Rewire__('useDataStore', function useDataStore() {
-      return { data: fakeData };
-    });
-    // sinon.stub(DataStoreContext, 'useDataStore').returns(fakeData);
+    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: usefakeData() }));
   });
 
   // after each test is executed, do clean up actions
   afterEach(function () {
-    // restore the fake functions to their original
     sinon.restore();
-    ReplyMessage.__ResetDependency__('useDataStore');
-    // this needs to be done because faked function can't be replaced with
-    // faked function, therefore we need to remove the fake before the next test
-    // fake it again
   });
 
   // test that it render reply message

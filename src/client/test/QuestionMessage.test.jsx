@@ -12,6 +12,8 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
+import { usefakeData } from './fakeEnv.jsx';
+
 // import our component to be tested
 import QuestionMessage from '../classroom/session/chatbox/message/QuestionMessage.jsx';
 
@@ -31,50 +33,7 @@ describe('QuestionMessage Component', function () {
   // fake functions for the tests to measure
   let fakeResolveQuestion;
   let fakeToast;
-
-  // assumption : data.messages always contain message to be send to QuestionMessage.jsx
-  const fakeData = {
-    messages: [
-      {
-        id: 'messageId is this',
-        sender: 'sender Id is this',
-        type: 'Question',
-        content: {
-          isResolved: false,
-          content: 'sth like question content'
-        }
-      },
-      {
-        id: 'reply Id 1',
-        sender: 'sender Id 1',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 2',
-        sender: 'sender Id 2',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is this'
-        }
-      },
-      {
-        id: 'reply Id 3',
-        sender: 'sender Id 3',
-        type: 'reply',
-        content: {
-          replyTo: 'messageId is NOT this'
-        }
-      },
-    ],
-    messageFilter: null,
-    replyToMessageId: null,
-    user: {
-      id: 'sender Id is this'
-    }
-  };
+  const fakeData = usefakeData();
 
   // before each test, set up the fake contexts
   beforeEach(function () {
@@ -116,7 +75,9 @@ describe('QuestionMessage Component', function () {
   it('Renders unresolved Questions (sender)', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
-      sender: 'sender Id is this',
+      sender: {
+        id: 'sender Id is this'
+      },
       content: {
         isResolved: false,
         content: 'sth like question content'
@@ -124,7 +85,6 @@ describe('QuestionMessage Component', function () {
     }}
     />);
 
-    expect(screen.queryByText('QUESTION')).to.not.be.equal(null);
     expect(screen.getByRole('button', { name: /Resolve Question/i })).to.not.be.equal(null);
     expect(screen.getByRole('button', { name: /Reply/i })).to.not.be.equal(null);
     expect(screen.queryByText('sth like question content')).to.not.be.equal(null);
@@ -135,7 +95,9 @@ describe('QuestionMessage Component', function () {
   it('Renders resolved Questions (sender)', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
-      sender: 'sender Id is this',
+      sender: {
+        id: 'sender Id is this'
+      },
       content: {
         isResolved: true,
         content: 'sth like question content'
@@ -155,7 +117,9 @@ describe('QuestionMessage Component', function () {
   it('Renders unresolved Questions (other)', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
-      sender: 'other sender',
+      sender: {
+        id: 'other sender'
+      },
       content: {
         isResolved: false,
         content: 'sth like question content'
@@ -163,7 +127,6 @@ describe('QuestionMessage Component', function () {
     }}
     />);
 
-    expect(screen.queryByText('QUESTION')).to.not.be.equal(null);
     expect(screen.getByRole('button', { name: /Reply/i })).to.not.be.equal(null);
     expect(screen.queryByText('sth like question content')).to.not.be.equal(null);
     expect(screen.getByRole('checkbox', { name: /2 replies/i })).to.not.be.equal(null);
@@ -175,7 +138,9 @@ describe('QuestionMessage Component', function () {
   it('Renders resolved Questions (other)', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
-      sender: 'other sender',
+      sender: {
+        id: 'other sender'
+      },
       content: {
         isResolved: true,
         content: 'sth like question content'
@@ -187,7 +152,7 @@ describe('QuestionMessage Component', function () {
     expect(screen.queryByText('sth like question content')).to.not.be.equal(null);
     expect(screen.getByRole('checkbox', { name: /2 replies/i })).to.not.be.equal(null);
 
-    expect(screen.queryByRole('button', { name: /Resolve Question/i })).equal(null);
+    expect(screen.queryByText('Resolve Question')).equal(null);
     expect(screen.queryByRole('button', { name: /Reply/i })).equal(null);
   });
 
@@ -195,7 +160,9 @@ describe('QuestionMessage Component', function () {
   it('resolve question', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
-      sender: 'sender Id is this',
+      sender: {
+        id: 'sender Id is this'
+      },
       content: {
         isResolved: false,
         content: 'sth like question content'
@@ -215,7 +182,9 @@ describe('QuestionMessage Component', function () {
   it('resolve question but throwed', function () {
     render(<QuestionMessage message={{
       id: 'incorrect messageId',
-      sender: 'sender Id is this',
+      sender: {
+        id: 'sender Id is this'
+      },
       content: {
         isResolved: false,
         content: 'sth like question content'
@@ -239,7 +208,9 @@ describe('QuestionMessage Component', function () {
   it('setup reply', function () {
     render(<QuestionMessage message={{
       id: 'messageId is this',
-      sender: 'sender Id is this',
+      sender: {
+        id: 'sender Id is this'
+      },
       content: {
         isResolved: false,
         content: 'sth like question content'
