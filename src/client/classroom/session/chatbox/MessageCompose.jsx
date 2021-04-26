@@ -44,6 +44,9 @@ export default function MessageCompose({ onCreateQuiz }) {
     }
   }, [data.replyToMessageId]);
 
+  const replyInput = useRef(null);
+  const msgInput = useRef(null);
+
   const replyToMessage = data.replyToMessageId
     ? data.messages.find(x => x.id === data.replyToMessageId)
     : null;
@@ -59,9 +62,6 @@ export default function MessageCompose({ onCreateQuiz }) {
       </div>
     );
   }
-
-  const replyInput = useRef(null);
-  const msgInput = useRef(null);
 
   return (
     <div className="message-compose">

@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, testing-framework ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, testing-framework ]
 
 jobs:
   build:
@@ -17,4 +17,6 @@ jobs:
 
       - uses: bahmutov/npm-install@v1.7.4
 
-      - run: yarn run build
+      - run: yarn run test:client
+      
+      - run: yarn run test:server

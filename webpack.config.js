@@ -34,7 +34,7 @@ module.exports = {
             sourceMap: true,
           },
         },
-        { loader: 'scoped-css-loader' },
+        // { loader: 'scoped-css-loader' },
       ],
     },
     {

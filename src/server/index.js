@@ -15,7 +15,7 @@ Promise = require('bluebird'); // eslint-disable-line no-global-assign
 mongoose.Promise = Promise;
 
 // connect to mongo db
-const mongoUri = config.mongo.host;
+const mongoUri = config.env === 'test' ? config.mongo.testHost : config.mongo.host;
 mongoose.connect(mongoUri, { keepAlive: 1, useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database: ${mongoUri}`);
@@ -36,4 +36,4 @@ server.listen(config.port, () => {
   console.info(`server started on port ${config.port} (${config.env})`); // eslint-disable-line no-console
 });
 
-module.exports = app;
+module.exports = { app, server };
