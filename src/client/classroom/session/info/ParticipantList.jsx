@@ -2,12 +2,12 @@ import {
   Button, Badge, Overlay, Tooltip, Row, Col, Container
 } from 'react-bootstrap';
 import React, { useRef, useState } from 'react';
-import copy from 'copy-text-to-clipboard';
 import {
   BsChevronCompactUp, BsFillMicMuteFill, BsFillMicFill, BsArrowUp, BsArrowDown
 } from 'react-icons/bs';
 import { FaAward, FaBan } from 'react-icons/fa';
 import { RiWifiOffLine } from 'react-icons/ri';
+import copy from '../../../copy.js';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import env from '../../../environment.js';
