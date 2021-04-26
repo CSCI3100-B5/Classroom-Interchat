@@ -19,7 +19,7 @@ const fakeData = {
         id: 'sender is is this',
         name: 'sender name is this'
       },
-      type: 'Question',
+      type: 'question',
       content: {
         isResolved: false,
         content: 'sth like message content'
