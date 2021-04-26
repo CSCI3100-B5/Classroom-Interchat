@@ -19,7 +19,7 @@ import * as Message from '../classroom/session/chatbox/message/Message.jsx';
 
 // did not find a way to deal with combination of
 // useRef(), useEffect() and messageBtm.current.scrollIntoView()
-/*
+
 describe('MessageList Component', function () {
   let fakeMessage;
 
@@ -55,4 +55,3 @@ describe('MessageList Component', function () {
     expect(screen.queryByText('messageId is this')).to.not.be.equal(null);
   });
 });
-*/

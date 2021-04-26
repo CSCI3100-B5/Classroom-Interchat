@@ -32,7 +32,7 @@ export default function MessageList() {
   const messageBtm = useRef(null);
 
   useEffect(() => {
-    messageBtm.current.scrollIntoView({ behavior: 'smooth' });
+    if (messageBtm) messageBtm.current.scrollIntoView({ behavior: 'smooth' });
   }, [messageList.length]);
 
   return (
