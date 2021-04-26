@@ -34,7 +34,7 @@ export default function Auth() {
 
   if (data.refreshToken && data.user) return (<p>Loading...</p>);
   return (
-    <div className="body">
+    <div className="auth-body">
       <Container className="h-full">
         <Row className="h-full justify-content-md-center">
           <Col md={8} lg={6} className="h-full d-flex justify-content-center align-items-center">

@@ -197,7 +197,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
                       {(isHost && x.user.id !== data.user.id) ? (
                         <Button variant="flat" className="participant-ctrl-btn" onClick={() => onDemote(x.user.id)}>
                           <BsArrowDown className="mr-1" />
-                          <span className="d-none d-md-inline">Deomote</span>
+                          <span className="d-none d-md-inline">Demote</span>
                         </Button>
                       ) : null}
                       <Button variant="flat" className="participant-ctrl-btn" onClick={() => setSelectedUsers([x.user.id])}>

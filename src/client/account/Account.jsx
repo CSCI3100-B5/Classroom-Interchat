@@ -59,7 +59,7 @@ export default function Account() {
   if (!data.refreshToken || !data.user) return (<p>Redirecting you to log in...</p>);
 
   return (
-    <div className="body">
+    <div className="account-body">
       <Navbar bg="primary" sticky="top" className="shadow-sm">
         <Navbar.Brand>
           <Link to="/">
