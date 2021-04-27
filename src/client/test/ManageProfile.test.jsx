@@ -13,7 +13,7 @@ import {
 } from 'mocha';
 
 // import our component to be tested
-import ManageProfile from '../account/ManageProfile';
+import ManageProfile from '../account/ManageProfile.jsx';
 
 // import the contexts that our component uses
 // every useXXX call (besides react built-in ones, like useState, useEffect, useRef)

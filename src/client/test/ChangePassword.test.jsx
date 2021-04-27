@@ -11,7 +11,7 @@ import {
 } from 'mocha';
 
 // import our component to be tested
-import ChangePassword from '../account/ChangePassword,jsx';
+import ChangePassword from '../account/ChangePassword.jsx';
 
 // import the contexts that our component uses
 // every useXXX call (besides react built-in ones, like useState, useEffect, useRef)

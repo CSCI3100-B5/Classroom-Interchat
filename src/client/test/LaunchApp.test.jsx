@@ -13,7 +13,7 @@ import {
 } from 'mocha';
 
 // import our component to be tested
-import LaunchApp from '../account/LaunchApp';
+import LaunchApp from '../account/LaunchApp.jsx';
 
 // This is to fake the react router context
 // which makes the component believe it is living in the /auth page
