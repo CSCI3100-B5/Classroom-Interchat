@@ -28,6 +28,6 @@ describe('LaunchApp Component', function () {
 
     userEvent.click(screen.getByRole('link', { name: /Launch/i }));
 
-    expect(window.location.pathname).to.be.equal('/classroom/join');
+    expect(window.location.pathname).to.be.equal('/classroom');
   });
 });

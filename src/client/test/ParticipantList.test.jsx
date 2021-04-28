@@ -82,6 +82,6 @@ describe('ParticipantList Component', function () {
     render(<ParticipantList onCloseParticipantList={sinon.spy()} />);
 
     expect(screen.queryByText('Copy invite link')).to.not.be.equal(null);
-    expect(await screen.findByText('Link copied!')).to.not.be.equal(null);
+    expect(await screen.findByText('TokenAwarder return')).to.not.be.equal(null);
   });
 });

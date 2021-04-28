@@ -75,11 +75,17 @@ describe('ManageProfile Component', function () {
     // this needs to be done because faked function can't be replaced with
     // faked function, therefore we need to remove the fake before the next test
     // fake it again
+    userEvent.clear(screen.getByLabelText(/name/i));
+    userEvent.clear(screen.getByLabelText(/email/i));
   });
 
   // fill in the form with valid details and submit
   it('Edit profile with valid details', async function () {
     render(<ManageProfile />);
+
+    // clear placeholder before typing
+    userEvent.clear(screen.getByLabelText(/name/i));
+    userEvent.clear(screen.getByLabelText(/email/i));
 
     // simulate user typing into text boxes
     userEvent.type(screen.getByLabelText(/name/i), 'abcdef');
@@ -92,12 +98,19 @@ describe('ManageProfile Component', function () {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     sinon.assert.calledOnce(fakeupdateUserProfile);
-    sinon.assert.calledWith(fakeupdateUserProfile, 'abcdef', 'abc@gmail.com');
+    sinon.assert.calledWith(fakeupdateUserProfile, 'sender Id is this', {
+      name: 'abcdef',
+      email: 'abc@gmail.com'
+    });
   });
 
   // test invalid name
   it('Edit profile with invalid name', async function () {
     render(<ManageProfile />);
+
+    // clear placeholder before typing
+    userEvent.clear(screen.getByLabelText(/name/i));
+    userEvent.clear(screen.getByLabelText(/email/i));
 
     // simulate user typing into text boxes
     userEvent.type(screen.getByLabelText(/name/i), 'abc');
@@ -115,6 +128,10 @@ describe('ManageProfile Component', function () {
   // test invalid email
   it('Edit profile with invalid email', async function () {
     render(<ManageProfile />);
+
+    // clear placeholder before typing
+    userEvent.clear(screen.getByLabelText(/name/i));
+    userEvent.clear(screen.getByLabelText(/email/i));
 
     // simulate user typing into text boxes
     userEvent.type(screen.getByLabelText(/name/i), 'abcdef');

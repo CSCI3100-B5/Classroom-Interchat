@@ -78,6 +78,6 @@ describe('ManageTokens Component', function () {
   it('Renders ManageTokens', async function () {
     render(<ManageTokens />);
     expect(await screen.findByText('Tokens Received')).to.not.be.equal(null);
-    expect(await screen.findByText('Tokens Created')).to.not.be.equal(null);
+    expect(await screen.findByText('Tokens Sent')).to.not.be.equal(null);
   });
 });

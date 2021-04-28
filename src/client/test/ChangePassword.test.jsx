@@ -21,19 +21,19 @@ import ChangePassword from '../account/ChangePassword.jsx';
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as ApiContext from '../contexts/ApiProvider.jsx';
-import { sinonDefaultReturn, usefakeData } from './fakeEnv.jsx';
+import { usefakeData } from './fakeEnv.jsx';
 
 // all tests related to ChangePassword
 describe('ChangePassword Component', () => {
   let fakeToast;
-  let fakeChangePassword;
   let fakeupdateUserProfile;
+  let fakeupdateUserProfileresult;
 
   // before each test, set up the fake contexts
   beforeEach(() => {
     fakeToast = sinon.spy();
 
-    const fakeupdateUserProfileresult = {
+    fakeupdateUserProfileresult = {
       success: true,
       response: {
         data: {
@@ -45,7 +45,7 @@ describe('ChangePassword Component', () => {
     };
 
     // TODO: want a spy that also returns a value here
-    fakeupdateUserProfile = sinon.stub().returns(fakeupdateUserProfileresult);
+    fakeupdateUserProfile = sinon.fake.returns(fakeupdateUserProfileresult);
 
     sinon.replace(ApiContext, 'useApi', () => ({
       updateUserProfile: fakeupdateUserProfile,
@@ -65,6 +65,9 @@ describe('ChangePassword Component', () => {
     // this needs to be done because faked function can't be replaced with
     // faked function, therefore we need to remove the fake before the next test
     // fake it again
+    userEvent.clear(screen.getByLabelText(/old password/i));
+    userEvent.clear(screen.getByLabelText(/new password/i));
+    userEvent.clear(screen.getByLabelText(/confirm password/i));
   });
 
   // fill in the form with valid details and submit
@@ -82,12 +85,15 @@ describe('ChangePassword Component', () => {
     // wait a while for the form to validate user input
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    sinon.assert.calledOnce(fakeChangePassword);
-    sinon.assert.calledWith(fakeChangePassword, 'password1', 'password2', 'password2');
+    sinon.assert.calledOnce(fakeupdateUserProfile);
+    sinon.assert.calledWith(fakeupdateUserProfile, 'sender Id is this', {
+      oldPassword: 'password1',
+      newPassword: 'password2'
+    });
   });
 
   // testing invalid inputs: invalid old password
-  it('Change password with invalid old password', async () => {
+  it('Change password with invalid old password 1', async () => {
     render(<ChangePassword />);
 
     userEvent.type(screen.getByLabelText(/old password/i), 'pass');
@@ -98,11 +104,11 @@ describe('ChangePassword Component', () => {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    sinon.assert.notCalled(fakeChangePassword);
+    sinon.assert.notCalled(fakeupdateUserProfile);
   });
 
   // test invalid old password
-  it('Change password with invalid old password', async () => {
+  it('Change password with invalid old password 2', async () => {
     render(<ChangePassword />);
 
     userEvent.type(screen.getByLabelText(/old password/i), 'pass');
@@ -113,11 +119,11 @@ describe('ChangePassword Component', () => {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    sinon.assert.notCalled(fakeChangePassword);
+    sinon.assert.notCalled(fakeupdateUserProfile);
   });
 
   // test invalid new password
-  it('Change password with invalid old password', async () => {
+  it('Change password with invalid old password 3', async () => {
     render(<ChangePassword />);
 
     userEvent.type(screen.getByLabelText(/old password/i), 'password1');
@@ -128,7 +134,7 @@ describe('ChangePassword Component', () => {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    sinon.assert.notCalled(fakeChangePassword);
+    sinon.assert.notCalled(fakeupdateUserProfile);
   });
 
   // test valid but incorrect old password
@@ -139,14 +145,20 @@ describe('ChangePassword Component', () => {
     userEvent.type(screen.getByLabelText(/new password/i), 'password2');
     userEvent.type(screen.getByLabelText(/confirm password/i), 'password2');
 
+    // old password incorrect, so api call return succeed: false
+    fakeupdateUserProfileresult.success = false;
+
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    sinon.assert.calledOnce(fakeChangePassword);
-    sinon.assert.calledWith(fakeChangePassword, 'password', 'password2', 'password2');
+    sinon.assert.calledOnce(fakeupdateUserProfile);
+    sinon.assert.calledWith(fakeupdateUserProfile, 'sender Id is this', {
+      oldPassword: 'password',
+      newPassword: 'password2'
+    });
 
-    // since fakeChangePassword returns a failure, we expect ChangePassword to display the error
+    // since fakeupdateUserProfile returns a failure, we expect ChangePassword to display the error
     // to user by calling toast
     sinon.assert.calledOnce(fakeToast);
     // we expect toast to be called with the first parameter being 'error'
@@ -166,14 +178,22 @@ describe('ChangePassword Component', () => {
 
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    sinon.assert.calledOnce(fakeChangePassword);
-    sinon.assert.calledWith(fakeChangePassword, 'password1', 'password2', 'password3');
+    // not possible to submit updateUserProfile()
+    // because 'new password' and 'confirm' password does not match
+    sinon.assert.notCalled(fakeupdateUserProfile);
+    /*
+    sinon.assert.calledOnce(fakeupdateUserProfile);
+    sinon.assert.calledWith(fakeupdateUserProfile, 'password1', 'password2', 'password3');
+    */
 
-    // since fakeChangePassword returns a failure, we expect ChangePassword to display the error
+    // since fakeupdateUserProfile returns a failure, we expect ChangePassword to display the error
     // to user by calling toast
-    sinon.assert.calledOnce(fakeToast);
+
+    // the schema in ChangePassword take care of the error instead
+    // no toast needed
+    // sinon.assert.calledOnce(fakeToast);
     // we expect toast to be called with the first parameter being 'error'
     // which shows the X error icon in the notification
-    sinon.assert.calledWith(fakeToast, 'error');
+    // sinon.assert.calledWith(fakeToast, 'error');
   });
 });

@@ -44,6 +44,6 @@ describe('ClassroomSession Component', function () {
   it('Renders ClassroomSession', async function () {
     renderWithRouter(<ClassroomSession />, { route: '/somePath' });
     expect(await screen.findByText('ClassroomInfo return')).to.not.be.equal(null);
-    expect(await screen.findByText('ParticipantList return')).to.not.be.equal(null);
+    expect(await screen.findByText('ChatBox return')).to.not.be.equal(null);
   });
 });
