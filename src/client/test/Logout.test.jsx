@@ -34,10 +34,10 @@ describe('Logout Conponent', function () {
     sinon.restore();
   });
 
-  it('click on Logout', function () {
+  it('click on Logout', async function () {
     renderWithRouter(<Logout />, { route: '/somePath' });
 
-    expect(screen.findByText('Logout')).to.not.be.equal(null);
+    expect(await screen.findByText('Logout')).to.not.be.equal(null);
 
     fakeData.rememberMe = false;
     fakeData.accessToken = 'some accessToken';

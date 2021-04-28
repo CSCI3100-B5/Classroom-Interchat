@@ -21,13 +21,13 @@ import LaunchApp from '../account/LaunchApp.jsx';
 import { renderWithRouter } from './test-utils.js';
 
 describe('LaunchApp Component', function () {
-  it('click on Launch', function () {
+  it('click on Launch', async function () {
     renderWithRouter(<LaunchApp />, { route: '/account' });
 
-    expect(screen.findByText('Launch')).to.not.be.equal(null);
+    expect(await screen.findByText('Launch')).to.not.be.equal(null);
 
     userEvent.click(screen.getByRole('link', { name: /Launch/i }));
-    
+
     expect(window.location.pathname).to.be.equal('/classroom/join');
   });
 });

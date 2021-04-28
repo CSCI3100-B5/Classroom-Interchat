@@ -75,9 +75,9 @@ describe('ManageTokens Component', function () {
     sinon.restore();
   });
 
-  it('Renders ManageTokens', function () {
+  it('Renders ManageTokens', async function () {
     render(<ManageTokens />);
-    expect(screen.findByText('Tokens Received')).to.not.be.equal(null);
-    expect(screen.findByText('Tokens Created')).to.not.be.equal(null);
+    expect(await screen.findByText('Tokens Received')).to.not.be.equal(null);
+    expect(await screen.findByText('Tokens Created')).to.not.be.equal(null);
   });
 });

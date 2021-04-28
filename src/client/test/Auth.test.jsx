@@ -52,9 +52,9 @@ describe('Auth Component', function () {
     sinon.restore();
   });
 
-  it('Renders Auth', function () {
+  it('Renders Auth', async function () {
     renderWithRouter(<Auth />, { route: '/somePath' });
-    expect(screen.findByText('fake LoginBox return')).to.not.be.equal(null);
-    expect(screen.findByText('fake SignupBox return')).to.not.be.equal(null);
+    expect(await screen.findByText('fake LoginBox return')).to.not.be.equal(null);
+    expect(await screen.findByText('fake SignupBox return')).to.not.be.equal(null);
   });
 });

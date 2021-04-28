@@ -49,9 +49,9 @@ describe('MessageCompose Component', function () {
     sinon.restore();
   });
 
-  it('Renders MessageCompose', function () {
+  it('Renders MessageCompose', async function () {
     render(<MessageCompose onCreateQuiz={fakeonCreateQuiz} />);
-    expect(screen.findByText('Type your reply...')).to.not.be.equal(null);
-    expect(screen.findByText('Send reply')).to.not.be.equal(null);
+    expect(await screen.findByText('Type your reply...')).to.not.be.equal(null);
+    expect(await screen.findByText('Send reply')).to.not.be.equal(null);
   });
 });
