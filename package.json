@@ -12,7 +12,9 @@
     "lint": "eslint src/**/*.js src/**/*.jsx",
     "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
     "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 5000 --exit 'src/server/**/*.test.js'",
-    "test:file": "mocha --require @babel/register --require global-jsdom/register --require ignore-styles"
+    "test:file": "mocha --require @babel/register --require global-jsdom/register --require ignore-styles",
+    "transform": "babel --no-babelrc --plugins transform-react-jsx src --out-dir lib",
+    "stats": "yarn run transform & plato -r -d report lib"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
@@ -63,6 +65,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@babel/cli": "^7.13.16",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-private-methods": "^7.13.0",
@@ -74,6 +77,7 @@
     "@testing-library/user-event": "^13.1.2",
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
