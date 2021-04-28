@@ -77,7 +77,7 @@ describe('ManageProfile Component', function () {
 
     // simulate clicking the button
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
-    
+
     // wait a while for the form to validate user input
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -120,8 +120,4 @@ describe('ManageProfile Component', function () {
   });
 
   // test valid email but already in use
-
-
-
 });
-

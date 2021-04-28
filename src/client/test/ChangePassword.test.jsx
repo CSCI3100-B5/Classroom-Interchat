@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
+import { renderWithRouter } from './test-utils.js';
 
 // import our component to be tested
 import ChangePassword from '../account/ChangePassword.jsx';
@@ -22,16 +23,16 @@ import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as ApiContext from '../contexts/ApiProvider.jsx';
 
 // all tests related to ChangePassword
-describe('ChangePassword Component', function (){
+describe('ChangePassword Component', () => {
   let fakeToast;
   let fakeChangePassword;
-  
+
   // before each test, set up the fake contexts
-  beforeEach(function() {
+  beforeEach(() => {
     fakeChangePassword = sinon.fake((oldPassword, newPassword, confirmPassword) => {
       if (oldPassword === 'password1' && newPassword === 'password2' && newPassword === confirmPassword) {
         return new Promise((resolve) => {
-        resolve({ sucess: true, response: {} });
+          resolve({ sucess: true, response: {} });
         });
       }
       return new Promise((resolve) => {
@@ -55,7 +56,7 @@ describe('ChangePassword Component', function (){
   });
 
   // after each test is executed, do clean up actions
-  afterEach(function () {
+  afterEach(() => {
     // restore the fake functions to their original
     sinon.restore();
     // this needs to be done because faked function can't be replaced with
@@ -64,7 +65,7 @@ describe('ChangePassword Component', function (){
   });
 
   // fill in the form with valid details and submit
-  it('Change password with valid form input', async function() {
+  it('Change password with valid form input', async () => {
     renderWithRouter(<ChangePassword />, { route: '/account' });
 
     // simulate user typing into text boxes
@@ -83,9 +84,9 @@ describe('ChangePassword Component', function (){
   });
 
   // testing invalid inputs: invalid old password
-  it('Change password with invalid old password', async function () {
+  it('Change password with invalid old password', async () => {
     render(<ChangePassword />);
-    
+
     userEvent.type(screen.getByLabelText(/oldPassword/i), 'pass');
     userEvent.type(screen.getByLabelText(/newPassword/i), 'password2');
     userEvent.type(screen.getByLabelText(/confirmPassword/i), 'password2');
@@ -98,9 +99,9 @@ describe('ChangePassword Component', function (){
   });
 
   // test invalid old password
-  it('Change password with invalid old password', async function () {
+  it('Change password with invalid old password', async () => {
     render(<ChangePassword />);
-    
+
     userEvent.type(screen.getByLabelText(/oldPassword/i), 'pass');
     userEvent.type(screen.getByLabelText(/newPassword/i), 'password2');
     userEvent.type(screen.getByLabelText(/confirmPassword/i), 'password2');
@@ -111,11 +112,11 @@ describe('ChangePassword Component', function (){
 
     sinon.assert.notCalled(fakeChangePassword);
   });
-  
+
   // test invalid new password
-  it('Change password with invalid old password', async function () {
+  it('Change password with invalid old password', async () => {
     render(<ChangePassword />);
-    
+
     userEvent.type(screen.getByLabelText(/oldPassword/i), 'password1');
     userEvent.type(screen.getByLabelText(/newPassword/i), 'pass');
     userEvent.type(screen.getByLabelText(/confirmPassword/i), 'pass');
@@ -128,9 +129,9 @@ describe('ChangePassword Component', function (){
   });
 
   // test valid but incorrect old password
-  it('Change password with valid but incorrect old password', async function () {
+  it('Change password with valid but incorrect old password', async () => {
     render(<ChangePassword />);
-    
+
     userEvent.type(screen.getByLabelText(/oldPassword/i), 'password');
     userEvent.type(screen.getByLabelText(/newPassword/i), 'password2');
     userEvent.type(screen.getByLabelText(/confirmPassword/i), 'password2');
@@ -151,9 +152,9 @@ describe('ChangePassword Component', function (){
   });
 
   // test valid but unequal new password
-  it('Change password with valid but unequal new password', async function () {
+  it('Change password with valid but unequal new password', async () => {
     render(<ChangePassword />);
-    
+
     userEvent.type(screen.getByLabelText(/oldPassword/i), 'password1');
     userEvent.type(screen.getByLabelText(/newPassword/i), 'password2');
     userEvent.type(screen.getByLabelText(/confirmPassword/i), 'password3');
