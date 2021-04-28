@@ -41,9 +41,9 @@ describe('ClassroomSession Component', function () {
     sinon.restore();
   });
 
-  it('Renders ClassroomSession', function () {
+  it('Renders ClassroomSession', async function () {
     renderWithRouter(<ClassroomSession />, { route: '/somePath' });
-    expect(screen.findByText('ClassroomInfo return')).to.not.be.equal(null);
-    expect(screen.findByText('ParticipantList return')).to.not.be.equal(null);
+    expect(await screen.findByText('ClassroomInfo return')).to.not.be.equal(null);
+    expect(await screen.findByText('ParticipantList return')).to.not.be.equal(null);
   });
 });

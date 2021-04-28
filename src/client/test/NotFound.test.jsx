@@ -25,10 +25,10 @@ describe('NotFound Component', function () {
     sinon.restore();
   });
 
-  it('Renders NotFound', function () {
+  it('Renders NotFound', async function () {
     renderWithRouter(<NotFound />, { route: '/somePath' });
-    expect(screen.findByText('Page not found')).to.not.be.equal(null);
-    expect(screen.findByText('Go to home page')).to.not.be.equal(null);
+    expect(await screen.findByText('Page not found')).to.not.be.equal(null);
+    expect(await screen.findByText('Go to home page')).to.not.be.equal(null);
 
     userEvent.click(screen.getByRole('button', { name: /Go back/i }));
   });

@@ -10,6 +10,8 @@ import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
+// TODO: how to fake the useRouteMatch function in react-router-dom
+import * as ReactRouter from 'react-router-dom';
 import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
 
 // import our component to be tested
@@ -46,6 +48,7 @@ describe('ClassroomRoot Component', function () {
 
     sinon.replace(RealtimeContext, 'RealtimeProvider', fakeRealtimeContext);
     sinon.replace(SocketContext, 'SocketProvider', fakeSocketContext);
+    sinon.replace(ReactRouter, 'useRouteMatch', function () { return { url: '/classroom', path: '/classroom' }; });
   });
 
   // after each test is executed, do clean up actions
@@ -53,8 +56,8 @@ describe('ClassroomRoot Component', function () {
     sinon.restore();
   });
 
-  it('Renders ClassroomRoot', function () {
-    renderWithRouter(<ClassroomRoot />, { route: '/join' });
-    expect(screen.findByText('fake JoinClassroom content')).to.not.be.equal(null);
+  it('Renders ClassroomRoot', async function () {
+    renderWithRouter(<ClassroomRoot />, { route: '/classroom' });
+    expect(await screen.findByText('fake JoinClassroom content')).to.not.be.equal(null);
   });
 });

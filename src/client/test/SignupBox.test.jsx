@@ -50,11 +50,11 @@ describe('SignupBox Component', function () {
     sinon.restore();
   });
 
-  it('Renders SignupBox', function () {
+  it('Renders SignupBox', async function () {
     renderWithRouter(<SignupBox />, { route: '/somePath' });
-    expect(screen.findByText('Name')).to.not.be.equal(null);
-    expect(screen.findByText('Email')).to.not.be.equal(null);
-    expect(screen.findByText('Password')).to.not.be.equal(null);
-    expect(screen.findByText('Confirm Password')).to.not.be.equal(null);
+    expect(await screen.findByText('Name')).to.not.be.equal(null);
+    expect(await screen.findByText('Email')).to.not.be.equal(null);
+    expect(await screen.findByText('Password')).to.not.be.equal(null);
+    expect(await screen.findByText('Confirm Password')).to.not.be.equal(null);
   });
 });

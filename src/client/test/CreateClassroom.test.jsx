@@ -50,12 +50,12 @@ describe('CreateClassroom Component', function () {
     sinon.restore();
   });
 
-  it('Renders CreateClassroom', function () {
+  it('Renders CreateClassroom', async function () {
     renderWithRouter(<CreateClassroom />, { route: '/somePath' });
-    expect(screen.findByText('Classroom Interchat')).to.not.be.equal(null);
-    expect(screen.findByText('Log out')).to.not.be.equal(null);
-    expect(screen.findByText('Create Classroom')).to.not.be.equal(null);
-    expect(screen.findByText('Want to join a classroom instead?')).to.not.be.equal(null);
-    expect(screen.findByText('Join Classroom')).to.not.be.equal(null);
+    expect(await screen.findByText('Classroom Interchat')).to.not.be.equal(null);
+    expect(await screen.findByText('Log out')).to.not.be.equal(null);
+    expect(await screen.findByText('Create Classroom')).to.not.be.equal(null);
+    expect(await screen.findByText('Want to join a classroom instead?')).to.not.be.equal(null);
+    expect(await screen.findByText('Join Classroom')).to.not.be.equal(null);
   });
 });

@@ -20,7 +20,7 @@ export default function ClassroomRoot() {
       <RealtimeProvider>
         <div>
           {/* A <Switch> looks through its children <Route>s and
-        renders the first one that matches the current URL. */}
+          renders the first one that matches the current URL. */}
           <Switch>
             <Route path={`${path}/join`}>
               <JoinClassroom />

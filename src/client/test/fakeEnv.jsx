@@ -66,6 +66,7 @@ const fakeData = {
 
   user: {
     name: 'user name is this',
+    email: 'abc@gmail.com',
     id: 'sender Id is this'
   },
 
@@ -74,7 +75,7 @@ const fakeData = {
 
 };
 function usefakeData() {
-  return JSON.parse(JSON.stringify(fakeData));
+  return { ...fakeData };
 }
 
 function sinonDefaultReturn(component, returnMessage) {

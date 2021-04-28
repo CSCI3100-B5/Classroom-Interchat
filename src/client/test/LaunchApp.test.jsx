@@ -4,7 +4,9 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, screen } from '@testing-library/react';
+// user-event allows us to fake inputs like typing and clicking buttons
 import userEvent from '@testing-library/user-event';
+// sinon creates fake functions
 import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
@@ -13,23 +15,19 @@ import {
 // import our component to be tested
 import LaunchApp from '../account/LaunchApp.jsx';
 
+// This is to fake the react router context
+// which makes the component believe it is living in the /account page
+// and allows the component to browse to another page
 import { renderWithRouter } from './test-utils.js';
 
 describe('LaunchApp Component', function () {
-  // before each test, set up the fake contexts
-  beforeEach(function () {
-  });
+  it('click on Launch', async function () {
+    renderWithRouter(<LaunchApp />, { route: '/account' });
 
-  // after each test is executed, do clean up actions
-  afterEach(function () {
-    sinon.restore();
-  });
-
-  it('click on Launch', function () {
-    renderWithRouter(<LaunchApp />, { route: '/somePath' });
-
-    expect(screen.findByText('Launch')).to.not.be.equal(null);
+    expect(await screen.findByText('Launch')).to.not.be.equal(null);
 
     userEvent.click(screen.getByRole('link', { name: /Launch/i }));
+
+    expect(window.location.pathname).to.be.equal('/classroom/join');
   });
 });

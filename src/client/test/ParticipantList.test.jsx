@@ -78,10 +78,10 @@ describe('ParticipantList Component', function () {
     sinon.restore();
   });
 
-  it('Renders ParticipantList', function () {
+  it('Renders ParticipantList', async function () {
     render(<ParticipantList onCloseParticipantList={sinon.spy()} />);
 
     expect(screen.queryByText('Copy invite link')).to.not.be.equal(null);
-    expect(screen.findByText('Link copied!')).to.not.be.equal(null);
+    expect(await screen.findByText('Link copied!')).to.not.be.equal(null);
   });
 });
