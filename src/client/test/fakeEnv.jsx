@@ -69,9 +69,12 @@ const fakeData = {
     id: 'sender Id is this'
   },
 
+  accessToken: null,
+  refreshToken: null
+
 };
 function usefakeData() {
-  return fakeData;
+  return JSON.parse(JSON.stringify(fakeData));
 }
 
 function sinonDefaultReturn(component, returnMessage) {

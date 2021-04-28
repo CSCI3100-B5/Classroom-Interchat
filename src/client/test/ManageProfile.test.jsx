@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable func-names */
 // import testing libraries
@@ -14,33 +13,46 @@ import {
 import { usefakeData } from './fakeEnv.jsx';
 
 // import our component to be tested
-import MessageCompose from '../classroom/session/chatbox/MessageCompose.jsx';
-import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
-import * as ToastContext from '../contexts/ToastProvider.jsx';
-import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
+import ManageProfile from '../account/ManageProfile.jsx';
 
-describe('MessageCompose Component', function () {
+import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
+import * as ApiContext from '../contexts/ApiProvider.jsx';
+import * as ToastContext from '../contexts/ToastProvider.jsx';
+
+describe('ManageProfile Component', function () {
   let fakeToast;
-  let fakesendMessage;
-  let fakegetSelfParticipant;
-  let fakeonCreateQuiz;
+  let fakeupdateUserProfile;
+  let fakesendEmail;
 
   // before each test, set up the fake contexts
   beforeEach(function () {
     fakeToast = sinon.spy();
-    fakesendMessage = sinon.fake(
-      (messageContent, messageInf) => new Promise(resolve => resolve())
-    );
-    fakegetSelfParticipant = sinon.stub().returns(null);
-    fakeonCreateQuiz = sinon.spy();
-
-    sinon.replace(RealtimeContext, 'useRealtime', () => ({
-      sendMessage: fakesendMessage
-    }));
     sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
+
     sinon.replace(DataStoreContext, 'useDataStore', () => ({
       data: usefakeData(),
-      getSelfParticipant: fakegetSelfParticipant
+    }));
+
+    const fakeupdateUserProfileresult = {
+      success: true,
+      response: {
+        data: {
+          name: 'user name is this',
+          id: 'sender Id is this'
+        }
+      }
+    };
+    const fakesendEmailresult = {
+      success: true
+    };
+
+    fakeupdateUserProfile = function () { return fakeupdateUserProfileresult; };
+
+    fakesendEmail = function () { return fakesendEmailresult; };
+
+    sinon.replace(ApiContext, 'useApi', () => ({
+      updateUserProfile: fakeupdateUserProfile,
+      sendEmail: fakesendEmail
     }));
   });
 
@@ -49,9 +61,9 @@ describe('MessageCompose Component', function () {
     sinon.restore();
   });
 
-  it('Renders MessageCompose', function () {
-    render(<MessageCompose onCreateQuiz={fakeonCreateQuiz} />);
-    expect(screen.findByText('Type your reply...')).to.not.be.equal(null);
-    expect(screen.findByText('Send reply')).to.not.be.equal(null);
+  it('Renders ManageProfile', function () {
+    render(<ManageProfile />);
+    expect(screen.findByText('Name')).to.not.be.equal(null);
+    expect(screen.findByText('Email')).to.not.be.equal(null);
   });
 });
