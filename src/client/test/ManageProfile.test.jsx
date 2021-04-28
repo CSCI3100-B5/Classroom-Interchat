@@ -23,6 +23,8 @@ import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as ApiContext from '../contexts/ApiProvider.jsx';
 
+import { usefakeData } from './fakeEnv.jsx';
+
 // all tests related to ManageProfile
 describe('ManageProfile Component', function () {
   let fakeManageProfile;
@@ -46,16 +48,32 @@ describe('ManageProfile Component', function () {
     // here we replace it with a "spy" function that does nothing but
     // records the values that it is called with
     fakeToast = sinon.spy();
+    
+    sinon.replace(DataStoreContext, 'useDataStore', () => ({
+      data: usefakeData(),
+    }));
 
-    // replaces all the useXXX functions to return a fake context
-    // sinon.replace(object, property, newFunction)
-    // the useApi function lives in ApiContext, we are replacing it with a fake
-    // one that returns our fake login function
-    sinon.replace(ApiContext, 'useApi', () => ({ login: fakeLogin }));
-    // same for useToast
-    sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
-    // replace the useDataStore function to return fake data
-    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: { rememberMe: true } }));
+    const fakeupdateUserProfileresult = {
+      success: true,
+      response: {
+        data: {
+          name: 'user name is this',
+          id: 'sender Id is this'
+        }
+      }
+    };
+    const fakesendEmailresult = {
+      success: true
+    };
+
+    fakeupdateUserProfile = function () { return fakeupdateUserProfileresult; };
+
+    fakesendEmail = function () { return fakesendEmailresult; };
+
+    sinon.replace(ApiContext, 'useApi', () => ({
+      updateUserProfile: fakeupdateUserProfile,
+      sendEmail: fakesendEmail
+    }));
   });
 
   // after each test is executed, do clean up actions
@@ -117,6 +135,12 @@ describe('ManageProfile Component', function () {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     sinon.assert.notCalled(fakeManageProfile);
+  });
+  
+  it('Renders ManageProfile', function () {
+    render(<ManageProfile />);
+    expect(screen.findByText('Name')).to.not.be.equal(null);
+    expect(screen.findByText('Email')).to.not.be.equal(null);
   });
 
   // test valid email but already in use

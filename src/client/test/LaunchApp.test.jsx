@@ -16,20 +16,18 @@ import {
 import LaunchApp from '../account/LaunchApp.jsx';
 
 // This is to fake the react router context
-// which makes the component believe it is living in the /auth page
+// which makes the component believe it is living in the /account page
 // and allows the component to browse to another page
 import { renderWithRouter } from './test-utils.js';
 
 describe('LaunchApp Component', function () {
-  it('Go to Join classroom page', async function () {
+  it('click on Launch', function () {
     renderWithRouter(<LaunchApp />, { route: '/account' });
 
-    // simulate clicking the button
-    userEvent.click(screen.getByRole('button', { name: /launch app/i }));
+    expect(screen.findByText('Launch')).to.not.be.equal(null);
 
-    // wait a while for the form to validate user input
-    await new Promise(resolve => setTimeout(resolve, 500));
-
+    userEvent.click(screen.getByRole('link', { name: /Launch/i }));
+    
     expect(window.location.pathname).to.be.equal('/classroom/join');
   });
 });

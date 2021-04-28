@@ -83,6 +83,5 @@ describe('ParticipantList Component', function () {
 
     expect(screen.queryByText('Copy invite link')).to.not.be.equal(null);
     expect(screen.findByText('Link copied!')).to.not.be.equal(null);
-    expect(screen.queryByText('Mute entire classroom')).to.not.be.equal(null);
   });
 });
