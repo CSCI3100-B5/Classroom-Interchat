@@ -99,7 +99,7 @@ describe('Classroom.Quiz', () => {
   // all tests related to ending quiz
   describe('end quiz', () => {
     // successfully end quiz
-    
+
   });
 
   // all tests related to releasing result

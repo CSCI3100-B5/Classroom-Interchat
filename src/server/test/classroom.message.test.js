@@ -20,44 +20,12 @@ describe('Classroom.Message', () => {
   // here we are not testing whether the connection works. It is assumed to work.
   // Therefore we are connecting to the server before the tests, and running the
   // tests while being connected to the server
-<<<<<<< HEAD
-  
-=======
->>>>>>> e2660b763cfd10bc6f8770cda754d39cb1531e30
+
   beforeEach((done) => {
     (async () => {
       // Before each test we always empty the database
       await User.remove({}).exec();
       await Classroom.remove({}).exec();
-<<<<<<< HEAD
-
-
-
-
-
-
-    });
-  });
-
-
-  
-  // all tests related to sending message
-  describe('send message', () => {
-    
-
-
-
-
-
-
-
-
-  });
-
-  /*describe('resolveQuestion', () =>{
-
-  });*/
-=======
       user = await User.create({
         name: 'test user',
         email: 'test@default.com',
@@ -122,5 +90,8 @@ describe('Classroom.Message', () => {
       });
     });
   });
->>>>>>> e2660b763cfd10bc6f8770cda754d39cb1531e30
+
+  /* describe('resolveQuestion', () =>{
+
+  }); */
 });

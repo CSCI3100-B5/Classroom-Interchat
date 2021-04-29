@@ -10,7 +10,7 @@ describe('Classroom.External', () => {
   let classroom; // classroom object in the database
   let user; // user object in the database
   let clientSocket; // the connection to the server
-  
+
   // here we are not testing whether the connection works. It is assumed to work.
   // Therefore we are connecting to the server before the tests, and running the
   // tests while being connected to the server
@@ -46,7 +46,7 @@ describe('Classroom.External', () => {
       // we expect this to be empty to indicate success
       data.should.eql({});
   });
-  
+
   // all tests related to requesting permission
   describe('request permission', () => {
     // test request permission when the user is already an instructor
@@ -56,7 +56,7 @@ describe('Classroom.External', () => {
   });
 
   describe('cancel request permission', () => {
-    
+
   });
 
   describe('promote participant', () => {
@@ -79,4 +79,3 @@ describe('Classroom.External', () => {
 
   });
 });
-  
