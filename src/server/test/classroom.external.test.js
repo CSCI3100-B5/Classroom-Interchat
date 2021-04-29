@@ -46,7 +46,7 @@ describe('Classroom.External', () => {
       }
     });
   });
-
+  
   // all tests related to classroom creation
   describe('create classroom', () => {
     // creating a classroom without supplying a classroom name
@@ -87,4 +87,29 @@ describe('Classroom.External', () => {
       });
     });
   });
+
+  /*describe('peek classroom', () => {
+
+  });
+
+  describe('join classroom', () => {
+
+  });
+
+  describe('clean up classroom', () => {
+
+  });
+
+  describe('lost connection', () => {
+
+  });
+
+  describe('leave classroom', () => {
+
+  });
+
+  describe('kick participant', () => {
+
+  });*/
+
 });

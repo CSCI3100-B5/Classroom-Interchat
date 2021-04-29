@@ -99,4 +99,13 @@ describe('Auth', () => {
       res.should.have.status(401);
     });
   });
+
+  // load user
+  
+  // send email
+
+  // verify email
+
+  // token
+
 });
