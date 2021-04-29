@@ -14,7 +14,7 @@
     "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 5000 --exit 'src/server/**/*.test.js'",
     "test:file": "mocha --require @babel/register --require global-jsdom/register --require ignore-styles",
     "transform": "babel --no-babelrc --plugins transform-react-jsx src --out-dir lib",
-    "stats": "yarn run transform & plato -r -d report lib"
+    "stats": "es6-plato -r -d report src"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
