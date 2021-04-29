@@ -1,8 +1,7 @@
 const httpStatus = require('http-status');
 const cachegoose = require('cachegoose');
 const Classroom = require('../../models/classroom.model');
-const QuizAnswer = require('../../models/quizanswer.model');
-const Messages = require('../../models/message.model');
+const User = require('../models/user.model');
 const APIError = require('../../helpers/APIError');
 
 // this describe block contains all tests related to /src/server/classroom/external
@@ -42,15 +41,22 @@ describe('Classroom.External', () => {
         Authorization: `Bearer ${res.body.accessToken}`
       }
     });
+    clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+      // this is the immediate response from server
+      // we expect this to be empty to indicate success
+      data.should.eql({});
   });
   
   // all tests related to requesting permission
-  /*describe('request permission', () => {
-    
+  describe('request permission', () => {
+    // test request permission when the user is already an instructor
+
+    // successful request permission
+
   });
 
   describe('cancel request permission', () => {
-
+    
   });
 
   describe('promote participant', () => {
@@ -71,6 +77,6 @@ describe('Classroom.External', () => {
 
   describe('mute classroom', () => {
 
-  });*/
+  });
 });
   

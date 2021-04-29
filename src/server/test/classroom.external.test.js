@@ -88,12 +88,95 @@ describe('Classroom.External', () => {
     });
   });
 
-  /*describe('peek classroom', () => {
+  describe('peek classroom', () => {
+    // test no classroom id input
+    it('no classroom id input', (done) => {
+      clientSocket.emit('peek classroom', {}, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
 
+    // test invalid classroom id input
+    it('invalid classroom id input', (done) => {
+      // when we peek a classroom, the server receives the creation request and
+      // immediately respond with an error if any, or an empty object to indicate
+      // success
+      // then after some processing, it sends the classroom data to the client
+      // via a "peek update" event
+      clientSocket.emit('peek classroom', { id: 'test peek classroom' }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    // test valid classroom id input
+    it('valid classroom id input', (done) => {
+      clientSocket.once('peek update', (data) => {
+        // verify the contents of the event
+        // i.e. classroom data
+        data.should.have.property('id');
+        data.should.have.property('name', 'New Classroom');
+        data.should.have.property('host');
+        data.should.have.property('participantCount');
+        data.host.should.have.property('name', 'test user');
+        // tell mocha that this test is done
+        done();
+      });
+      // send the peek classroom request to server
+      clientSocket.emit('peek classroom', { id: '' }, (data) => { //
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+    });
   });
 
   describe('join classroom', () => {
+    // test join a classroom with no input
+    it('join a classroom with no input', (done) => {
+      clientSocket.emit('join classroom', {}, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+    })
 
+    // test join a non-existent classroom
+    it('join a non-existent classroom', (done) => {
+      clientSocket.emit('join classroom', { id: 'test join classroom' }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+    })
+
+    // test join a open classroom
+    it('join a opened classroom', (done) => {
+      clientSocket.once('catch up', (data) => { //
+        // verify the contents of the event
+        // i.e. classroom data
+        data.should.have.property('id');
+        data.should.have.property('name', 'New Classroom');
+        data.should.have.property('host');
+        data.should.have.property('participants');
+        data.host.should.have.property('name', 'test user');
+        // tell mocha that this test is done
+        done();
+      });
+
+      clientSocket.emit('join classroom', { id: '' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+    });
+
+    // test join a closed classroom
   });
 
   describe('clean up classroom', () => {
@@ -105,11 +188,16 @@ describe('Classroom.External', () => {
   });
 
   describe('leave classroom', () => {
-
+    // test leave classroom successfully
   });
 
   describe('kick participant', () => {
+    // test kick someone successfully
+    it('kick participants successfully', (done) => {
+      
+    });
+    // test kick the user oneself
 
-  });*/
-
+    // test kick an instructor
+  });
 });
