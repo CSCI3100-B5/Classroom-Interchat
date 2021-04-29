@@ -22,18 +22,30 @@ import * as ParticipantList from '../classroom/session/info/ParticipantList.jsx'
 import { renderWithRouter } from './test-utils.js';
 
 describe('ClassroomSession Component', function () {
+  let fakeData;
   let fakeClassroomInfo;
   let fakeChatBox;
   let fakeParticipantList;
 
+  let onShowParticipantListHandle;
+  let onCloseParticipantListHandle;
+
   // before each test, set up the fake contexts
   beforeEach(function () {
+    fakeData = usefakeData();
     sinon.replace(DataStoreContext, 'useDataStore', () => ({
-      data: usefakeData(),
+      data: fakeData
     }));
-    fakeClassroomInfo = sinonDefaultReturn(ClassroomInfo, 'ClassroomInfo return');
+
+    sinon.stub(ClassroomInfo, 'default').callsFake(({ onShowParticipantList }) => {
+      onShowParticipantListHandle = onShowParticipantList;
+      return <div>ClassroomInfo return</div>;
+    });
     fakeChatBox = sinonDefaultReturn(ChatBox, 'ChatBox return');
-    fakeParticipantList = sinonDefaultReturn(ParticipantList, 'ParticipantList return');
+    sinon.stub(ParticipantList, 'default').callsFake(({ onCloseParticipantList }) => {
+      onCloseParticipantListHandle = onCloseParticipantList;
+      return <div>ParticipantList return</div>;
+    });
   });
 
   // after each test is executed, do clean up actions
@@ -41,9 +53,23 @@ describe('ClassroomSession Component', function () {
     sinon.restore();
   });
 
-  it('Renders ClassroomSession', async function () {
+  it('show chatBox', async function () {
+    fakeData.refreshToken = 'some refresh token';
+
     renderWithRouter(<ClassroomSession />, { route: '/somePath' });
     expect(await screen.findByText('ClassroomInfo return')).to.not.be.equal(null);
+    expect(await screen.findByText('ChatBox return')).to.not.be.equal(null);
+  });
+
+  it('show ParticipantList and close it', async function () {
+    fakeData.refreshToken = 'some refresh token';
+
+    renderWithRouter(<ClassroomSession />, { route: '/somePath' });
+
+    onShowParticipantListHandle();
+    expect(await screen.findByText('ParticipantList return')).to.not.be.equal(null);
+
+    onCloseParticipantListHandle();
     expect(await screen.findByText('ChatBox return')).to.not.be.equal(null);
   });
 });

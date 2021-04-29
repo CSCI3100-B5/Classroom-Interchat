@@ -95,7 +95,7 @@ describe('ManageProfile Component', function () {
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
     // wait a while for the form to validate user input
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     sinon.assert.calledOnce(fakeupdateUserProfile);
     sinon.assert.calledWith(fakeupdateUserProfile, 'sender Id is this', {
@@ -120,7 +120,7 @@ describe('ManageProfile Component', function () {
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
     // wait a while for the form to validate user input
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     sinon.assert.notCalled(fakeupdateUserProfile);
   });
@@ -141,7 +141,7 @@ describe('ManageProfile Component', function () {
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
     // wait a while for the form to validate user input
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     sinon.assert.notCalled(fakeupdateUserProfile);
   });
