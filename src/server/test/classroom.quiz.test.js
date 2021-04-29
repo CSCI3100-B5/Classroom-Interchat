@@ -5,10 +5,9 @@ const {
 const Client = require('socket.io-client');
 const { should, chai } = require('./setup');
 const User = require('../models/user.model');
-const SAQAnswer = require('../models/quizanswer.model');
+const { QuizAnswer } = require('../models/quizanswer.model');
 const Classroom = require('../models/classroom.model');
 const server = require('../index');
-const messageEvents = require('../classroom/message/message.events');
 
 // this describe block contains all tests related to /src/server/classroom/external
 describe('Classroom.Quiz', () => {
@@ -21,33 +20,41 @@ describe('Classroom.Quiz', () => {
   // Therefore we are connecting to the server before the tests, and running the
   // tests while being connected to the server
   beforeEach(async () => {
-    // Before each test we always empty the database
-    await User.remove({}).exec();
-    await Classroom.remove({}).exec();
-    await SAQAnswer.remove({}).exec();
-    user = await User.create({
-      name: 'test user',
-      email: 'test@default.com',
-      isAdmin: false,
-      password: 'none',
-      lastVerifiedEmail: 'test@default.com' // directly sets our email to be verified
-    });
-    await user.setPassword('password');
-    classroom = await Classroom.create({
-      name: 'Test classroom',
-      host: user.id,
-    });
-    // make a log in request to server
-    const res = await chai.request(server.app)
-      .post('/api/auth/login')
-      .set('content-type', 'application/json')
-      .send({ email: 'test@default.com', password: 'password' });
-    // connect to the server with the access token
-    clientSocket = new Client(`http://localhost:${server.server.address().port}`, {
-      extraHeaders: {
-        Authorization: `Bearer ${res.body.accessToken}`
-      }
-    });
+    (async () => {
+      // Before each test we always empty the database
+      await User.remove({}).exec();
+      await Classroom.remove({}).exec();
+      await QuizAnswer.remove({}).exec();
+      user = await User.create({
+        name: 'test user',
+        email: 'test@default.com',
+        isAdmin: false,
+        password: 'none',
+        lastVerifiedEmail: 'test@default.com' // directly sets our email to be verified
+      });
+      await user.setPassword('password');
+      // make a log in request to server
+      const res = await chai.request(server.app)
+        .post('/api/auth/login')
+        .set('content-type', 'application/json')
+        .send({ email: 'test@default.com', password: 'password' });
+      // connect to the server with the access token
+      clientSocket = new Client(`http://localhost:${server.server.address().port}`, {
+        extraHeaders: {
+          Authorization: `Bearer ${res.body.accessToken}`
+        }
+      });
+
+      clientSocket.once('catch up', async (data) => {
+        data.should.have.property('id');
+        classroom = await Classroom.get(data.id);
+        done();
+      });
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'Test Classroom' }, (data) => {
+        data.should.eql({});
+      });
+    })();
   });
 
   // all tests related to sending quiz
@@ -60,30 +67,34 @@ describe('Classroom.Quiz', () => {
         data.should.have.property('error');
         // tell mocha that this test is done
         done();
+      });
     });
 
     // send a valid MCQuiz
     it('send a valid MCQuiz', (done) => {
       clientSocket.once('new quiz', (data) => {
         // verify the contents of the event
-        // i.e. classroom data
         data.should.have.property('type', 'MCQ');
         data.should.have.property('prompt', 'test quiz');
         data.should.have.property('choices');
         // tell mocha that this test is done
         done();
       });
-      clientSocket.emit('send quiz', { prompt: 'test quiz', type: 'MCQ' }, (data) => {
+      clientSocket.emit('send quiz', {
+        prompt: 'test quiz',
+        type: 'MCQ',
+        // TODO: add more quiz data here
+      }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
-      data.should.eql({});
+        data.should.eql({});
+      });
     });
 
     // send a valid SAQuiz
     it('send a valid SAQuiz', (done) => {
       clientSocket.once('new quiz', (data) => {
         // verify the contents of the event
-        // i.e. classroom data
         data.should.have.property('type', 'SAQ');
         data.should.have.property('prompt', 'test quiz');
         // tell mocha that this test is done
@@ -92,7 +103,8 @@ describe('Classroom.Quiz', () => {
       clientSocket.emit('send quiz', { prompt: 'test quiz', type: 'SAQ' }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
-      data.should.eql({});
+        data.should.eql({});
+      });
     });
   });
 
@@ -105,11 +117,13 @@ describe('Classroom.Quiz', () => {
   // all tests related to releasing result
   describe('release results', () => {
     it('release results', (done) => {
-      clientSocket.emit('release results', { id: messageEvents.id }, (data) => {
+      // TODO: send a quiz before testing the release result function
+      clientSocket.emit('release results', { id }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
-      data.should.eql({});
-    })
+        data.should.eql({});
+      });
+    });
   });
 
   // all tests related to ansSAQuiz
@@ -118,7 +132,8 @@ describe('Classroom.Quiz', () => {
       clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
-      data.should.eql({});
+        data.should.eql({});
+      });
     });
   });
 
@@ -128,7 +143,8 @@ describe('Classroom.Quiz', () => {
       clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
-      data.should.eql({});
+        data.should.eql({});
+      });
     });
   });
 });
