@@ -4,16 +4,15 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, screen } from '@testing-library/react';
-// sinon creates fake functions
+import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
 } from 'mocha';
 
-import { usefakeData } from './fakeEnv.jsx';
-
 // import our component to be tested
 import TokenAwarder from '../classroom/session/TokenAwarder.jsx';
+
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
 
@@ -23,12 +22,14 @@ describe('TokenAwarder Component', function () {
 
   beforeEach(function () {
     fakeToast = sinon.spy();
-    fakeawardToken = sinon.spy();
+    sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
 
+    fakeawardToken = sinon.fake(() => new Promise((resolve) => {
+      resolve({ success: true, response: { } });
+    }));
     sinon.replace(RealtimeContext, 'useRealtime', () => ({
       awardToken: fakeawardToken
     }));
-    sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
   });
 
   // after each test is executed, do clean up actions
@@ -36,17 +37,24 @@ describe('TokenAwarder Component', function () {
     sinon.restore();
   });
 
-  it('Renders TokenAwarder', function () {
+  it('Cancel token award', function () {
     const fakeonClose = sinon.spy();
-    render(<TokenAwarder userIds="this is user id" onClose={fakeonClose} />);
+    render(<TokenAwarder userIds={['id 1', 'id 2']} onClose={fakeonClose} />);
 
-    expect(screen.queryByText('Token Award')).to.not.be.equal(null);
+    userEvent.click(screen.getByRole('button', { name: /Cancel/i }));
+    sinon.assert.calledOnce(fakeonClose);
+    sinon.assert.notCalled(fakeawardToken);
   });
 
-  it('Pop error: no user to award', function () {
+  it('Award Token to users', async function () {
     const fakeonClose = sinon.spy();
-    render(<TokenAwarder userIds="this is user id" onClose={fakeonClose} />);
+    render(<TokenAwarder userIds={['id 1', 'id 2']} onClose={fakeonClose} />);
 
-    expect(screen.queryByText('Token Award')).to.not.be.equal(null);
+    userEvent.click(screen.getByRole('button', { name: /Award Token/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.calledOnce(fakeawardToken);
+    sinon.assert.calledWith(fakeawardToken, ['id 1', 'id 2']);
+    sinon.assert.calledOnce(fakeonClose);
   });
 });

@@ -83,7 +83,7 @@ describe('ChangePassword Component', () => {
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
     // wait a while for the form to validate user input
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.calledOnce(fakeupdateUserProfile);
     sinon.assert.calledWith(fakeupdateUserProfile, 'sender Id is this', {
@@ -102,7 +102,7 @@ describe('ChangePassword Component', () => {
 
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.notCalled(fakeupdateUserProfile);
   });
@@ -117,7 +117,7 @@ describe('ChangePassword Component', () => {
 
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.notCalled(fakeupdateUserProfile);
   });
@@ -132,7 +132,7 @@ describe('ChangePassword Component', () => {
 
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.notCalled(fakeupdateUserProfile);
   });
@@ -150,7 +150,7 @@ describe('ChangePassword Component', () => {
 
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.calledOnce(fakeupdateUserProfile);
     sinon.assert.calledWith(fakeupdateUserProfile, 'sender Id is this', {
@@ -176,7 +176,7 @@ describe('ChangePassword Component', () => {
 
     userEvent.click(screen.getByRole('button', { name: /save changes/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     // not possible to submit updateUserProfile()
     // because 'new password' and 'confirm' password does not match

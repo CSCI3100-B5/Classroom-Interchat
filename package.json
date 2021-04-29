@@ -10,7 +10,7 @@
     "server": "nodemon --trace-warnings src/server/index.js",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
     "lint": "eslint src/**/*.js src/**/*.jsx",
-    "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
+    "test:client": "nyc mocha --timeout 4000 --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
     "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 5000 --exit 'src/server/**/*.test.js'",
     "test:file": "mocha --require @babel/register --require global-jsdom/register --require ignore-styles"
   },

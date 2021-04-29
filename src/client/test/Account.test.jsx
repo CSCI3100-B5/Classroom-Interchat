@@ -93,7 +93,7 @@ describe('Account Component', function () {
   // test that it render Account
   it('Renders Account', async function () {
     renderWithRouter(<Account />, { route: '/account' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(await screen.queryByText('Classroom Interchat')).to.not.be.equal(null);
     expect(await screen.queryByText('Log out')).to.not.be.equal(null);
@@ -118,10 +118,10 @@ describe('Account Component', function () {
 
   it('Click on logout', async function () {
     renderWithRouter(<Account />, { route: '/account' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     userEvent.click(screen.getByRole('button', { name: /Log out/i }));
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.calledOnce(fakelogout);
     expect(window.location.pathname).to.be.equal('/auth');

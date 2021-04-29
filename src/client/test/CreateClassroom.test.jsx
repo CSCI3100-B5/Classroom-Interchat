@@ -84,6 +84,7 @@ describe('CreateClassroom Component', function () {
     await new Promise(resolve => setTimeout(resolve, 10));
 
     userEvent.type(screen.getByLabelText(/Classroom Name/i), 'this is input classroom name');
+    await new Promise(resolve => setTimeout(resolve, 10));
     userEvent.click(screen.getByRole('button', { name: /Create Classroom/i }));
     await new Promise(resolve => setTimeout(resolve, 10));
 

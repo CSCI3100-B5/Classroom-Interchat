@@ -64,7 +64,7 @@ describe('Auth Component', function () {
     fakeData.refreshToken = 'some refresh token';
     fakeData.user.id = 'tem id';
     renderWithRouter(<Auth />, { route: '/somePath' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.calledOnce(fakegetUserProfile);
     sinon.assert.calledWith(fakegetUserProfile, 'tem id');

@@ -27,7 +27,9 @@ describe('CreateQuiz Component', function () {
     fakeonBack = sinon.spy();
 
     fakeToast = sinon.spy();
-    fakesendQuiz = sinon.spy();
+    fakesendQuiz = sinon.fake(() => new Promise((resolve) => {
+      resolve({ success: true, response: { } });
+    }));
 
     sinon.replace(RealtimeContext, 'useRealtime', () => ({
       sendQuiz: fakesendQuiz
@@ -64,16 +66,16 @@ describe('CreateQuiz Component', function () {
     userEvent.type(screen.getByLabelText(/Choice 2/i), 'This is choice 2');
     userEvent.type(screen.getByLabelText(/Choice 3/i), 'This is choice 3');
     userEvent.type(screen.getByLabelText(/Choice 4/i), 'This is choice 4');
-    userEvent.click(screen.getByRole('checkbox', { name: /Checkbox for following text input/i }));
+    userEvent.click(screen.getByRole('checkbox', { name: /Checkbox for choice1/i }));
     userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     sinon.assert.calledOnce(fakesendQuiz);
     sinon.assert.calledWith(fakesendQuiz, {
       prompt: 'This is a MCQ question?',
       type: 'MCQ',
-      choices: ['choice1', 'choice2', 'choice3', 'choice4'],
-      correct: ['choice1correct'],
+      choices: ['This is choice 1', 'This is choice 2', 'This is choice 3', 'This is choice 4'],
+      correct: [1],
       multiSelect: false
     });
   });

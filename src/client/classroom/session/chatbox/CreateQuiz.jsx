@@ -202,7 +202,7 @@ export default function CreateQuiz({ onBack }) {
                           <InputGroup className="mb-3">
                             <InputGroup.Prepend>
                               <InputGroup.Checkbox
-                                aria-label={`Checkbox for choice ${i}`}
+                                aria-label={`Checkbox for choice${i}`}
                                 name={`choice${i}correct`}
                                 checked={values[`choice${i}correct`]}
                                 onChange={handleChange}
