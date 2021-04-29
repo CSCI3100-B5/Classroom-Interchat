@@ -78,7 +78,6 @@
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-plugin-transform-remove-console": "^6.9.4",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.3.0",
