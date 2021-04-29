@@ -48,7 +48,7 @@ describe('ClassroomRoot Component', function () {
 
     sinon.replace(RealtimeContext, 'RealtimeProvider', fakeRealtimeContext);
     sinon.replace(SocketContext, 'SocketProvider', fakeSocketContext);
-    sinon.replace(ReactRouter, 'useRouteMatch', function () { return { url: '/classroom', path: '/classroom' }; });
+    sinon.stub(ReactRouter, 'useRouteMatch').callsFake(function () { return { url: '/classroom', path: '/classroom' }; });
   });
 
   // after each test is executed, do clean up actions

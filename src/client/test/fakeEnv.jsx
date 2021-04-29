@@ -74,8 +74,13 @@ const fakeData = {
   refreshToken: null
 
 };
+let fakeDataCopy;
 function usefakeData() {
-  return { ...fakeData };
+  // make a deep copy of fakeData,
+  // so that each test always get the same fakeData
+  // and any modification does not affect other test
+  fakeDataCopy = JSON.parse(JSON.stringify(fakeData));
+  return { ...fakeDataCopy };
 }
 
 function sinonDefaultReturn(component, returnMessage) {

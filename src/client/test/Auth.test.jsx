@@ -24,20 +24,22 @@ import * as SignupBox from '../auth/SignupBox.jsx';
 import { renderWithRouter } from './test-utils.js';
 
 describe('Auth Component', function () {
+  let fakeData;
   let fakeLoginBox;
   let fakeSignupBox;
   let fakegetUserProfile;
 
   // before each test, set up the fake contexts
   beforeEach(function () {
+    fakeData = usefakeData();
     sinon.replace(DataStoreContext, 'useDataStore', () => ({
-      data: usefakeData(),
+      data: fakeData
     }));
 
     const fakeresult = {
       success: true
     };
-    fakegetUserProfile = function () { return fakeresult; };
+    fakegetUserProfile = sinon.fake.returns(fakeresult);
 
     sinon.replace(ApiContext, 'useApi', () => ({
       getUserProfile: fakegetUserProfile
@@ -52,9 +54,20 @@ describe('Auth Component', function () {
     sinon.restore();
   });
 
-  it('Renders Auth', async function () {
+  it('Renders Auth without refresh token', async function () {
     renderWithRouter(<Auth />, { route: '/somePath' });
     expect(await screen.findByText('fake LoginBox return')).to.not.be.equal(null);
     expect(await screen.findByText('fake SignupBox return')).to.not.be.equal(null);
+  });
+
+  it('Renders Auth and jump to account page', async function () {
+    fakeData.refreshToken = 'some refresh token';
+    fakeData.user.id = 'tem id';
+    renderWithRouter(<Auth />, { route: '/somePath' });
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    sinon.assert.calledOnce(fakegetUserProfile);
+    sinon.assert.calledWith(fakegetUserProfile, 'tem id');
+    expect(window.location.pathname).to.be.equal('/account');
   });
 });
