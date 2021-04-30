@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 // require mongoose to directly access the database
 const mongoose = require('mongoose');
 

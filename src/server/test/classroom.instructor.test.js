@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 const mongoose = require('mongoose');
 const {
   describe, beforeEach, it, before
