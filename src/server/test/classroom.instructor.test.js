@@ -6,6 +6,7 @@ const Client = require('socket.io-client');
 const { should, chai } = require('./setup');
 const User = require('../models/user.model');
 const Classroom = require('../models/classroom.model');
+const { Message } = require('../models/message.model');
 const Token = require('../models/token.model');
 const server = require('../index');
 
@@ -27,6 +28,7 @@ describe('Classroom.Instructor', () => {
       await User.deleteMany({}).exec();
       await Classroom.deleteMany({}).exec();
       await Token.deleteMany({}).exec();
+      await Message.deleteMany({}).exec();
 
       user = await User.create({
         name: 'test user',

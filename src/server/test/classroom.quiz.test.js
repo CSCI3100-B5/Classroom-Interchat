@@ -5,7 +5,7 @@ const {
 const Client = require('socket.io-client');
 const { should, chai } = require('./setup');
 const User = require('../models/user.model');
-const Message = require('../models/message.model');
+const { Message } = require('../models/message.model');
 const { QuizAnswer } = require('../models/quizanswer.model');
 const Classroom = require('../models/classroom.model');
 const server = require('../index');
@@ -26,6 +26,7 @@ describe('Classroom.Quiz', () => {
       await User.deleteMany({}).exec();
       await Classroom.deleteMany({}).exec();
       await QuizAnswer.deleteMany({}).exec();
+      await Message.deleteMany({}).exec();
 
       user = await User.create({
         name: 'test user',

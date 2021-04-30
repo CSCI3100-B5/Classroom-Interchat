@@ -6,6 +6,7 @@ const Client = require('socket.io-client');
 const { should, chai } = require('./setup');
 const User = require('../models/user.model');
 const Classroom = require('../models/classroom.model');
+const { Message } = require('../models/message.model');
 const server = require('../index');
 
 // this describe block contains all tests related to /src/server/classroom/external
@@ -22,6 +23,7 @@ describe('Classroom.External', () => {
     // Before each test we always empty the database
     await User.deleteMany({}).exec();
     await Classroom.deleteMany({}).exec();
+    await Message.deleteMany({}).exec();
     user = await User.create({
       name: 'test user',
       email: 'test@default.com',
