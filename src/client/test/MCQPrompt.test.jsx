@@ -55,5 +55,6 @@ describe('MCQPrompt Component', function () {
     />);
 
     expect(screen.queryByText('Submit answer')).to.not.be.equal(null);
+    // TODO: check all data that is displayed
   });
 });

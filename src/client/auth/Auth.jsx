@@ -9,6 +9,9 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import './auth.css';
 
+/**
+ * The Authentication page, houses the LoginBox and the SignupBox
+ */
 export default function Auth() {
   const location = useLocation();
   const { getUserProfile } = useApi();
@@ -16,11 +19,14 @@ export default function Auth() {
 
   const history = useHistory();
 
+  // Attempt to get user profile if refresh token is found in local storage
+  // If successful, re-route to Account page directly because the user is
+  // already signed in with a valid refresh token
   useEffect(() => {
     (async () => {
       if (data.refreshToken && data.user) {
         const result = await getUserProfile(data.user.id);
-        console.log('Get user profile', result);
+        // console.log('Get user profile', result);
         if (result.success) {
           history.push('/account');
         } else {
@@ -32,7 +38,9 @@ export default function Auth() {
     })();
   }, []);
 
+  // Short-circuit the rendering to speed up redirection
   if (data.refreshToken && data.user) return (<p>Loading...</p>);
+
   return (
     <div className="auth-body">
       <Container className="h-full">

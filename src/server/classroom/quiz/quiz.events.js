@@ -2,10 +2,8 @@ const SocketValidatedEvents = require('../../helpers/socketValidatedEvents');
 const paramValidation = require('./quiz.validation');
 const quizCtrl = require('./quiz.controller');
 
-// message handles events related to messaging (normal/question/reply messages)
-
 /**
- *
+ * handles events related to quizzes
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */

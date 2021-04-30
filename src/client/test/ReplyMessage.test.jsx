@@ -50,7 +50,7 @@ describe('ReplyMessage Component', function () {
     />);
 
     expect(screen.queryByText('Replying to sender name is this\'s Question')).to.not.be.equal(null);
-    expect(screen.queryByText('sth like message content')).to.not.be.equal(null);
+    expect(screen.queryByText('sth like question message content')).to.not.be.equal(null);
     expect(screen.queryByText('sth like reply content')).to.not.be.equal(null);
   });
 });

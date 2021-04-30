@@ -2,12 +2,12 @@ import {
   Button, Badge, Overlay, Tooltip, Row, Col, Container
 } from 'react-bootstrap';
 import React, { useRef, useState } from 'react';
-import copy from 'copy-text-to-clipboard';
 import {
   BsChevronCompactUp, BsFillMicMuteFill, BsFillMicFill, BsArrowUp, BsArrowDown
 } from 'react-icons/bs';
 import { FaAward, FaBan } from 'react-icons/fa';
 import { RiWifiOffLine } from 'react-icons/ri';
+import copy from '../../../copy.js';
 import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import env from '../../../environment.js';
@@ -15,6 +15,10 @@ import { useToast } from '../../../contexts/ToastProvider.jsx';
 import TokenAwarder from '../TokenAwarder.jsx';
 import './ParticipantList.scoped.css';
 
+/**
+ * The list of participants with control buttons
+ * Classroom-wide actions are also placed here
+ */
 export default function ParticipantList({ onCloseParticipantList }) {
   const { data, getSelfParticipant } = useDataStore();
   const {
@@ -32,6 +36,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
   const tooltipTarget = useRef(null);
   const [show, setShow] = useState(false);
 
+  // Send request to server
   const onRequestPermission = async () => {
     try {
       await requestPermission();
@@ -40,6 +45,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  // Send request to server
   const onCancelRequest = async () => {
     try {
       await cancelRequestPermission();
@@ -48,6 +54,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  // Send request to server
   const onPromote = async (userId) => {
     try {
       await promoteParticipant(userId);
@@ -56,6 +63,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  // Send request to server
   const onDemote = async (userId) => {
     try {
       await demoteParticipant(userId);
@@ -64,6 +72,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  // Send request to server
   const onToggleMute = async (userId) => {
     try {
       await toggleMuteParticipant(userId);
@@ -72,6 +81,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  // Send request to server
   const onToggleGlobalMute = async () => {
     try {
       await toggleGlobalMute();
@@ -80,6 +90,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     }
   };
 
+  // Send request to server
   const onKick = async (userId) => {
     try {
       await kickParticipant(userId);
@@ -115,6 +126,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
     <div className="d-flex flex-column justify-content-between mt-2">
       <Container className="mb-2">
         <Row className="justify-content-center">
+          {/* The classroom-wide actions */}
           {permissionButton ? (
             <Col sm={6}>
               {permissionButton}
@@ -155,6 +167,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
       <TokenAwarder userIds={selectedUsers} onClose={() => setSelectedUsers(null)} />
       <div className="flex-grow-1 p-2 participant-container">
         <Container>
+          {/* The list of participants */}
           {
             data.participants.map(x => (
               <div key={x.user.id} className="participant-box d-flex justify-content-end align-items-center flex-wrap ">
@@ -183,6 +196,7 @@ export default function ParticipantList({ onCloseParticipantList }) {
                   return null;
                 })()}
                 <div className="flex-grow-1" />
+                {/* The buttons to control this participant */}
                 {isInstructor
                   ? (
                     <>

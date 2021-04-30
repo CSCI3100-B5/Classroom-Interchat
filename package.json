@@ -10,9 +10,11 @@
     "server": "nodemon --trace-warnings src/server/index.js",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
     "lint": "eslint src/**/*.js src/**/*.jsx",
-    "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
-    "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 5000 --exit 'src/server/**/*.test.js'",
-    "test:file": "mocha --require @babel/register --require global-jsdom/register --require ignore-styles"
+    "test:client": "nyc mocha --timeout 4000 --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
+    "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 10000 --exit 'src/server/**/*.test.js'",
+    "test:file": "cross-env NODE_ENV=test mocha --timeout 10000 --exit 'src/server/test/token.test.js'",
+    "transform": "babel --no-babelrc --plugins transform-react-jsx src --out-dir lib",
+    "stats": "es6-plato -r -d report src & node ./report-cli.js"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {
@@ -25,7 +27,6 @@
     "compose-middleware": "^5.0.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
-    "copy-text-to-clipboard": "^3.0.1",
     "cors": "^2.8.5",
     "debug": "^4.3.1",
     "dotenv": "^8.2.0",
@@ -64,6 +65,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@babel/cli": "^7.13.16",
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-private-methods": "^7.13.0",
@@ -75,7 +77,7 @@
     "@testing-library/user-event": "^13.1.2",
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.0",
-    "babel-plugin-transform-remove-console": "^6.9.4",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.3.0",

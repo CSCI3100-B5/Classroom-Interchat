@@ -7,6 +7,7 @@ const { should, chai } = require('./setup');
 const User = require('../models/user.model');
 const Classroom = require('../models/classroom.model');
 const server = require('../index');
+const { Message } = require('../models/message.model');
 
 // This describe block wraps all tests related to the initial socket connection
 // with our server
@@ -25,8 +26,9 @@ describe('Classroom.Connection', () => {
   // this is executed before every test
   beforeEach(async () => {
     // Before each test we empty the database
-    await User.remove({}).exec();
-    await Classroom.remove({}).exec();
+    await User.deleteMany({}).exec();
+    await Classroom.deleteMany({}).exec();
+    await Message.deleteMany({}).exec();
     // then add back some default values for testing
     user = await User.create({
       name: 'test user',

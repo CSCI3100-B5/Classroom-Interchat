@@ -12,6 +12,9 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
+/**
+ * Account management page, visible after logging in, contains 4 tabs and a nav bar
+ */
 export default function Account() {
   const { data } = useDataStore();
 
@@ -38,13 +41,14 @@ export default function Account() {
     history.push('/auth');
   };
 
+  // Fetch user profile on page load
   useEffect(() => {
     (async () => {
       if (!data.refreshToken || !data.user) {
         history.push('/auth');
       }
       const result = await getUserProfile(data.user.id);
-      console.log('Get user profile', result);
+      // console.log('Get user profile', result);
       if (result.success) {
         data.user = result.response.data;
       } else {

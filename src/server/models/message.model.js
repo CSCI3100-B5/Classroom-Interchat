@@ -6,6 +6,8 @@ const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
+// Database schema for a message and all its subtypes
+
 /**
  * Message Schema
  */

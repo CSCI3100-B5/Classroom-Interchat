@@ -5,8 +5,7 @@ const Messages = require('../../models/message.model');
 const APIError = require('../../helpers/APIError');
 
 /**
- *
- * @param {[*, *]} packet
+ * Save the message to database and relay it to other participants
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -72,8 +71,7 @@ async function sendMessage(packet, socket, io) {
 }
 
 /**
- *
- * @param {[*, *]} packet
+ * Mark a question as resolved
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -85,6 +83,7 @@ async function resolveQuestion(packet, socket, io) {
   classroom = await classroom.populate('messages').execPopulate();
   let message = classroom.messages.find(x => x.id === data.messageId);
   if (!message) return callback({ error: 'The message does not exist' });
+  if (message.content.isResolved) return callback({ error: 'The question is already resolved' });
   message.content.isResolved = true;
   await message.save();
   message = await message.populate('sender').execPopulate();

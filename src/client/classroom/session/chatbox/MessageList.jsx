@@ -4,13 +4,19 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import Message from './message/Message.jsx';
 import './MessageList.scoped.css';
 
+/**
+ * Renders all messages in chronological order
+ * Also handles all the message filtering logic
+ */
 export default function MessageList() {
   const { data } = useDataStore();
 
   const unresolvedQuestions = data.messages.filter(x => x.type === 'question' && !x.content.isResolved);
   const ongoingQuizzes = data.messages.filter(x => ['mcq', 'saq'].includes(x.type) && !x.content.closedAt);
 
-  let messageList;
+  let messageList; // the list of messages to be rendered
+
+  // apply the message filter, if specified
   if (!data.messageFilter) {
     messageList = data.messages;
   } else if (data.messageFilter === 'unresolved') {
@@ -29,10 +35,13 @@ export default function MessageList() {
     }
   }
 
+  // DOM reference to a dummy div at the bottom of the message list
+  // this is used to scroll the list to the bottom when new messages are
+  // received
   const messageBtm = useRef(null);
 
   useEffect(() => {
-    messageBtm.current.scrollIntoView({ behavior: 'smooth' });
+    if (messageBtm) messageBtm.current.scrollIntoView({ behavior: 'smooth' });
   }, [messageList.length]);
 
   return (

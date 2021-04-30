@@ -6,7 +6,9 @@ import { Button, Form } from 'react-bootstrap';
 import { useApi } from '../contexts/ApiProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 
-
+// schema for form validation
+// most of the error messages are automatic, but some custom messages
+// can be specified
 const schema = yup.object().shape({
   signupName: yup.string().min(5).max(100).required()
     .label('Name'),
@@ -19,19 +21,27 @@ const schema = yup.object().shape({
     .label('Confirm password')
 });
 
+/**
+ * The Signup Box, lives in the Auth page
+ */
 export default function SignupBox() {
   const history = useHistory();
   const { toast } = useToast();
 
   const { signup, login } = useApi();
 
-  // assume 'values' passed to the 'onSubmit' are correct
-  // that is, schema take care of format of input already
+  // Send the sign up request to server on form submission
+  // If sign up is successful, also send a log in request and re-route to
+  // Account page
   const onSubmit = async (values) => {
+    // assume 'values' passed to the 'onSubmit' are correct
+    // that is, schema take care of format of input already
     const result = await signup(values.signupName, values.signupEmail, values.signupPassword);
     if (result.success) {
       const loginResult = await login(values.signupEmail, values.signupPassword);
       if (loginResult.success) {
+        // We specifically want to route to Manage Profile tab to
+        // prompt the user to verify their email
         history.push('/account#manageProfile');
       } else {
         toast('error', 'Log in failed', loginResult.response.data.message);

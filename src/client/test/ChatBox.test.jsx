@@ -22,12 +22,20 @@ describe('ChatBox Component', () => {
   let fakeMessageList;
   let fakeMessageCompose;
   let fakeCreateQuiz;
+  let onCreateQuizHandle;
+  let onBackHandle;
 
   // before each test, set up the fake contexts
   beforeEach(() => {
     fakeMessageList = sinonDefaultReturn(MessageList, 'MessageList return');
-    fakeMessageCompose = sinonDefaultReturn(MessageCompose, 'MessageCompose return');
-    fakeCreateQuiz = sinonDefaultReturn(CreateQuiz, 'CreateQuiz return');
+    sinon.stub(MessageCompose, 'default').callsFake(({ onCreateQuiz }) => {
+      onCreateQuizHandle = onCreateQuiz;
+      return <div>MessageCompose return</div>;
+    });
+    sinon.stub(CreateQuiz, 'default').callsFake(({ onBack }) => {
+      onBackHandle = onBack;
+      return <div>CreateQuiz return</div>;
+    });
     sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: usefakeData() }));
   });
 
@@ -36,11 +44,20 @@ describe('ChatBox Component', () => {
     sinon.restore();
   });
 
-  it('Renders ChatBox', () => {
+  it('Show MessageList and MessageCompose', () => {
     render(<ChatBox />);
 
-    sinon.assert.calledOnce(fakeMessageList);
-    sinon.assert.calledOnce(fakeMessageCompose);
+    expect(screen.queryByText('MessageList return')).to.not.be.equal(null);
+    expect(screen.queryByText('MessageCompose return')).to.not.be.equal(null);
+  });
+
+  it('Show Create Quiz', async () => {
+    render(<ChatBox />);
+    onCreateQuizHandle();
+
+    expect(screen.queryByText('CreateQuiz return')).to.not.be.equal(null);
+
+    onBackHandle();
     expect(screen.queryByText('MessageList return')).to.not.be.equal(null);
     expect(screen.queryByText('MessageCompose return')).to.not.be.equal(null);
   });

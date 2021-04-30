@@ -9,18 +9,25 @@ import { useToast } from '../contexts/ToastProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import './ManageProfile.scoped.css';
 
+// schemat to validate form input
 const schema = yup.object().shape({
   profileName: yup.string().min(5).max(100).required()
     .label('Name'),
   profileEmail: yup.string().email().required().label('Email'),
 });
 
+/**
+ * The Manage Profile tab, lives in the Account page and allows the user to
+ * change profile info
+ * The email verification prompt is also displayed here
+ */
 export default function ManageProfile() {
   const { updateUserProfile, sendEmail } = useApi();
   const { toast } = useToast();
   const { data } = useDataStore();
   const [emailSent, setEmailSent] = useState(false);
 
+  // Send the update profile request to server
   const onSubmit = async (values) => {
     const result = await updateUserProfile(data.user.id, {
       name: values.profileName,
@@ -34,6 +41,7 @@ export default function ManageProfile() {
     }
   };
 
+  // Send a request to server to send a verification email
   const onSendEmail = async () => {
     const result = await sendEmail();
     console.log('Send email result', result);

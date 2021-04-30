@@ -10,11 +10,20 @@ import { useRealtime } from '../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
 import './ClassroomInfo.scoped.css';
 
+/**
+ * The blue banner at the top of the Classroom Session page, showing the
+ * classroom name, user's name, the participant count and the leave
+ * classroom button
+ * The status banners (such as "X ongoing quizzes" and "X unresolved questions")
+ * are also rendered here even though they seem to belong to the message list
+ * visually, since the CSS is simpler this way
+ */
 function ClassroomInfo({ onShowParticipantList }) {
   const { data, getSelfParticipant } = useDataStore();
   const { leaveClassroom } = useRealtime();
   const { toast } = useToast();
 
+  // send the leave classroom request to server
   const onLeave = async () => {
     try {
       await leaveClassroom();
@@ -67,6 +76,7 @@ function ClassroomInfo({ onShowParticipantList }) {
           </Card.Text>
         </Card.Body>
       </Card>
+      {/* The status banners */}
       {getSelfParticipant()
         && getSelfParticipant().permission !== 'student'
         && requestingParticipants.length ? (

@@ -1,6 +1,9 @@
 const httpStatus = require('http-status');
 const APIError = require('./APIError');
-
+/**
+ * Helper class to subscribe to socket.io events and validate each event using
+ * a Joi schema in a socket.io middleware
+ */
 module.exports = class SocketValidatedEvents {
   /**
    * @param {import('socket.io').Socket} socket
@@ -12,6 +15,12 @@ module.exports = class SocketValidatedEvents {
     this.events = [];
   }
 
+  /**
+   * Register an event for the socket
+   * @param {string} event name of the socket.io event
+   * @param {import('joi').Schema|(packet:any[],socket:import('socket.io').Socket,io:import('socket.io').Server) => void} validationOrHandler Joi validation schema or the event handler
+   * @param {(packet:any[],socket:import('socket.io').Socket,io:import('socket.io').Server) => void} handler event handler
+   */
   on(event, validationOrHandler, handler) {
     if (handler === undefined) {
       this.events.push({
@@ -27,6 +36,9 @@ module.exports = class SocketValidatedEvents {
     }
   }
 
+  /**
+   * Subscribe to all the registered events and initialize the validation middleware
+   */
   register() {
     this.socket.use((packet, next) => {
       const [event, data, callback] = packet;

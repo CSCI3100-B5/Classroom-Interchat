@@ -7,10 +7,16 @@ import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 import TokenAwarder from '../../../TokenAwarder.jsx';
 import MarkdownRender from '../MarkdownRender.jsx';
 
+/**
+ * Contains UI specific to an MCQ message in results display mode
+ * Token awarding is handled here
+ */
 export default function MCQResult({ message }) {
   const { data } = useDataStore();
   const [showModal, setShowModal] = useState(false);
 
+  // Instead of sending the token award request to server directly,
+  // open the token awarder prompt so that the user can type in notes
   const onSubmit = (values) => {
     // convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {

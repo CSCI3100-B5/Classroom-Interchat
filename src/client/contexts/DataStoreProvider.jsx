@@ -4,10 +4,17 @@ import useLocalStorage from '../hooks/useLocalStorage.js';
 
 const DataStoreContext = React.createContext();
 
+/**
+ * The hook used by children to access this context
+ */
 export function useDataStore() {
   return useContext(DataStoreContext);
 }
 
+/**
+ * A React context component storing all application-wide states
+ * This eliminates a lot of the props passing between parents and children
+ */
 export function DataStoreProvider({ children }) {
   const [savedAccessToken, saveAccessToken] = useLocalStorage('accessToken', null);
   const [savedRefreshToken, saveRefreshToken] = useLocalStorage('refreshToken', null);
@@ -24,15 +31,16 @@ export function DataStoreProvider({ children }) {
 
     // All info related to the classroom, except messages and participant list
     classroomMeta: null,
+
     messages: [],
     participants: [],
 
-
     replyToMessageId: null,
-    messageFilter: null,
+
     // null for no filter
     // a message id of a question to show that thread
     // 'unresolved' to show all unresolved questions
+    messageFilter: null,
 
     user: savedUser,
 

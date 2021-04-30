@@ -1,3 +1,5 @@
+// Entry point to the server
+
 const mongoose = require('mongoose');
 const cachegoose = require('cachegoose');
 const util = require('util');
@@ -36,4 +38,5 @@ server.listen(config.port, () => {
   console.info(`server started on port ${config.port} (${config.env})`); // eslint-disable-line no-console
 });
 
+// export the express app and the http server for testing
 module.exports = { app, server };

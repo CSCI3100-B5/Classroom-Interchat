@@ -7,9 +7,15 @@ import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 import MarkdownRender from '../MarkdownRender.jsx';
 
+/**
+ * Contains UI specific to an MCQ message in answering mode
+ * MCQ answering logic is done here
+ */
 export default function MCQPrompt({ message }) {
   const { ansMCQuiz } = useRealtime();
   const { toast } = useToast();
+
+  // send answers to the server
   const onSubmit = async (values) => {
     // convert choices to an array if it isn't already one
     if (!(values.choices instanceof Array)) {

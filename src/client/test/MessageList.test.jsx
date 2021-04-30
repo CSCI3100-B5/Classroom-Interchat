@@ -19,13 +19,16 @@ import * as Message from '../classroom/session/chatbox/message/Message.jsx';
 
 // did not find a way to deal with combination of
 // useRef(), useEffect() and messageBtm.current.scrollIntoView()
-/*
+
 describe('MessageList Component', function () {
   let fakeMessage;
+  let fakeData;
 
   beforeEach(function () {
+    fakeData = usefakeData();
+
     fakeMessage = sinonDefaultReturn(Message, 'Message return');
-    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: usefakeData() }));
+    sinon.replace(DataStoreContext, 'useDataStore', () => ({ data: fakeData }));
   });
 
   // after each test is executed, do clean up actions
@@ -46,13 +49,7 @@ describe('MessageList Component', function () {
       }
     };
 
-    render(
-      <div>
-        <MessageList ref={messageBtm} />
-      </div>
-    );
-
-    expect(screen.queryByText('messageId is this')).to.not.be.equal(null);
+    render(<MessageList />);
+    expect(fakeMessage.callCount).equals(fakeData.messages.length);
   });
 });
-*/
