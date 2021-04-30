@@ -25,8 +25,8 @@ describe('Classroom.Connection', () => {
   // this is executed before every test
   beforeEach(async () => {
     // Before each test we empty the database
-    await User.remove({}).exec();
-    await Classroom.remove({}).exec();
+    await User.deleteMany({}).exec();
+    await Classroom.deleteMany({}).exec();
     // then add back some default values for testing
     user = await User.create({
       name: 'test user',

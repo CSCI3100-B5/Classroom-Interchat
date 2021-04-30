@@ -7,6 +7,7 @@ const {
 } = require('mocha');
 
 // require our database model
+const httpStatus = require('http-status');
 const User = require('../models/user.model');
 
 // require our server
@@ -20,16 +21,18 @@ const { should, chai } = require('./setup');
 
 // this describe block wraps all tests related to "auth"
 describe('Auth', () => {
+  let user;
   // things to do "beforeEach" test
   beforeEach(async () => {
     // Before each test we empty the database
-    await User.remove({}).exec();
+    await User.deleteMany({}).exec();
     // then create a new user
-    const user = await User.create({
+    user = await User.create({
       name: 'test user',
       email: 'test@default.com',
       isAdmin: false,
-      password: 'none'
+      password: 'none',
+      emailVerification: 'sample-verification'
     });
     await user.setPassword('password');
   });
@@ -97,6 +100,104 @@ describe('Auth', () => {
         .set('content-type', 'application/json')
         .send({ email: 'test@default.com', password: 'password2' });
       res.should.have.status(401);
+    });
+  });
+
+  // this describe block wraps all tests related to the refresh token route
+  describe('GET /api/auth/token', () => {
+    // test token refresh with valid inputs
+    it('valid details', async () => {
+      const res = await chai.request(server.app)
+        .post('/api/auth/login')
+        .set('content-type', 'application/json')
+        .send({ email: 'test@default.com', password: 'password' });
+      res.should.have.status(200);
+      res.body.should.have.property('refreshToken');
+
+      const res2 = await chai.request(server.app)
+        .get('/api/auth/token')
+        .set('Authorization', `Bearer ${res.body.refreshToken}`);
+      res2.should.have.status(200);
+      res2.body.should.have.property('accessToken');
+      res2.body.should.have.property('userId', user.id);
+    });
+
+    // test token refresh with a non-existing email
+    it('invalid refresh token', async () => {
+      const res2 = await chai.request(server.app)
+        .get('/api/auth/token')
+        .set('Authentication', 'Bearer 8712647386287613289427628798');
+      res2.should.have.status(401);
+    });
+
+    // test token refresh without a refresh token header
+    it('no refresh token', async () => {
+      const res2 = await chai.request(server.app)
+        .get('/api/auth/token');
+      res2.should.have.status(401);
+    });
+  });
+
+  // this describe block wraps all tests related to the email verification route
+  describe('GET /api/auth/email/:userId/:verification', () => {
+    // test email verification with valid inputs
+    it('valid details', async () => {
+      await chai.request(server.app)
+        .get(`/api/auth/email/${user.id}/sample-verification`);
+      user = await User.get(user.id);
+      user.lastVerifiedEmail.should.equal('test@default.com');
+    });
+
+    // test email verification with an incorrect verification code
+    it('invalid verification code', async () => {
+      await chai.request(server.app)
+        .get(`/api/auth/email/${user.id}/incorrect-verification`);
+      user = await User.get(user.id);
+      should.not.exist(user.lastVerifiedEmail);
+    });
+
+    // test email verification with an incorrect user id
+    it('invalid user id', async () => {
+      await chai.request(server.app)
+        .get('/api/auth/email/123456789012345678901234/sample-verification');
+      user = await User.get(user.id);
+      should.not.exist(user.lastVerifiedEmail);
+    });
+  });
+
+  // this describe block wraps all tests related to the log out route
+  describe('DELETE /api/auth/logout', () => {
+    // test log out with valid inputs
+    it('valid details', async () => {
+      const res = await chai.request(server.app)
+        .post('/api/auth/login')
+        .send({ email: 'test@default.com', password: 'password' });
+      res.should.have.status(200);
+      res.body.should.have.property('refreshToken');
+
+      const res2 = await chai.request(server.app)
+        .delete('/api/auth/logout')
+        .set('Authorization', `Bearer ${res.body.refreshToken}`);
+      res2.should.have.status(httpStatus.NO_CONTENT);
+
+      user = await User.get(user.id);
+      user.authTokenIds.should.have.a.lengthOf(0);
+    });
+
+    // test log out with a non-existing email
+    it('invalid refresh token', async () => {
+      const res2 = await chai.request(server.app)
+        .delete('/api/auth/logout')
+        .set('Authentication', 'Bearer 8712647386287613289427628798');
+      res2.should.have.status(401);
+    });
+
+    // test log out without a refresh token header
+    it('no refresh token', async () => {
+      const res2 = await chai.request(server.app)
+        .get('/api/auth/token')
+        .set('content-type', 'application/json');
+      res2.should.have.status(401);
     });
   });
 });
