@@ -2,6 +2,10 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+/**
+ * The Launch App tab, lives in the Account page and redirects to
+ * Join Classroom page on click
+ */
 export default function LaunchApp() {
   return (
     <div>

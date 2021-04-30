@@ -8,8 +8,15 @@ import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import './Message.scoped.css';
 import './message.css';
 
+/**
+ * The master component of all messages
+ * This component only renders metadata such as sender and time,
+ * and select the correct type of message component to render
+ */
 function Message({ message, index }) {
   const { data } = useDataStore();
+
+  // determine the CSS classes to use based on message data
   let messageAlign = 'align-items-start msg-left';
   if (!message.sender) {
     messageAlign = 'align-items-center';
@@ -25,6 +32,8 @@ function Message({ message, index }) {
     }
   }
 
+  // De-clutter the chat box by hiding metadata if the same person sends
+  // multiple messages in a short time
   let shouldRenderMeta = true;
   if (index > 0) {
     const lastMsg = data.messages[index - 1];
@@ -39,8 +48,10 @@ function Message({ message, index }) {
       shouldRenderMeta = false;
     }
   }
+
   return (
     <div className={`d-flex flex-column w-full ${messageAlign}`}>
+      {/* renders message metadata */}
       {shouldRenderMeta ? (
         <span className="message-meta">
           {message.sender ? `${message.sender.name}, ` : ''}
@@ -48,6 +59,7 @@ function Message({ message, index }) {
         </span>
       ) : null}
 
+      {/* choose the specific type of message to render */}
       {
         (() => {
           switch (message.type) {

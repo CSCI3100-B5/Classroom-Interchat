@@ -8,7 +8,11 @@ import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import './ManageTokens.scoped.css';
 
-
+/**
+ * The Manage Tokens tab, lives in the Account page and lists all tokens
+ * related to the user
+ * Token invalidation is done here
+ */
 export default function ManageTokens() {
   const localData = useStates({
     sentTokens: [],
@@ -19,6 +23,7 @@ export default function ManageTokens() {
   const { data } = useDataStore();
   const { toast } = useToast();
 
+  // Fetch token list on load
   useEffect(() => {
     (async () => {
       const result = await getUserTokens(data.user.id);
@@ -31,6 +36,9 @@ export default function ManageTokens() {
     })();
   }, [data.user]);
 
+  // Send token invalidation request to server
+  // Client-side token information is updated when a successful response is
+  // received
   const invalidateToken = async (token) => {
     const result = await setTokenFalse(token.id);
     if (result.success) {

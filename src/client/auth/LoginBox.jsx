@@ -7,6 +7,7 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 
+// schema to validate form input
 const schema = yup.object().shape({
   email: yup.string().email().required().label('Email'),
   password: yup.string().min(8).max(64).required()
@@ -14,7 +15,9 @@ const schema = yup.object().shape({
   rememberMe: yup.bool().required().label('Remember me'),
 });
 
-
+/**
+ * The Login Box, lives in the Auth page
+ */
 export default function LoginBox() {
   const history = useHistory();
 
@@ -22,6 +25,7 @@ export default function LoginBox() {
   const { data } = useDataStore();
   const { toast } = useToast();
 
+  // Send a login request to server on form submission
   const onSubmit = async (values) => {
     const result = await login(values.email, values.password);
     if (result.success) {

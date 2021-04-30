@@ -7,11 +7,18 @@ import { useDataStore } from '../../../../../contexts/DataStoreProvider.jsx';
 import TokenAwarder from '../../../TokenAwarder.jsx';
 import MarkdownRender from '../MarkdownRender.jsx';
 
+/**
+ * Contains UI specific to an SAQ message in results display mode
+ * Token awarding is handled here
+ */
 export default function SAQResult({ message }) {
   const [groupView, setGroupView] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
   const { data } = useDataStore();
+
+  // compute an answer digest depending on the display mode
+  // i.e. group similar answers together
   let answerDigest = [];
   if (groupView) {
     message.content.results.forEach((x, id) => {
@@ -35,6 +42,7 @@ export default function SAQResult({ message }) {
       .sort((a, b) => a.createdAt - b.createdAt);
   }
 
+  // show the Token Awarder dialog
   const onSubmit = (values) => {
     console.log('SAQ select token awardees ', values);
     if (values.choice) setShowModal(true);
