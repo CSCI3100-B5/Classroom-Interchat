@@ -46,7 +46,6 @@ describe('Classroom.External', () => {
       }
     });
   });
-  
   // all tests related to classroom creation
   describe('create classroom', () => {
     // creating a classroom without supplying a classroom name
@@ -101,7 +100,7 @@ describe('Classroom.External', () => {
 
     // test invalid classroom id input
     it('invalid classroom id input', (done) => {
-      // when we peek a classroom, the server receives the creation request and
+      // when we peek a classroom, the server receives the peek classroom request and
       // immediately respond with an error if any, or an empty object to indicate
       // success
       // then after some processing, it sends the classroom data to the client
@@ -127,8 +126,14 @@ describe('Classroom.External', () => {
         // tell mocha that this test is done
         done();
       });
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
       // send the peek classroom request to server
-      clientSocket.emit('peek classroom', { id: '' }, (data) => { //
+      clientSocket.emit('peek classroom', { id: classroom.id }, (data) => { //
         // this is the immediate response from server
         // we expect this to be empty to indicate success
         data.should.eql({});
@@ -144,7 +149,8 @@ describe('Classroom.External', () => {
         data.should.have.property('error');
         // tell mocha that this test is done
         done();
-    })
+      });
+    });
 
     // test join a non-existent classroom
     it('join a non-existent classroom', (done) => {
@@ -153,7 +159,8 @@ describe('Classroom.External', () => {
         data.should.have.property('error');
         // tell mocha that this test is done
         done();
-    })
+      });
+    });
 
     // test join a open classroom
     it('join a opened classroom', (done) => {
@@ -168,8 +175,13 @@ describe('Classroom.External', () => {
         // tell mocha that this test is done
         done();
       });
-
-      clientSocket.emit('join classroom', { id: '' }, (data) => {
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
         data.should.eql({});
@@ -177,6 +189,38 @@ describe('Classroom.External', () => {
     });
 
     // test join a closed classroom
+    it('join a closed classroom', (done) => {
+      clientSocket.once('catch up', (data) => { //
+        // verify the contents of the event
+        // i.e. classroom data
+        data.should.have.property('id');
+        data.should.have.property('name', 'New Classroom');
+        data.should.have.property('host');
+        data.should.have.property('participants');
+        data.should.have.property('closedAt');
+        data.host.should.have.property('name', 'test user');
+        // tell mocha that this test is done
+        done();
+      });
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the join classroom request to server
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the leave classroom request to server
+      clientSocket.emit('leave classroom', {}, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+    });
   });
 
   describe('clean up classroom', () => {
@@ -184,19 +228,98 @@ describe('Classroom.External', () => {
   });
 
   describe('lost connection', () => {
-
+    // test lost connection
+    it('lost connection', (done) => {
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the join classroom request to server
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      //
+    });
   });
 
   describe('leave classroom', () => {
     // test leave classroom successfully
+    it('leave classroom', (done) => {
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the join classroom request to server
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the leave classroom request to server
+      clientSocket.emit('leave classroom', {}, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+    });
   });
 
   describe('kick participant', () => {
     // test kick someone successfully
     it('kick participants successfully', (done) => {
-      
+      clientSocket.once('kick', (data) => { //
+        // verify the contents of the event
+        // i.e. classroom data
+        data.should.have.property('id');
+        // tell mocha that this test is done
+        done();
+      });
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the join classroom request to server
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the kick participant request to server
+      clientSocket.emit('kick participant', { id: '' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
     });
     // test kick the user oneself
+    it('kick the user oneself', (done) => {
+      // send the classroom creation request to server
+      clientSocket.emit('create classroom', { name: 'New Classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      // send the join classroom request to server
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+      clientSocket.emit('kick participant', { id: user.id }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
 
     // test kick an instructor
   });
