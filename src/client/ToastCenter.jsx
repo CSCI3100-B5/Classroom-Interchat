@@ -5,6 +5,9 @@ import { useDataStore } from './contexts/DataStoreProvider.jsx';
 import { useToast } from './contexts/ToastProvider.jsx';
 import './ToastCenter.scoped.css';
 
+/**
+ * Display all toasts that are sent to the toast context
+ */
 export default function ToastCenter() {
   const { data } = useDataStore();
   const { removeToast } = useToast();

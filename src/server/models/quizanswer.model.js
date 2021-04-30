@@ -6,6 +6,8 @@ const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
+// Database models for quiz answers and its subtypes
+
 /**
  * QuizAnswer Schema
  */

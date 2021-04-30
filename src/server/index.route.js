@@ -3,6 +3,8 @@ const userRoutes = require('./user/user.route');
 const authRoutes = require('./auth/auth.route');
 const tokenRoutes = require('./token/token.route');
 
+// mount all express routes
+
 const router = express.Router();
 
 // GUIDE: mount all sub-routes here

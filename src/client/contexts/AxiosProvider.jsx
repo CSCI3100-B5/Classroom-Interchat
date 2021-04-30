@@ -6,10 +6,17 @@ import { useDataStore } from './DataStoreProvider.jsx';
 
 const AxiosContext = React.createContext();
 
+/**
+ * The hook used by children to access this context
+ */
 export function useAxios() {
   return useContext(AxiosContext);
 }
 
+/**
+ * A React context component used for providing an initialized Axios client
+ * to all children
+ */
 export function AxiosProvider({ children }) {
   const {
     data,

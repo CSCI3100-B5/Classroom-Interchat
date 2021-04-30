@@ -11,12 +11,15 @@ import { useRealtime } from '../contexts/RealtimeProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 import { useApi } from '../contexts/ApiProvider.jsx';
 
-
+// schema for form validation
 const schema = yup.object().shape({
   classroomName: yup.string().max(200).required().label('Classroom Name'),
 });
 
-
+/**
+ * A simple form for classroom creation
+ * Includes a link to Join Classroom
+ */
 export default function CreateClassroom() {
   const history = useHistory();
 
@@ -28,14 +31,17 @@ export default function CreateClassroom() {
 
   const { logout } = useApi();
 
+  // if the user is already in a classroom, route to Classroom Session page
   useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
   }, [data.classroomMeta]);
 
+  // if the user is not logged in, route to Auth page
   useEffect(() => {
     if (!data.refreshToken) history.push('/auth');
   }, [data.refreshToken]);
 
+  // send classroom creation request to server
   const onSubmit = async (values) => {
     try {
       await createClassroom(values.classroomName);
@@ -44,6 +50,8 @@ export default function CreateClassroom() {
     }
   };
 
+  // send log out request to server
+  // remove credentials regardless of server response
   const onLogOut = async () => {
     const result = await logout();
     if (!result.success) {

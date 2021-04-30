@@ -12,6 +12,8 @@ import './CreateQuiz.scoped.css';
 const choicesSchema = {};
 const choicesDefault = {};
 
+// generate the form validation schema and the default values of the multiple
+// choice answers
 for (let i = 0; i < 10; i++) {
   choicesSchema[`choice${i}`] = yup.mixed()
     .test(
@@ -35,6 +37,10 @@ for (let i = 0; i < 10; i++) {
   choicesDefault[`choice${i}correct`] = false;
 }
 
+// the rest of the form validation schema
+// a lot of custom logic is used here for more granular validation
+// this allows more errors to be caught before sending to the server
+// so as to reduce feedback delay
 const schema = yup.object().shape({
   prompt: yup.string().max(200).required().label('Prompt'),
   type: yup.string().oneOf(['SAQ', 'MCQ']).label('Type'),
@@ -67,9 +73,15 @@ const schema = yup.object().shape({
   ...choicesSchema
 });
 
+/**
+ * The Create Quiz form that allows the user to create an SAQ or MCQ
+ */
 export default function CreateQuiz({ onBack }) {
   const { sendQuiz } = useRealtime();
   const { toast } = useToast();
+
+  // convert the data representation to that used in backend
+  // then send the data to backend
   const onSubmit = async (values) => {
     // clean the values object before submitting to server
     let cleanedValues = {

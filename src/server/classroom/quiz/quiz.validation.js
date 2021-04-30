@@ -4,8 +4,8 @@ module.exports = {
   sendQuiz: Joi.object({
     prompt: Joi.string().trim().max(5000).required(),
     type: Joi.string().valid('SAQ', 'MCQ').required(),
-    choices: Joi.array().items(Joi.string().trim().max(200).required()),
-    correct: Joi.array().items(Joi.number().required()),
+    choices: Joi.array().items(Joi.string().trim().max(200).required()).unique(),
+    correct: Joi.array().items(Joi.number().required()).unique(),
     multiSelect: Joi.boolean()
   }),
   endQuiz: Joi.object({

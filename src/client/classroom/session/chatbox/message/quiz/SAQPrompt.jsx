@@ -5,6 +5,10 @@ import MarkdownRender from '../MarkdownRender.jsx';
 import { useRealtime } from '../../../../../contexts/RealtimeProvider.jsx';
 import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 
+/**
+ * Contains UI specific to an SAQ message in answering mode
+ * SAQ answering logic is done here
+ */
 export default function SAQPrompt({ message }) {
   const { ansSAQuiz } = useRealtime();
   const { toast } = useToast();
@@ -12,6 +16,7 @@ export default function SAQPrompt({ message }) {
     answer: ''
   });
 
+  // send SAQ answer to server
   const onSubmit = async () => {
     if (!data.answer) return;
     console.log('SAQ answer object', data.answer);

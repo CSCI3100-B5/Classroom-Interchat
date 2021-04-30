@@ -5,7 +5,11 @@ import { useDataStore } from '../../../../contexts/DataStoreProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
 import './ReplyMessage.scoped.css';
 
-
+/**
+ * A Reply Message, renders the reply content, the gray bar above the
+ * message referencing the question it is replying to, and the reply
+ * icon
+ */
 export default function ReplyMessage({ message }) {
   const { data } = useDataStore();
 

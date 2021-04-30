@@ -4,6 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import './NotFound.scoped.css';
 
+/**
+ * A catch-all 404 page, either go back or go to home page
+ */
 export default function NotFound() {
   const history = useHistory();
   return (

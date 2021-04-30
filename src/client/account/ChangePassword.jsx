@@ -8,7 +8,7 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 import { useDataStore } from '../contexts/DataStoreProvider.jsx';
 import { useToast } from '../contexts/ToastProvider.jsx';
 
-
+// schema to validate form input
 const schema = yup.object().shape({
   oldPassword: yup.string().min(8).max(64).required()
     .label('Old password'),
@@ -20,11 +20,15 @@ const schema = yup.object().shape({
     .label('Confirm password')
 });
 
+/**
+ * The Change Password tab, lives in the Account page
+ */
 export default function ChangePassword() {
   const { data } = useDataStore();
   const { toast } = useToast();
   const { updateUserProfile } = useApi();
 
+  // Send the change password request to server
   const onSubmit = async (values) => {
     const result = await updateUserProfile(data.user.id, {
       oldPassword: values.oldPassword,

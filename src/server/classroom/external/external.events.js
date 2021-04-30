@@ -2,10 +2,8 @@ const SocketValidatedEvents = require('../../helpers/socketValidatedEvents');
 const paramValidation = require('./external.validation');
 const externalCtrl = require('./external.controller');
 
-// external handles events when the user hasn't joined a classroom yet
-
 /**
- *
+ * handles events related to joining/leaving a classroom
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */

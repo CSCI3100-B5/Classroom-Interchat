@@ -84,6 +84,9 @@ async function signup(req, res, next) {
   }
 }
 
+/**
+ * Send a verification email
+ */
 async function sendEmail(req, res, next) {
   const user = req.invoker;
   if (user.email === user.lastVerifiedEmail) {
@@ -124,6 +127,9 @@ async function sendEmail(req, res, next) {
   return res.sendStatus(httpStatus.NO_CONTENT);
 }
 
+/**
+ * Verify user email and redirect to account page on success
+ */
 async function verifyEmail(req, res) {
   const { user } = req;
   if (user.email === user.lastVerifiedEmail) {

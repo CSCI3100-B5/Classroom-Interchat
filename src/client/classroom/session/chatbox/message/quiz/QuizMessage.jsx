@@ -10,6 +10,10 @@ import { useToast } from '../../../../../contexts/ToastProvider.jsx';
 import './QuizMessage.scoped.css';
 import './quiz.css';
 
+/**
+ * A Quiz Message. Only UI common to all types of quizzes are included here
+ * Specific UIs are handled in their respective files
+ */
 export default function QuizMessage({ message }) {
   const { data } = useDataStore();
 
@@ -17,6 +21,7 @@ export default function QuizMessage({ message }) {
 
   const { toast } = useToast();
 
+  // Send end quiz request to server
   const onEndQuiz = async () => {
     try {
       await endQuiz(message.id);
@@ -25,6 +30,7 @@ export default function QuizMessage({ message }) {
     }
   };
 
+  // Send release results request to server
   const onReleaseResults = async () => {
     try {
       await releaseResults(message.id);
@@ -33,6 +39,7 @@ export default function QuizMessage({ message }) {
     }
   };
 
+  // determine the type of quiz to render
   let quiz;
   if (message.type === 'saq') {
     if (message.content.results) {
@@ -45,6 +52,7 @@ export default function QuizMessage({ message }) {
   } else {
     quiz = (<MCQPrompt message={message} />);
   }
+
   return (
     <div className="quiz-message">
       <div className="message-box quiz-message-box">

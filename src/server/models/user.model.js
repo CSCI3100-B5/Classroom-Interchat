@@ -9,6 +9,8 @@ const { Schema } = mongoose;
 
 // GUIDE: All database models should be defined as separate files in this /models folder
 
+// Database model for users
+
 /**
  * User Schema
  */

@@ -8,10 +8,18 @@ import { useToast } from './ToastProvider.jsx';
 
 const SocketContext = React.createContext();
 
+/**
+ * The hook used by children to access this context
+ */
 export function useSocket() {
   return useContext(SocketContext);
 }
 
+/**
+ * A React context component used for providing an initialized socket.io socket
+ * to all children
+ * Also handles disconnection
+ */
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
   const { data } = useDataStore();
@@ -21,10 +29,15 @@ export function SocketProvider({ children }) {
   const history = useHistory();
   const { refreshAccessToken } = useApi();
 
+  // the "socket access token" represents the access token used during the
+  // initialization of the Socket
+  // This token need not be refreshed if the socket connection can be maintained
+  // But it needs to be refreshed if the socket is disconnected
   useEffect(() => {
     setSocketAccessToken(data.accessToken);
   }, []);
 
+  // Initialize a socket and subscribe to some events
   useEffect(() => {
     const newSocket = io(
       env.hostUrl,
@@ -40,6 +53,7 @@ export function SocketProvider({ children }) {
     newSocket.io.on('reconnect', (retryCount) => {
       console.log('io reconnect', retryCount);
       data.toasts = data.toasts.filter(x => x.title !== 'Real-time connection lost');
+      // if the user is in a session, attempt to re-join the classroom automatically
       if (data.classroomMeta) {
         newSocket.emit(
           'join classroom',
@@ -66,16 +80,21 @@ export function SocketProvider({ children }) {
     newSocket.on('error', (err) => {
       toast('error', 'Error from server', err.message);
     });
+    // Handles socket connection errors
     newSocket.on('connect_error', async (error) => {
       console.log('Socket connection error ', error);
       if (error.message === 'Email address not verified') {
+        // Server rejects the connection because the user hasn't verified their email
+        // Route to Account page
         data.classroomMeta = null;
         data.participants = [];
         data.messages = [];
         toast('error', 'Connection failed', 'You need to verify your email address before joining or creating any classrooms');
-        return history.push('/account');
+        return history.push('/account#manageProfile');
       }
       if (error.message === 'jwt expired') {
+        // Access token expired
+        // refresh the access token and retry
         console.log('Refreshing jwt token for socket connection');
         const response = await refreshAccessToken();
         if (response.success) return setSocketAccessToken(response.response.data.accessToken);
@@ -90,6 +109,8 @@ export function SocketProvider({ children }) {
         return history.push('/auth');
       }
       if (error.message === 'jwt malformed') {
+        // The access token is invalid
+        // Remove the token and route to Auth page for re-login
         data.classroomMeta = null;
         data.participants = [];
         data.messages = [];

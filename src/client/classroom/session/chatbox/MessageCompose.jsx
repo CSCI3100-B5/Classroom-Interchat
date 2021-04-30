@@ -11,6 +11,9 @@ import { useDataStore } from '../../../contexts/DataStoreProvider.jsx';
 import { useToast } from '../../../contexts/ToastProvider.jsx';
 import './MessageCompose.scoped.css';
 
+/**
+ * The text box for typing new messages
+ */
 export default function MessageCompose({ onCreateQuiz }) {
   const { sendMessage } = useRealtime();
   const { data, getSelfParticipant } = useDataStore();
@@ -21,6 +24,8 @@ export default function MessageCompose({ onCreateQuiz }) {
     information: null
   });
 
+  // Send the message to server
+  // the type of message sent is specified in messageData.information.type
   const onSend = async () => {
     if (!messageData.message) return;
     const msgText = messageData.message;
@@ -34,7 +39,10 @@ export default function MessageCompose({ onCreateQuiz }) {
     messageData.information = null;
   };
 
-
+  // when the message id of the question message to reply to changes,
+  // check that the id is still valid, otherwise, clear the id
+  // this is mainly used to remove to "Replying to ..." bar when the
+  // question is resolved
   useEffect(() => {
     const replyToMessage = data.replyToMessageId
       ? data.messages.find(x => x.id === data.replyToMessageId)
@@ -44,6 +52,10 @@ export default function MessageCompose({ onCreateQuiz }) {
     }
   }, [data.replyToMessageId]);
 
+  // reference to the DOM elements of the reply and message text box
+  // this is to return the focus to these text boxes after the user has clicked
+  // send, so that the virtual keyboard of a mobile device will not retract
+  // every time the user send a message
   const replyInput = useRef(null);
   const msgInput = useRef(null);
 
@@ -51,6 +63,7 @@ export default function MessageCompose({ onCreateQuiz }) {
     ? data.messages.find(x => x.id === data.replyToMessageId)
     : null;
 
+  // if the user is muted, simply display a text and don't render the text box
   if (data.classroomMeta.isMuted || getSelfParticipant()?.isMuted) {
     return (
       <div className="message-compose">
@@ -107,6 +120,8 @@ export default function MessageCompose({ onCreateQuiz }) {
                 aria-label="Type your reply"
                 className="reply-compose compose-box"
                 onKeyPress={(e) => {
+                  // allow sending by pressing enter
+                  // start a new line by pressing shift+enter
                   let isShift;
                   if (window.event) {
                     isShift = !!window.event.shiftKey;
@@ -161,6 +176,8 @@ export default function MessageCompose({ onCreateQuiz }) {
               placeholder="Type your message..."
               aria-label="Type your message"
               onKeyPress={(e) => {
+                // allow sending by pressing enter
+                // start a new line by pressing shift+enter
                 let isShift;
                 if (window.event) {
                   isShift = !!window.event.shiftKey;
