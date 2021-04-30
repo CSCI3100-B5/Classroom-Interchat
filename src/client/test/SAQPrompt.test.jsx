@@ -45,13 +45,8 @@ describe('SAQPrompt Component', function () {
   it('Renders SAQPrompt', function () {
     render(<SAQPrompt message={{
       id: 'reply Id 1',
-      sender: 'sender Id 1',
       content: {
-        choices: ['choice 1', 'choice 2'],
-        multiSelect: null,
-        prompt: 'this is quiz prompt',
-        closedAt: null,
-        correct: ['choice 1']
+        prompt: 'this is quiz prompt'
       }
     }}
     />);

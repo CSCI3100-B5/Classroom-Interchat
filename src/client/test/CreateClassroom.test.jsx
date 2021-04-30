@@ -81,10 +81,8 @@ describe('CreateClassroom Component', function () {
   it('Create new classroom', async function () {
     fakeData.refreshToken = 'some refresh token';
     renderWithRouter(<CreateClassroom />, { route: '/somePath' });
-    await new Promise(resolve => setTimeout(resolve, 10));
 
     userEvent.type(screen.getByLabelText(/Classroom Name/i), 'this is input classroom name');
-    await new Promise(resolve => setTimeout(resolve, 10));
     userEvent.click(screen.getByRole('button', { name: /Create Classroom/i }));
     await new Promise(resolve => setTimeout(resolve, 10));
 
@@ -98,7 +96,7 @@ describe('CreateClassroom Component', function () {
     renderWithRouter(<CreateClassroom />, { route: '/classroom' });
 
     userEvent.click(screen.getByRole('link', { name: /Join Classroom/i }));
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     expect(window.location.pathname).to.be.equal('/classroom/join');
   });

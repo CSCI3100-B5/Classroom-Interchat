@@ -17,9 +17,6 @@ import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
 // import our component to be tested
 import ParticipantList from '../classroom/session/info/ParticipantList.jsx';
 
-// unsuccessful import for ParticipantList, because of unknown reason
-
-
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';

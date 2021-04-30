@@ -4,7 +4,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, screen } from '@testing-library/react';
-// sinon creates fake functions
+import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
@@ -62,7 +62,9 @@ describe('ManageTokens Component', function () {
     };
     fakegetUserTokens = function () { return fakeresult; };
 
-    fakesetTokenFalse = function () { return fakeresult; };
+    fakesetTokenFalse = sinon.fake(() => new Promise((resolve) => {
+      resolve({ success: true, response: { } });
+    }));
 
     sinon.replace(ApiContext, 'useApi', () => ({
       getUserTokens: fakegetUserTokens,
@@ -79,5 +81,15 @@ describe('ManageTokens Component', function () {
     render(<ManageTokens />);
     expect(await screen.findByText('Tokens Received')).to.not.be.equal(null);
     expect(await screen.findByText('Tokens Sent')).to.not.be.equal(null);
+  });
+
+  it('Invalidate token', async function () {
+    render(<ManageTokens />);
+    userEvent.click(await screen.getByRole('tab', { name: /Tokens Sent/i }));
+    userEvent.click(await screen.getByRole('button', { name: /Invalidate/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.calledOnce(fakesetTokenFalse);
+    sinon.assert.calledWith(fakesetTokenFalse, 'this is token id 1');
   });
 });

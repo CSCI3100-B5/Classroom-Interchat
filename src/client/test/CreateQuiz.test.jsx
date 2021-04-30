@@ -57,6 +57,16 @@ describe('CreateQuiz Component', function () {
     });
   });
 
+  it('Invalid SAQ quiz', async function () {
+    render(<CreateQuiz onBack={fakeonBack} />);
+
+    userEvent.click(screen.getByRole('radio', { name: /Short Answer/i }));
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
+  });
+
   it('Create MCQ quiz', async function () {
     render(<CreateQuiz onBack={fakeonBack} />);
 
@@ -78,5 +88,27 @@ describe('CreateQuiz Component', function () {
       correct: [1],
       multiSelect: false
     });
+  });
+
+  it('Invalid MCQ quiz', async function () {
+    render(<CreateQuiz onBack={fakeonBack} />);
+
+    userEvent.click(screen.getByRole('radio', { name: /Multiple Choice/i }));
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
+
+    userEvent.type(screen.getByLabelText(/Prompt/i), 'This is a MCQ question?');
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
+
+    userEvent.type(screen.getByLabelText(/Choice 1/i), 'This is choice 1');
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
   });
 });
