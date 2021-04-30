@@ -97,7 +97,7 @@ describe('LoginBox Component', function () {
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     // wait a while for the form to validate user input
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     // sinon's fake functions remember how many times they have been called
     // here we make sure that login is called once with the correct parameters
@@ -119,7 +119,7 @@ describe('LoginBox Component', function () {
 
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     // if the email is totally invalid, we expect the login box to not send a
     // request to backend at all
@@ -135,7 +135,7 @@ describe('LoginBox Component', function () {
 
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
     sinon.assert.notCalled(fakeLogin);
   });
 
@@ -148,7 +148,7 @@ describe('LoginBox Component', function () {
 
     userEvent.click(screen.getByRole('button', { name: /log in/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     sinon.assert.calledOnce(fakeLogin);
     sinon.assert.calledWith(fakeLogin, 'abc@gmail.com', 'password2');

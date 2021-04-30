@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable func-names */
 // import testing libraries
@@ -14,33 +13,35 @@ import {
 import { usefakeData } from './fakeEnv.jsx';
 
 // import our component to be tested
-import MessageCompose from '../classroom/session/chatbox/MessageCompose.jsx';
-import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
-import * as ToastContext from '../contexts/ToastProvider.jsx';
-import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
+import SignupBox from '../auth/SignupBox.jsx';
 
-describe('MessageCompose Component', function () {
+import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
+import * as ApiContext from '../contexts/ApiProvider.jsx';
+import * as ToastContext from '../contexts/ToastProvider.jsx';
+
+import { renderWithRouter } from './test-utils.js';
+
+describe('SignupBox Component', function () {
   let fakeToast;
-  let fakesendMessage;
-  let fakegetSelfParticipant;
-  let fakeonCreateQuiz;
+  let fakelogin;
+  let fakesignup;
 
   // before each test, set up the fake contexts
   beforeEach(function () {
     fakeToast = sinon.spy();
-    fakesendMessage = sinon.fake(
-      (messageContent, messageInf) => new Promise(resolve => resolve())
-    );
-    fakegetSelfParticipant = sinon.stub().returns(null);
-    fakeonCreateQuiz = sinon.spy();
+    const fakeresult = {
+      success: true
+    };
+    fakelogin = function () { return fakeresult; };
+    fakesignup = function () { return fakeresult; };
 
-    sinon.replace(RealtimeContext, 'useRealtime', () => ({
-      sendMessage: fakesendMessage
+    sinon.replace(ApiContext, 'useApi', () => ({
+      login: fakelogin,
+      signup: fakesignup
     }));
     sinon.replace(ToastContext, 'useToast', () => ({ toast: fakeToast }));
     sinon.replace(DataStoreContext, 'useDataStore', () => ({
       data: usefakeData(),
-      getSelfParticipant: fakegetSelfParticipant
     }));
   });
 
@@ -49,8 +50,11 @@ describe('MessageCompose Component', function () {
     sinon.restore();
   });
 
-  it('Renders MessageCompose', async function () {
-    render(<MessageCompose onCreateQuiz={fakeonCreateQuiz} />);
-    expect(await screen.findByPlaceholderText('Type your message...')).to.not.be.equal(null);
+  it('Renders SignupBox', async function () {
+    renderWithRouter(<SignupBox />, { route: '/somePath' });
+    expect(await screen.findByText('Name')).to.not.be.equal(null);
+    expect(await screen.findByText('Email')).to.not.be.equal(null);
+    expect(await screen.findByText('Password')).to.not.be.equal(null);
+    expect(await screen.findByText('Confirm Password')).to.not.be.equal(null);
   });
 });

@@ -48,7 +48,7 @@ export default function Account() {
         history.push('/auth');
       }
       const result = await getUserProfile(data.user.id);
-      console.log('Get user profile', result);
+      // console.log('Get user profile', result);
       if (result.success) {
         data.user = result.response.data;
       } else {

@@ -43,14 +43,13 @@ describe('SAQResult Component', function () {
   it('Renders SAQResult', function () {
     render(<SAQResult message={{
       id: 'reply Id 1',
-      sender: 'sender Id 1',
+      sender: {
+        id: 'sender Id is this',
+        name: 'sender name is this'
+      },
       content: {
-        choices: ['choice 1', 'choice 2'],
-        multiSelect: null,
         prompt: 'this is quiz prompt',
-        closedAt: null,
-        correct: ['choice 1'],
-        results: [{ content: 'abc' }]
+        results: []
       }
     }}
     />);

@@ -5,7 +5,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, screen } from '@testing-library/react';
-// sinon creates fake functions
+import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import {
   describe, it, beforeEach, afterEach
@@ -20,14 +20,16 @@ import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
 describe('CreateQuiz Component', function () {
   let fakeToast;
   let fakesendQuiz;
+  let fakeonBack;
 
   // before each test, set up the fake contexts
   beforeEach(function () {
-    // replaces all the useXXX functions to return a fake context
-    // sinon.replace(object, property, newFunction)
+    fakeonBack = sinon.spy();
 
     fakeToast = sinon.spy();
-    fakesendQuiz = sinon.spy();
+    fakesendQuiz = sinon.fake(() => new Promise((resolve) => {
+      resolve({ success: true, response: { } });
+    }));
 
     sinon.replace(RealtimeContext, 'useRealtime', () => ({
       sendQuiz: fakesendQuiz
@@ -40,9 +42,73 @@ describe('CreateQuiz Component', function () {
     sinon.restore();
   });
 
-  it('Renders CreateQuiz', function () {
-    render(<CreateQuiz onBack={sinon.spy()} />);
+  it('Create SAQ quiz', async function () {
+    render(<CreateQuiz onBack={fakeonBack} />);
 
-    expect(screen.queryByText('Send Quiz')).to.not.be.equal(null);
+    userEvent.click(screen.getByRole('radio', { name: /Short Answer/i }));
+    userEvent.type(screen.getByLabelText(/Prompt/i), 'This is a SAQ question?');
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.calledOnce(fakesendQuiz);
+    sinon.assert.calledWith(fakesendQuiz, {
+      prompt: 'This is a SAQ question?',
+      type: 'SAQ'
+    });
+  });
+
+  it('Invalid SAQ quiz', async function () {
+    render(<CreateQuiz onBack={fakeonBack} />);
+
+    userEvent.click(screen.getByRole('radio', { name: /Short Answer/i }));
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
+  });
+
+  it('Create MCQ quiz', async function () {
+    render(<CreateQuiz onBack={fakeonBack} />);
+
+    userEvent.click(screen.getByRole('radio', { name: /Multiple Choice/i }));
+    userEvent.type(screen.getByLabelText(/Prompt/i), 'This is a MCQ question?');
+    userEvent.type(screen.getByLabelText(/Choice 1/i), 'This is choice 1');
+    userEvent.type(screen.getByLabelText(/Choice 2/i), 'This is choice 2');
+    userEvent.type(screen.getByLabelText(/Choice 3/i), 'This is choice 3');
+    userEvent.type(screen.getByLabelText(/Choice 4/i), 'This is choice 4');
+    userEvent.click(screen.getByRole('checkbox', { name: /Checkbox for choice1/i }));
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    sinon.assert.calledOnce(fakesendQuiz);
+    sinon.assert.calledWith(fakesendQuiz, {
+      prompt: 'This is a MCQ question?',
+      type: 'MCQ',
+      choices: ['This is choice 1', 'This is choice 2', 'This is choice 3', 'This is choice 4'],
+      correct: [1],
+      multiSelect: false
+    });
+  });
+
+  it('Invalid MCQ quiz', async function () {
+    render(<CreateQuiz onBack={fakeonBack} />);
+
+    userEvent.click(screen.getByRole('radio', { name: /Multiple Choice/i }));
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
+
+    userEvent.type(screen.getByLabelText(/Prompt/i), 'This is a MCQ question?');
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
+
+    userEvent.type(screen.getByLabelText(/Choice 1/i), 'This is choice 1');
+    userEvent.click(screen.getByRole('button', { name: /Send Quiz/i }));
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    sinon.assert.notCalled(fakesendQuiz);
   });
 });

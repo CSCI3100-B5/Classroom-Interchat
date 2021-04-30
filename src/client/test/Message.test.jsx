@@ -54,6 +54,7 @@ describe('Message Component', function () {
   it('Renders text message', function () {
     const message = {
       sender: {
+        id: 'sender id is this',
         name: 'sender name is this'
       },
       createdAt: 123,
@@ -85,6 +86,7 @@ describe('Message Component', function () {
   it('Renders mcq message', function () {
     const message = {
       sender: {
+        id: 'sender id is this',
         name: 'sender name is this'
       },
       createdAt: 123,
@@ -102,6 +104,7 @@ describe('Message Component', function () {
   it('Renders saq message', function () {
     const message = {
       sender: {
+        id: 'sender id is this',
         name: 'sender name is this'
       },
       createdAt: 123,
@@ -119,6 +122,7 @@ describe('Message Component', function () {
   it('Renders question message', function () {
     const message = {
       sender: {
+        id: 'sender id is this',
         name: 'sender name is this'
       },
       createdAt: 123,
@@ -136,6 +140,7 @@ describe('Message Component', function () {
   it('Renders reply message', function () {
     const message = {
       sender: {
+        id: 'sender id is this',
         name: 'sender name is this'
       },
       createdAt: 123,
@@ -153,6 +158,7 @@ describe('Message Component', function () {
   it('Renders unknown type message', function () {
     render(<Message message={{
       sender: {
+        id: 'sender id is this',
         name: 'sender name is this'
       },
       createdAt: 123,

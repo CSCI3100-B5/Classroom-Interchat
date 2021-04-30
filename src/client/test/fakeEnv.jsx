@@ -22,7 +22,7 @@ const fakeData = {
       type: 'question',
       content: {
         isResolved: false,
-        content: 'sth like message content'
+        content: 'sth like question message content'
       }
     },
     {
@@ -58,20 +58,75 @@ const fakeData = {
         replyTo: 'messageId is NOT this'
       }
     },
+    {
+      id: 'quiz message is this',
+      sender: 'quiz sender Id is this',
+      type: 'mcq',
+      content: {
+        choices: ['choice 1', 'choice 2'],
+        multiSelect: null,
+        prompt: 'this is quiz prompt',
+        closedAt: null,
+        results: null,
+        correct: null,
+        resultsReleased: null
+      }
+    }
   ],
-  participants: [],
+  participants: [{
+    user: {
+      name: 'user 1',
+      email: 'user1@gmail.com',
+      id: 'id 1'
+    },
+    permission: 'student'
+  },
+  {
+    user: {
+      name: 'user 2',
+      email: 'user2@gmail.com',
+      id: 'id 2'
+    },
+    permission: 'student'
+  },
+  {
+    user: {
+      name: 'user 3',
+      email: 'user3@gmail.com',
+      id: 'id 3'
+    },
+    permission: 'student'
+  },
+  {
+    user: {
+      name: 'user 4',
+      email: 'user4@gmail.com',
+      id: 'id 4'
+    },
+    permission: 'student'
+  },
+  ],
 
   replyToMessageId: null,
   messageFilter: null,
 
   user: {
     name: 'user name is this',
+    email: 'abc@gmail.com',
     id: 'sender Id is this'
   },
 
+  accessToken: null,
+  refreshToken: null
+
 };
+let fakeDataCopy;
 function usefakeData() {
-  return fakeData;
+  // make a deep copy of fakeData,
+  // so that each test always get the same fakeData
+  // and any modification does not affect other test
+  fakeDataCopy = JSON.parse(JSON.stringify(fakeData));
+  return { ...fakeDataCopy };
 }
 
 function sinonDefaultReturn(component, returnMessage) {

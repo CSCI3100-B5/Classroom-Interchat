@@ -97,7 +97,7 @@ describe('JoinClassroom Component', function () {
 
     userEvent.click(screen.getByRole('button', { name: /join classroom/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
     sinon.assert.calledOnce(fakeJoinClassroom);
   });
 
@@ -109,7 +109,7 @@ describe('JoinClassroom Component', function () {
 
     userEvent.click(screen.getByRole('button', { name: /join classroom/i }));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 10));
     sinon.assert.calledOnce(fakeJoinClassroom);
 
     // since fakeJoinClassroom returns a failure, we expect JoinClassroom

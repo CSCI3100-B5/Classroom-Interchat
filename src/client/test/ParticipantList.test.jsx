@@ -17,9 +17,6 @@ import { usefakeData, sinonDefaultReturn } from './fakeEnv.jsx';
 // import our component to be tested
 import ParticipantList from '../classroom/session/info/ParticipantList.jsx';
 
-// unsuccessful import for ParticipantList, because of unknown reason
-
-
 import * as DataStoreContext from '../contexts/DataStoreProvider.jsx';
 import * as ToastContext from '../contexts/ToastProvider.jsx';
 import * as RealtimeContext from '../contexts/RealtimeProvider.jsx';
@@ -78,11 +75,10 @@ describe('ParticipantList Component', function () {
     sinon.restore();
   });
 
-  it('Renders ParticipantList', function () {
+  it('Renders ParticipantList', async function () {
     render(<ParticipantList onCloseParticipantList={sinon.spy()} />);
 
     expect(screen.queryByText('Copy invite link')).to.not.be.equal(null);
-    expect(screen.findByText('Link copied!')).to.not.be.equal(null);
-    expect(screen.queryByText('Mute entire classroom')).to.not.be.equal(null);
+    expect(await screen.findByText('TokenAwarder return')).to.not.be.equal(null);
   });
 });
