@@ -16,6 +16,18 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
+      
+      - uses: SpicyPizza/create-envfile@v1.1
+        with:
+          envkey_NODE_ENV: ${{ secrets.NODE_ENV }}
+          envkey_PORT: ${{ secrets.PORT }}
+          envkey_ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          envkey_REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          envkey_MONGO_HOST: ${{ secrets.MONGO_HOST }}
+          envkey_MONGO_TEST_HOST: ${{ secrets.MONGO_TEST_HOST }}
+          envkey_BASE_URL: ${{ secrets.BASE_URL }}
+          envkey_EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          envkey_EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
       - uses: bahmutov/npm-install@v1.7.4
       
