@@ -13,7 +13,6 @@ const server = require('../index');
 // this describe block contains all tests related to /src/server/classroom/external
 describe('Classroom.Message', () => {
   // variables for all tests to use
-  let message; // message object in the database
   let classroom; // classroom object in the database
   let user; // user object in the database
   let clientSocket; // the connection to the server
@@ -24,9 +23,9 @@ describe('Classroom.Message', () => {
   beforeEach((done) => {
     (async () => {
       // Before each test we always empty the database
-      await Message.remove({}).exec();
-      await User.remove({}).exec();
-      await Classroom.remove({}).exec();
+      await User.deleteMany({}).exec();
+      await Classroom.deleteMany({}).exec();
+
       user = await User.create({
         name: 'test user',
         email: 'test@default.com',
@@ -52,28 +51,17 @@ describe('Classroom.Message', () => {
         classroom = await Classroom.get(data.id);
         done();
       });
-      // send the classroom creation request to server
-      clientSocket.emit('create classroom', { name: 'Test Classroom' }, (data) => {
+      clientSocket.emit('create classroom', { name: 'Test classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
         data.should.eql({});
-      });
-      // send the join classroom request to server
-      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
-        data.should.eql({});
-      });
-
-      clientSocket.once('new message', async (data) => {
-        data.should.have.property('id');
-        message = await Message.get(data.id);
-        done();
       });
     })();
   });
 
   // all tests related to sending message
   describe('send message', () => {
-    //
-    it('empty message input', (done) => {
-      // socket.emit(eventName, data, callback)
+    it('empty message', (done) => {
       clientSocket.emit('send message', {}, (data) => {
         // we expect the server to respond with an error
         data.should.have.property('error');
@@ -82,21 +70,77 @@ describe('Classroom.Message', () => {
       });
     });
 
-    it('non-empty message input', (done) => {
-      clientSocket.once('new message', (data) => {
-        // verify the contents of the event
-        // i.e. message data
-        data.should.have.property('id');
-        data.should.have.property('type');
-        data.should.have.property('sender');
-        data.host.should.have.property('content', 'test message');
+    it('message with content but no type', (done) => {
+      clientSocket.emit('send message', { message: 'message' }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
         // tell mocha that this test is done
         done();
       });
-      // send the message request to server
-      clientSocket.emit('send message', { content: 'message' }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+    });
+
+    it('text message', (done) => {
+      clientSocket.once('new message', (data) => {
+        data.should.have.property('id');
+        data.should.have.property('content', 'message');
+        data.should.have.property('sender');
+        data.should.have.property('type', 'text');
+        done();
+      });
+      clientSocket.emit('send message', { message: 'message', information: { type: 'text' } }, (data) => {
+        // we expect the server to respond with an error
+        data.should.eql({});
+      });
+    });
+
+    it('question message', (done) => {
+      clientSocket.once('new message', (data) => {
+        data.should.have.property('id');
+        data.should.have.property('content');
+        data.content.should.eql({ content: 'message', isResolved: false });
+        data.should.have.property('sender');
+        data.should.have.property('type', 'question');
+        done();
+      });
+      clientSocket.emit('send message', { message: 'message', information: { type: 'question' } }, (data) => {
+        // we expect the server to respond with an error
+        data.should.eql({});
+      });
+    });
+
+    it('reply message with non-existing message id', (done) => {
+      clientSocket.emit('send message', {
+        message: 'message',
+        information: { type: 'reply', qMessageId: '123456789012345678901234' }
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        done();
+      });
+    });
+
+    it('reply message with existing message id', (done) => {
+      clientSocket.once('new message', (data) => {
+        data.should.have.property('id');
+        data.should.have.property('type', 'question');
+        clientSocket.once('new message', (data2) => {
+          data2.should.have.property('id');
+          data2.should.have.property('content');
+          data2.content.should.eql({ content: 'message2', replyTo: data.id });
+          data2.should.have.property('sender');
+          data2.should.have.property('type', 'reply');
+          done();
+        });
+        clientSocket.emit('send message', {
+          message: 'message2',
+          information: { type: 'reply', qMessageId: data.id }
+        }, (data2) => {
+          // we expect the server to respond with an error
+          data2.should.eql({});
+        });
+      });
+      clientSocket.emit('send message', { message: 'message', information: { type: 'question' } }, (data) => {
+        // we expect the server to respond with an error
         data.should.eql({});
       });
     });
@@ -104,31 +148,59 @@ describe('Classroom.Message', () => {
 
   describe('resolve question', () => {
     // test resolve a question successfully
-    it('resolve question', (done) => {
-      clientSocket.once('question resolved', (data) => {
-        // verify the contents of the event
-        // i.e. question data
-        data.should.have.property('isResolved', true);
-        data.host.should.have.property('content', 'test message');
-        // tell mocha that this test is done
-        done();
+    it('resolve a question successfully', (done) => {
+      clientSocket.once('new message', (data) => {
+        data.should.have.property('id');
+        data.should.have.property('type', 'question');
+        clientSocket.once('question resolved', (data2) => {
+          // verify the contents of the event
+          // i.e. question data
+          data2.should.have.property('content');
+          data2.content.should.have.property('isResolved', true);
+          data2.content.should.have.property('content', 'message');
+          // tell mocha that this test is done
+          done();
+        });
+        // send the resolve question request to server
+        clientSocket.emit('resolve question', { messageId: data.id }, (data2) => {
+          // this is the immediate response from server
+          // we expect this to be empty to indicate success
+          data2.should.eql({});
+        });
       });
-      // send the resolve question request to server
-      clientSocket.emit('resolve question', { content: 'message' }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+      clientSocket.emit('send message', { message: 'message', information: { type: 'question' } }, (data) => {
+        // we expect the server to respond with an error
         data.should.eql({});
       });
     });
 
     // test resolve a resolved question
     it('resolve a resolved question', (done) => {
-      // socket.emit(eventName, data, callback)
-      clientSocket.emit('resolve question', {}, (data) => { //
+      clientSocket.once('new message', (data) => {
+        data.should.have.property('id');
+        data.should.have.property('type', 'question');
+        clientSocket.once('question resolved', (data2) => {
+          // verify the contents of the event
+          // i.e. question data
+          data2.content.should.have.property('isResolved', true);
+          // send the resolve question request to server
+          clientSocket.emit('resolve question', { messageId: data.id }, (data3) => {
+            // this is the immediate response from server
+            // we expect this to be empty to indicate success
+            data3.should.have.property('error');
+            done();
+          });
+        });
+        // send the resolve question request to server
+        clientSocket.emit('resolve question', { messageId: data.id }, (data2) => {
+          // this is the immediate response from server
+          // we expect this to be empty to indicate success
+          data2.should.eql({});
+        });
+      });
+      clientSocket.emit('send message', { message: 'message', information: { type: 'question' } }, (data) => {
         // we expect the server to respond with an error
-        data.should.have.property('error');
-        // tell mocha that this test is done
-        done();
+        data.should.eql({});
       });
     });
   });

@@ -11,8 +11,8 @@
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
     "lint": "eslint src/**/*.js src/**/*.jsx",
     "test:client": "nyc mocha --require @babel/register --require global-jsdom/register --require ignore-styles 'src/client/**/*.test.jsx'",
-    "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 5000 --exit 'src/server/**/*.test.js'",
-    "test:file": "mocha --require @babel/register --require global-jsdom/register --require ignore-styles"
+    "test:server": "cross-env NODE_ENV=test nyc mocha --timeout 10000 --exit 'src/server/**/*.test.js'",
+    "test:file": "cross-env NODE_ENV=test mocha --timeout 10000 --exit 'src/server/test/auth.test.js'"
   },
   "author": "CSCI3100 2020-2021 Term 2 Group B5",
   "dependencies": {

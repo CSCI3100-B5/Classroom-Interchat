@@ -13,8 +13,6 @@ const server = require('../index');
 // this describe block contains all tests related to /src/server/classroom/external
 describe('Classroom.Quiz', () => {
   // variables for all tests to use
-  let message; // message object in the database
-  let quizAnswer;
   let classroom; // classroom object in the database
   let user; // user object in the database
   let clientSocket; // the connection to the server
@@ -22,13 +20,12 @@ describe('Classroom.Quiz', () => {
   // here we are not testing whether the connection works. It is assumed to work.
   // Therefore we are connecting to the server before the tests, and running the
   // tests while being connected to the server
-  beforeEach(async () => {
+  beforeEach((done) => {
     (async () => {
       // Before each test we always empty the database
-      await User.remove({}).exec();
-      await Classroom.remove({}).exec();
-      await Message.remove({}).exec();
-      await QuizAnswer.remove({}).exec();
+      await User.deleteMany({}).exec();
+      await Classroom.deleteMany({}).exec();
+      await QuizAnswer.deleteMany({}).exec();
 
       user = await User.create({
         name: 'test user',
@@ -38,13 +35,6 @@ describe('Classroom.Quiz', () => {
         lastVerifiedEmail: 'test@default.com' // directly sets our email to be verified
       });
       await user.setPassword('password');
-
-      message = await Message.create({
-        type: 'mcq|saq'
-      });
-      quizAnswer = await QuizAnswer.create({
-        content: 'test'
-      });
       // make a log in request to server
       const res = await chai.request(server.app)
         .post('/api/auth/login')
@@ -62,12 +52,9 @@ describe('Classroom.Quiz', () => {
         classroom = await Classroom.get(data.id);
         done();
       });
-      // send the classroom creation request to server
-      clientSocket.emit('create classroom', { name: 'Test Classroom' }, (data) => {
-        data.should.eql({});
-      });
-      // send the join classroom request to server
-      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+      clientSocket.emit('create classroom', { name: 'Test classroom' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
         data.should.eql({});
       });
     })();
@@ -75,9 +62,7 @@ describe('Classroom.Quiz', () => {
 
   // all tests related to sending quiz
   describe('send quiz', () => {
-    // send an empty quiz
     it('send an empty quiz', (done) => {
-      // socket.emit(eventName, data, callback)
       clientSocket.emit('send quiz', {}, (data) => {
         // we expect the server to respond with an error
         data.should.have.property('error');
@@ -86,14 +71,109 @@ describe('Classroom.Quiz', () => {
       });
     });
 
-    // send an invalid MCQuiz
-    it('send an invalid MCQuiz', (done) => {
-      // socket.emit(eventName, data, callback)
+    it('send an MCQuiz without choices', (done) => {
       clientSocket.emit('send quiz', {
         type: 'MCQ',
         prompt: 'test quiz',
-        choices: '1',
+        choices: []
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz with 1 choice only', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1']
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz without a prompt', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        choices: ['choice1', 'choice2']
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz with duplicate choices', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice1']
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz with invalid correct answers', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 2],
+        multiSelect: true
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz with empty correct answers', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [],
+        multiSelect: true
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz with too many correct answers and no multi-select', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 1],
         multiSelect: false
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+
+    it('send an MCQuiz with too many correct answers and multi-select', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 1, 1],
+        multiSelect: true
       }, (data) => {
         // we expect the server to respond with an error
         data.should.have.property('error');
@@ -106,23 +186,33 @@ describe('Classroom.Quiz', () => {
     it('send a valid MCQuiz', (done) => {
       clientSocket.once('new quiz', (data) => {
         // verify the contents of the event
-        data.should.have.property('type', 'MCQ');
-        data.should.have.property('prompt', 'test quiz');
-        data.should.have.property('choices');
-        data.should.have.property('multiselect', false);
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        data.content.should.have.property('choices');
+        data.content.should.have.property('multiSelect', true);
         // tell mocha that this test is done
         done();
       });
       clientSocket.emit('send quiz', {
-        prompt: 'test quiz',
         type: 'MCQ',
-        choices: '4',
-        multiSelect: false
-        // TODO: add more quiz data here
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 1],
+        multiSelect: true
       }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
         data.should.eql({});
+      });
+    });
+
+    it('send an empty SAQuiz', (done) => {
+      clientSocket.emit('send quiz', {
+        type: 'SAQ'
+      }, (data) => {
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
       });
     });
 
@@ -130,14 +220,16 @@ describe('Classroom.Quiz', () => {
     it('send a valid SAQuiz', (done) => {
       clientSocket.once('new quiz', (data) => {
         // verify the contents of the event
-        data.should.have.property('type', 'SAQ');
-        data.should.have.property('prompt', 'test quiz');
+        data.should.have.property('type', 'saq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
         // tell mocha that this test is done
         done();
       });
-      clientSocket.emit('send quiz', { prompt: 'test quiz', type: 'SAQ' }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+      clientSocket.emit('send quiz', {
+        type: 'SAQ',
+        prompt: 'test quiz'
+      }, (data) => {
         data.should.eql({});
       });
     });
@@ -145,14 +237,35 @@ describe('Classroom.Quiz', () => {
 
   // all tests related to ending quiz
   describe('end quiz', () => {
-    // successfully end quiz
-    it('end quiz', (done) => {
-      clientSocket.emit('send quiz', { prompt: 'test quiz', type: 'SAQ' }, (data) => {
-        data.should.eql({});
+    it('end quiz with non-existing message id', (done) => {
+      clientSocket.emit('end quiz', { messageId: '123456789012345678901234' }, (data) => {
+        data.should.have.property('error');
+        done();
       });
-      clientSocket.emit('end quiz', { id: message.id }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+    });
+
+    it('successfully end quiz', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('id');
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        clientSocket.once('end quiz', (data2) => {
+          data.should.have.property('content');
+          data.content.should.have.property('closedAt');
+          done();
+        });
+        clientSocket.emit('end quiz', { messageId: data.id }, (data2) => {
+          data2.should.eql({});
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 1],
+        multiSelect: true
+      }, (data) => {
         data.should.eql({});
       });
     });
@@ -160,17 +273,40 @@ describe('Classroom.Quiz', () => {
 
   // all tests related to releasing result
   describe('release results', () => {
-    it('release results', (done) => {
-      // TODO: send a quiz before testing the release result function
-      clientSocket.emit('send quiz', { prompt: 'test quiz', type: 'SAQ' }, (data) => {
-        data.should.eql({});
+    it('release results with non-existing message id', (done) => {
+      clientSocket.emit('end quiz', { messageId: '123456789012345678901234' }, (data) => {
+        data.should.have.property('error');
+        done();
       });
-      clientSocket.emit('end quiz', { id: message.id }, (data) => {
-        data.should.eql({});
+    });
+
+    it('successfully release results', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('id');
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        clientSocket.once('update quiz', (data2) => {
+          data.should.have.property('content');
+          data.content.should.have.property('results');
+          done();
+        });
+        // Note: although currently disallowed in front end, it is actually
+        // possible to release quiz results before the quiz has ended.
+        // In this case, the server will continue to post quiz updates
+        // to everyone when new quiz answers are submitted.
+        // This is why we don't need to end quiz before releasing results here
+        clientSocket.emit('release results', { messageId: data.id }, (data2) => {
+          data2.should.eql({});
+        });
       });
-      clientSocket.emit('release results', { id: message.id }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 1],
+        multiSelect: true
+      }, (data) => {
         data.should.eql({});
       });
     });
@@ -178,22 +314,73 @@ describe('Classroom.Quiz', () => {
 
   // all tests related to ansSAQuiz
   describe('ansSAQuiz', () => {
-    it('answer SAQuiz', (done) => {
-      clientSocket.once('new quiz result', (data) => {
+    it('empty SAQ answer', (done) => {
+      clientSocket.once('new quiz', (data) => {
         // verify the contents of the event
-        data.should.have.property('type', 'SAQ');
-        data.should.have.property('prompt', 'test quiz');
-        // tell mocha that this test is done
-        done();
+        data.should.have.property('type', 'saq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        clientSocket.emit('saq answer', {
+          messageId: data.id
+        }, (data2) => {
+          data2.should.have.property('error');
+          done();
+        });
       });
-      clientSocket.emit('send quiz', { prompt: 'test quiz', type: 'SAQ' }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+      clientSocket.emit('send quiz', {
+        type: 'SAQ',
+        prompt: 'test quiz'
+      }, (data) => {
         data.should.eql({});
       });
-      clientSocket.emit('saq answer', { content: 'test', id: message.id }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+    });
+
+    it('non-existing message id', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('type', 'saq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        clientSocket.emit('saq answer', {
+          content: 'saq answer',
+          messageId: '123456789012345678901234'
+        }, (data2) => {
+          data2.should.have.property('error');
+          done();
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'SAQ',
+        prompt: 'test quiz'
+      }, (data) => {
+        data.should.eql({});
+      });
+    });
+
+    it('successfully answer SAQuiz', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('type', 'saq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+
+        clientSocket.once('new quiz result', (data2) => {
+          data2.should.have.property('result');
+          data2.result.should.have.property('content', 'saq answer');
+          // tell mocha that this test is done
+          done();
+        });
+        clientSocket.emit('saq answer', {
+          content: 'saq answer',
+          messageId: data.id
+        }, (data2) => {
+          data2.should.eql({});
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'SAQ',
+        prompt: 'test quiz'
+      }, (data) => {
         data.should.eql({});
       });
     });
@@ -201,30 +388,154 @@ describe('Classroom.Quiz', () => {
 
   // all tests related to ansMCQuiz
   describe('ansMCQuiz', () => {
-    it('answer MCQuiz', (done) => {
-      clientSocket.once('new quiz result', (data) => {
+    it('answer MCQuiz with no choices', (done) => {
+      clientSocket.once('new quiz', (data) => {
         // verify the contents of the event
-        data.should.have.property('type', 'MCQ');
-        data.should.have.property('prompt', 'test quiz');
-        data.should.have.property('choices');
-        data.should.have.property('multiselect', false);
-        // tell mocha that this test is done
-        done();
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        data.content.should.have.property('choices');
+        data.content.should.have.property('multiSelect', true);
+
+        clientSocket.emit('mcq answer', {
+          content: [],
+          messageId: data.id
+        }, (data2) => {
+          data2.should.have.property('error');
+          done();
+        });
       });
       clientSocket.emit('send quiz', {
-        prompt: 'test quiz',
         type: 'MCQ',
-        choices: '4',
-        multiSelect: false
-        // TODO: add more quiz data here
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0],
+        multiSelect: true
       }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
         data.should.eql({});
       });
-      clientSocket.emit('mcq answer', { content: 1, id: message.id }, (data) => {
-        // this is the immediate response from server
-        // we expect this to be empty to indicate success
+    });
+
+    it('answer MCQuiz with an invalid choice', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        data.content.should.have.property('choices');
+        data.content.should.have.property('multiSelect', true);
+
+        clientSocket.emit('mcq answer', {
+          content: [3],
+          messageId: data.id
+        }, (data2) => {
+          data2.should.have.property('error');
+          done();
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0],
+        multiSelect: true
+      }, (data) => {
+        data.should.eql({});
+      });
+    });
+
+    it('answer MCQuiz with too many choices', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        data.content.should.have.property('choices');
+        data.content.should.have.property('multiSelect', false);
+
+        clientSocket.emit('mcq answer', {
+          content: [0, 1],
+          messageId: data.id
+        }, (data2) => {
+          data2.should.have.property('error');
+          done();
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0],
+        multiSelect: false
+      }, (data) => {
+        data.should.eql({});
+      });
+    });
+
+    it('successfully answer non-multiSelect MCQuiz', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        data.content.should.have.property('choices');
+        data.content.should.have.property('multiSelect', false);
+
+        clientSocket.once('new quiz result', (data2) => {
+          data2.should.have.property('result');
+          data2.result.should.have.property('content');
+          data2.result.content.should.eql([1]);
+          // tell mocha that this test is done
+          done();
+        });
+        clientSocket.emit('mcq answer', {
+          content: [1],
+          messageId: data.id
+        }, (data2) => {
+          data2.should.eql({});
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0],
+        multiSelect: false
+      }, (data) => {
+        data.should.eql({});
+      });
+    });
+
+    it('successfully answer multiSelect MCQuiz', (done) => {
+      clientSocket.once('new quiz', (data) => {
+        // verify the contents of the event
+        data.should.have.property('type', 'mcq');
+        data.should.have.property('content');
+        data.content.should.have.property('prompt', 'test quiz');
+        data.content.should.have.property('choices');
+        data.content.should.have.property('multiSelect', true);
+
+        clientSocket.once('new quiz result', (data2) => {
+          data2.should.have.property('result');
+          data2.result.should.have.property('content');
+          data2.result.content.should.eql([0, 1]);
+          // tell mocha that this test is done
+          done();
+        });
+        clientSocket.emit('mcq answer', {
+          content: [0, 1],
+          messageId: data.id
+        }, (data2) => {
+          data2.should.eql({});
+        });
+      });
+      clientSocket.emit('send quiz', {
+        type: 'MCQ',
+        prompt: 'test quiz',
+        choices: ['choice1', 'choice2'],
+        correct: [0, 1],
+        multiSelect: true
+      }, (data) => {
         data.should.eql({});
       });
     });
