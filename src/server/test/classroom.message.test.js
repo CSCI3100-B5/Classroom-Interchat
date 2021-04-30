@@ -3,6 +3,7 @@ const {
   describe, beforeEach, it, before
 } = require('mocha');
 const Client = require('socket.io-client');
+const { cli } = require('winston/lib/winston/config');
 const { should, chai } = require('./setup');
 const User = require('../models/user.model');
 const Classroom = require('../models/classroom.model');
@@ -20,10 +21,10 @@ describe('Classroom.Message', () => {
   // here we are not testing whether the connection works. It is assumed to work.
   // Therefore we are connecting to the server before the tests, and running the
   // tests while being connected to the server
-
   beforeEach((done) => {
     (async () => {
       // Before each test we always empty the database
+      await Message.remove({}).exec();
       await User.remove({}).exec();
       await Classroom.remove({}).exec();
       user = await User.create({
@@ -55,6 +56,16 @@ describe('Classroom.Message', () => {
       clientSocket.emit('create classroom', { name: 'Test Classroom' }, (data) => {
         data.should.eql({});
       });
+      // send the join classroom request to server
+      clientSocket.emit('join classroom', { id: classroom.id }, (data) => {
+        data.should.eql({});
+      });
+
+      clientSocket.once('new message', async (data) => {
+        data.should.have.property('id');
+        message = await Message.get(data.id);
+        done();
+      });
     })();
   });
 
@@ -78,12 +89,12 @@ describe('Classroom.Message', () => {
         data.should.have.property('id');
         data.should.have.property('type');
         data.should.have.property('sender');
-        data.host.should.have.property('content', 'test');
+        data.host.should.have.property('content', 'test message');
         // tell mocha that this test is done
         done();
       });
       // send the message request to server
-      clientSocket.emit('send message', { name: 'New Classroom' }, (data) => {
+      clientSocket.emit('send message', { content: 'message' }, (data) => {
         // this is the immediate response from server
         // we expect this to be empty to indicate success
         data.should.eql({});
@@ -91,7 +102,34 @@ describe('Classroom.Message', () => {
     });
   });
 
-  /* describe('resolveQuestion', () =>{
+  describe('resolve question', () => {
+    // test resolve a question successfully
+    it('resolve question', (done) => {
+      clientSocket.once('question resolved', (data) => {
+        // verify the contents of the event
+        // i.e. question data
+        data.should.have.property('isResolved', true);
+        data.host.should.have.property('content', 'test message');
+        // tell mocha that this test is done
+        done();
+      });
+      // send the resolve question request to server
+      clientSocket.emit('resolve question', { content: 'message' }, (data) => {
+        // this is the immediate response from server
+        // we expect this to be empty to indicate success
+        data.should.eql({});
+      });
+    });
 
-  }); */
+    // test resolve a resolved question
+    it('resolve a resolved question', (done) => {
+      // socket.emit(eventName, data, callback)
+      clientSocket.emit('resolve question', {}, (data) => { //
+        // we expect the server to respond with an error
+        data.should.have.property('error');
+        // tell mocha that this test is done
+        done();
+      });
+    });
+  });
 });

@@ -106,6 +106,4 @@ describe('Auth', () => {
 
   // verify email
 
-  // token
-
 });
