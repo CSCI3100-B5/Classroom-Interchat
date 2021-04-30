@@ -9,7 +9,6 @@ const APIError = require('../../helpers/APIError');
 
 /**
  * Mark a participant's permission as requesting
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -46,7 +45,6 @@ async function requestPermission(packet, socket, io) {
 
 /**
  * Mark a participant's permission as student
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -83,7 +81,6 @@ async function cancelRequestPermission(packet, socket, io) {
 
 /**
  * Mark a participant's permission as instructor
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -144,7 +141,6 @@ async function promoteParticipant(packet, socket, io) {
 
 /**
  * Award a token to all the given user ids
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -194,7 +190,6 @@ async function awardToken(packet, socket, io) {
 
 /**
  * Mark a participant's permission as student
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -263,7 +258,6 @@ async function demoteParticipant(packet, socket, io) {
 
 /**
  * Mute a participant in the classroom
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -313,7 +307,6 @@ async function muteParticipant(packet, socket, io) {
 
 /**
  * Mute the entire classroom
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */

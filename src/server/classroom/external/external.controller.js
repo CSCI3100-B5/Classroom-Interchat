@@ -10,8 +10,7 @@ function notifyClassroomMetaChanged(classroom, io) {
 }
 
 /**
- *
- * @param {[*, *]} packet
+ * Create a new classroom
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -51,7 +50,6 @@ async function createClassroom(packet, socket, io) {
 
 /**
  * Return classroom metadata and subscribe user to subsequent classroom meta updates
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -83,6 +81,11 @@ async function peekClassroom(packet, socket, io) {
   });
 }
 
+/**
+ * Join an existing classroom and unsubscribe from classroom previews
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
 async function joinClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
   if (meta.invokerClassroom) return callback({ error: 'You are already in a classroom' });
@@ -148,6 +151,12 @@ async function joinClassroom(packet, socket, io) {
   return socket.emit('catch up', retClassroom);
 }
 
+/**
+ * Automatically close a classroom if the last remaining participant
+ * has been disconnected for a long time
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
 async function cleanupClassroom(classroomId, userId, lastOnline) {
   try {
     const classroom = await Classroom.get(classroomId);
@@ -166,9 +175,13 @@ async function cleanupClassroom(classroomId, userId, lastOnline) {
   }
 }
 
-// lostConnection updates the user's online status and notify others
-// the user's participant entry is not removed, since the user is
-// expected to reconnect
+/**
+ * Updates the user's online status and notify others
+ * The user's participant entry is not removed, since the user is
+ * expected to reconnect
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
 async function lostConnection(packet, socket, io) {
   if (!socket.data.invokerClassroom) return;
   let classroom = await Classroom.getCached(
@@ -202,6 +215,12 @@ async function lostConnection(packet, socket, io) {
   }
 }
 
+/**
+ * Remove the user from the participant list and kick the user from classroom
+ * rooms
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
 async function leaveClassroom(packet, socket, io) {
   const [data, callback, meta] = packet;
   if (!socket.data.invokerClassroom) return callback({ error: 'You are not in an open classroom' });
@@ -269,7 +288,6 @@ async function leaveClassroom(packet, socket, io) {
 
 /**
  * kick a participant in the classroom
- * @param {[*, *]} packet
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */

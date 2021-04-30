@@ -6,8 +6,7 @@ const Messages = require('../../models/message.model');
 const APIError = require('../../helpers/APIError');
 
 /**
- *
- * @param {[*, *]} packet
+ * Save the quiz to database and relay it to other participants
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -84,8 +83,7 @@ async function sendQuiz(packet, socket, io) {
 }
 
 /**
- *
- * @param {[*, *]} packet
+ * End the quiz
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -121,8 +119,8 @@ async function endQuiz(packet, socket, io) {
 }
 
 /**
- *
- * @param {[*, *]} packet
+ * Release quiz results by marking resultsReleased to true and sending results
+ * to all participants
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
@@ -157,6 +155,11 @@ async function releaseResults(packet, socket, io) {
   return callback({});
 }
 
+/**
+ * Add an answer to an SAQ
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
 async function ansSAQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 
@@ -200,6 +203,11 @@ async function ansSAQuiz(packet, socket, io) {
   return callback({});
 }
 
+/**
+ * Add an answer to an MCQ
+ * @param {import('socket.io').Socket} socket
+ * @param {import('socket.io').Server} io
+ */
 async function ansMCQuiz(packet, socket, io) {
   const [data, callback, meta] = packet;
 

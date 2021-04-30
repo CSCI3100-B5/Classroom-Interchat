@@ -2,10 +2,8 @@ const SocketValidatedEvents = require('../../helpers/socketValidatedEvents');
 const paramValidation = require('./instructor.validation');
 const instructorCtrl = require('./instructor.controller');
 
-// instructor handles events related to instructor permission
-
 /**
- *
+ * handles events related to instructor permission
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */

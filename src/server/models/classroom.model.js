@@ -6,6 +6,8 @@ const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
+// Database schema for a classroom participant and a classroom
+
 const ParticipantSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,

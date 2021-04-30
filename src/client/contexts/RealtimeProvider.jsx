@@ -315,7 +315,7 @@ export function RealtimeProvider({ children }) {
 
   /**
    * Request to answer an MCQ
-   * @param {[number]} content the answer choices
+   * @param {number[]} content the answer choices
    * @param {string} messageId id of the question message
    * @returns {Promise<{}|{error:string}>} server response, normally empty
    */
@@ -370,7 +370,7 @@ export function RealtimeProvider({ children }) {
 
   /**
    * Request to award tokens to users
-   * @param {[string]} userIds ids of users to award a token to
+   * @param {string[]} userIds ids of users to award a token to
    * @param {string} value the textual note to add to the token
    * @returns {Promise<{}|{error:string}>} server response, normally empty
    */

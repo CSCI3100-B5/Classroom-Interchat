@@ -6,6 +6,8 @@ const { filterSafeOrOriginal } = require('./model-utils');
 
 const { Schema } = mongoose;
 
+// Database models for tokens
+
 /**
  * Token Schema
  */

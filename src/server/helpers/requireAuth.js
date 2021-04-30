@@ -8,6 +8,7 @@ const APIError = require('./APIError');
 // compose-middleware is used to group several middlewares
 // into a convenient package
 
+// validate the access token and load the user if the access token is valid
 const requireAccessToken = compose([
   expressJwt({
     secret: config.accessTokenSecret,
@@ -24,6 +25,8 @@ const requireAccessToken = compose([
   }
 ]);
 
+// validate the access token and also require that the user has verified
+// their email
 const requireEmailVerified = compose([
   requireAccessToken,
   function checkEmail(req, res, next) {
@@ -32,6 +35,7 @@ const requireEmailVerified = compose([
   }
 ]);
 
+// validate the refresh token and load the user if the refresh token is valid
 const requireRefreshToken = compose([
   expressJwt({
     secret: config.refreshTokenSecret,
@@ -48,6 +52,7 @@ const requireRefreshToken = compose([
   }
 ]);
 
+// validate the access token and also require that the user is an admin
 const requireAdminAccess = compose([
   requireAccessToken,
   function checkAdmin(req, res, next) {

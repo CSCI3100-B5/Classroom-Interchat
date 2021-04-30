@@ -20,6 +20,8 @@ const APIError = require('../helpers/APIError');
 const middlewareWrap = require('../helpers/middlewareWrap');
 const { requireEmailVerified } = require('../helpers/requireAuth');
 
+// initialize and set up Express and Socket.io
+
 const app = express();
 const server = http.Server(app);
 const io = socketio(server, {

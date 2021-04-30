@@ -1,7 +1,6 @@
 const Joi = require('joi');
 
 module.exports = {
-  // POST /api/auth/login
   login: {
     body: Joi.object({
       email: Joi.string().trim().email().required(),

@@ -7,7 +7,7 @@ const Classroom = require('./models/classroom.model');
 const config = require('./config/config');
 
 /**
- *
+ * Mount all socket.io middlewares and register all event listeners
  * @param {import('socket.io').Socket} socket
  * @param {import('socket.io').Server} io
  */
