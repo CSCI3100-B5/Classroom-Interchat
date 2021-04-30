@@ -7,14 +7,22 @@ import { BiTimer, BiCloudLightning, BiEditAlt } from 'react-icons/bi';
 import { useHistory } from 'react-router-dom';
 import './Landing.scoped.css';
 
+/**
+ * The home page, showing buttons to log in and sign up, and a banner
+ * introducing the key features of Classroom Interchat
+ */
 export default function Landing() {
   const history = useHistory();
+
+  // if opening as a PWA, skip the home page and go to Auth page directly
   useEffect(() => {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       console.log('In standalone UI, routing to /auth');
       history.push('/auth');
     }
   }, []);
+
+  // short-circuit rendering if opening as PWA
   if (window.matchMedia('(display-mode: standalone)').matches) {
     return (
       <div className="splash-container">

@@ -4,10 +4,16 @@ import { useDataStore } from './DataStoreProvider.jsx';
 
 const ApiContext = React.createContext();
 
+/**
+ * The hook used by children to access this context
+ */
 export function useApi() {
   return useContext(ApiContext);
 }
 
+/**
+ * A React context component wrapping REST API requests that are sent by Axios
+ */
 export function ApiProvider({ children }) {
   const {
     data,

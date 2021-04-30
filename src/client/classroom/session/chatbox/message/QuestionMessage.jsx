@@ -10,12 +10,17 @@ import { useToast } from '../../../../contexts/ToastProvider.jsx';
 import MarkdownRender from './MarkdownRender.jsx';
 import './QuestionMessage.scoped.css';
 
+/**
+ * A Question Message, renders the question icon and the message controls
+ * under this message
+ */
 export default function QuestionMessage({ message }) {
   const { resolveQuestion } = useRealtime();
   const { data } = useDataStore();
   const { toast } = useToast();
   const replies = data.messages.filter(x => x.type === 'reply' && x.content.replyTo === message.id);
 
+  // Send the resolve question request to the server
   const onResolveQuestion = async () => {
     try {
       await resolveQuestion(message.id);

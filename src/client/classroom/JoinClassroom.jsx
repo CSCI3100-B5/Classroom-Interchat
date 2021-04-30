@@ -15,11 +15,15 @@ import { useApi } from '../contexts/ApiProvider.jsx';
 import './JoinClassroom.scoped.css';
 import { useSocket } from '../contexts/SocketProvider.jsx';
 
+// schema for form validation
 const schema = yup.object().shape({
   classroomId: yup.string().required().matches(/^[0-9a-f]{24}$/si, 'The classroom ID is invalid').label('Classroom ID'),
 });
 
-
+/**
+ * A simple form for joining a classroom
+ * Includes a button to Create Classroom page
+ */
 export default function JoinClassroom() {
   const location = useLocation();
 
@@ -41,6 +45,8 @@ export default function JoinClassroom() {
 
   const socket = useSocket();
 
+  // send a peek classroom request directly if the user enters this page
+  // via an invite link
   useEffect(() => {
     if (!socket) return;
     if (!localData.initialClassroomId) return;
@@ -57,14 +63,17 @@ export default function JoinClassroom() {
     })();
   }, [localData.initialClassroomId, socket]);
 
+  // route to Authenticate page if the user is not logged in
   useEffect(() => {
     if (!data.refreshToken) history.push('/auth');
   }, [data.refreshToken]);
 
+  // route to Classroom Session page if the user is already in the classroom
   useEffect(() => {
     if (data.classroomMeta) history.push('/classroom/session');
   }, [data.classroomMeta]);
 
+  // if the form text box changes, clear the outdated classroom preview
   useEffect(() => {
     if (!data.peekClassroomMeta) return;
     if (data.peekClassroomMeta.error) return;
@@ -73,6 +82,7 @@ export default function JoinClassroom() {
     }
   }, [data.peekClassroomMeta]);
 
+  // send join classroom request to server
   const onSubmit = async (values) => {
     try {
       await joinClassroom(values.classroomId);
@@ -81,6 +91,7 @@ export default function JoinClassroom() {
     }
   };
 
+  // send peek classroom request to server if the classroom id is valid
   const onChange = async (event) => {
     const classroomId = event.currentTarget.value;
     setPeekClassroomId(classroomId);

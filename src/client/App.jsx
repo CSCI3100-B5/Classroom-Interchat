@@ -10,13 +10,17 @@ import { ApiProvider } from './contexts/ApiProvider.jsx';
 import ToastCenter from './ToastCenter.jsx';
 import { ToastProvider } from './contexts/ToastProvider.jsx';
 
+// All first-level pages are lazily loaded to reduce initial load time
 const Landing = lazy(() => import('./landing/Landing.jsx'));
 const ClassroomRoot = lazy(() => import('./classroom/index.jsx'));
 const Auth = lazy(() => import('./auth/Auth.jsx'));
 const Account = lazy(() => import('./account/Account.jsx'));
 const NotFound = lazy(() => import('./not-found/NotFound.jsx'));
 
-
+/**
+ * Create context providers, houses the toast center, and mount all
+ * first-level routes here
+ */
 export default function App() {
   return (
     // Turning strict mode off since react-bootstrap is still using findDOMNode
@@ -27,6 +31,8 @@ export default function App() {
           <ApiProvider>
             <ToastCenter />
             <Router>
+              {/* The suspense is a loading screen when the lazily loaded
+              pages are loading */}
               <Suspense fallback={(
                 <div className="splash-container">
                   <img className="splash-icon" src="/favicon.svg" alt="Page loading" />
