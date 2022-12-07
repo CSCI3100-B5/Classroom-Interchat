@@ -45,7 +45,7 @@
     "nodemailer": "^6.5.0",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
-    "qs": "^6.10.1",
+    "qs": "^6.10.3",
     "react": "^16.8.0",
     "react-bootstrap": "^1.5.1",
     "react-dom": "^16.8.0",
