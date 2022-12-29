@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - uses: bahmutov/npm-install@v1.7.4
+      - uses: bahmutov/npm-install@v1.8.27
       
       - run: yarn run test:server
         env:
